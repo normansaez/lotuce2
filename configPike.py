@@ -30,13 +30,12 @@ npxlx=npxly.copy()
 #npxlx[:]=1280
 npxlx[:]=1920
 nsuby=npxly.copy()
-nsuby[:]=1#this is science, so only one subap required... 
-#nsuby[4:]=16
+nsuby[:]=16
 nsubx=nsuby.copy()
 nsub=nsubx*nsuby
 nsubaps=(nsuby*nsubx).sum()
-subapFlag=numpy.ones((nsubaps,),"i")
-#subapFlag=tel.Pupil(11,11/2.,1,11).subflag.astype("i").ravel()#numpy.ones((nsubaps,),"i")
+#subapFlag=numpy.ones((nsubaps,),"i")
+subapFlag=tel.Pupil(16,16/2.,1,16).subflag.astype("i").ravel()#numpy.ones((nsubaps,),"i")
 
 #ncents=nsubaps*2
 ncents=subapFlag.sum()*2
@@ -60,13 +59,8 @@ ncentsCum=numpy.zeros((ncam+1,),numpy.int32)
 for i in range(ncam):
     nsubapsCum[i+1]=nsubapsCum[i]+nsubaps[i]
     ncentsCum[i+1]=ncentsCum[i]+subapFlag[nsubapsCum[i]:nsubapsCum[i+1]].sum()*2
-xoff=0
-yoff=0
-nx=(npxlx[0]-2*xoff)/nsubx[0]
-ny=(npxly[0]-2*yoff)/nsuby[0]
 for i in range(nsubaps):
-    subapLocation[i]=((i//nsubx[0])*ny+yoff,(i//nsubx[0]+1)*ny+yoff,1,(i%nsubx[0])*nx+xoff,(i%nsubx[0]+1)*nx+xoff,1)
-#print subapLocation
+    subapLocation[i]=((i//16)*40+20,(i//16+1)*40+20,1,(i%16)*40+100,(i%16+1)*40+100,1)
 #guid for red camera is 2892819690320999
 #guid for fire-i camera is 582164335728668360
 try:
