@@ -60,7 +60,8 @@ for i in range(ncam):
     nsubapsCum[i+1]=nsubapsCum[i]+nsubaps[i]
     ncentsCum[i+1]=ncentsCum[i]+subapFlag[nsubapsCum[i]:nsubapsCum[i+1]].sum()*2
 for i in range(nsubaps):
-    subapLocation[i]=((i//16)*20+20,(i//16+1)*20+20,1,(i%16)*20+100,(i%16+1)*20+100,1)
+#    subapLocation[i]=((i//16)*20+20,(i//16+1)*20+20,1,(i%16)*20+100,(i%16+1)*20+100,1)
+    subapLocation[i]=((i//16)*40+20,(i//16+1)*40+20,1,(i%16)*40+100,(i%16+1)*40+100,1)
 #guid for red camera is 2892819690320999
 #guid for fire-i camera is 582164335728668360
 try:
