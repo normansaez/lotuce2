@@ -68,9 +68,10 @@ for i in range(ncam):
     ncentsCum[i+1]=ncentsCum[i]+subapFlag[nsubapsCum[i]:nsubapsCum[i+1]].sum()*2
 for i in range(nsubaps):
 #    subapLocation[i]=((i//16)*20+20,(i//16+1)*20+20,1,(i%16)*20+100,(i%16+1)*20+100,1)
-    subapLocation[i]=((i//16)*40+20,(i//16+1)*40+20,1,(i%16)*40+100,(i%16+1)*40+100,1)
+    subapLocation[i]=((i//16)*37+20,(i//16+1)*37+20,1,(i%16)*37+100,(i%16+1)*37+100,1)
 #guid for red camera is 2892819690320999
 #guid for fire-i camera is 582164335728668360
+subapLocation=FITS.Read("/home/dani/git/canaryLaserCommissioning/ShackHartmannsubapLocation_led0.fits")[1].astype("f")
 try:
     a=prefix
 except:
@@ -221,7 +222,7 @@ control={
     "useBrightest":0,
     "figureGain":1,
     "decayFactor":None,#used in libreconmvm.so
-    "slopeOpen":0,
+    "slopeOpen":1,
     "reconlibOpen":0,
     "maxAdapOffset":0,
 #    "mirrorStep":0,
