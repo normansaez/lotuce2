@@ -37,6 +37,13 @@ nsubaps=(nsuby*nsubx).sum()
 #subapFlag=numpy.ones((nsubaps,),"i")
 subapFlag=tel.Pupil(16,16/2.,1,16).subflag.astype("i").ravel()#numpy.ones((nsubaps,),"i")
 
+#adding center as valid
+subapFlag.reshape(16,16)[8][8] = 1
+subapFlag.reshape(16,16)[7][8] = 1
+subapFlag.reshape(16,16)[7][7] = 1
+subapFlag.reshape(16,16)[8][7] = 1
+
+
 #ncents=nsubaps*2
 ncents=subapFlag.sum()*2
 npxls=(npxly*npxlx).sum()
