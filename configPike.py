@@ -51,7 +51,7 @@ npxls=(npxly*npxlx).sum()
 fakeCCDImage=None#(numpy.random.random((npxls,))*20).astype("i")
 #camimg=(numpy.random.random((10,npxls))*20).astype(numpy.int16)
 
-bgImage=None#FITS.Read("shimgb1stripped_bg.fits")[1].astype("f")#numpy.zeros((npxls,),"f")
+bgImage=None#FITS.Read("/home/dani/bbb-darc/calibrations/bg_led_1.fits")[1].astype("f")#numpy.zeros((npxls,),"f")
 darkNoise=None#FITS.Read("shimgb1stripped_dm.fits")[1].astype("f")
 flatField=None#FITS.Read("shimgb1stripped_ff.fits")[1].astype("f")
 #indx=0
@@ -71,7 +71,7 @@ for i in range(nsubaps):
     subapLocation[i]=((i//16)*37+20,(i//16+1)*37+20,1,(i%16)*37+100,(i%16+1)*37+100,1)
 #guid for red camera is 2892819690320999
 #guid for fire-i camera is 582164335728668360
-subapLocation=FITS.Read("/home/dani/git/canaryLaserCommissioning/ShackHartmannsubapLocation_led0.fits")[1].astype("f")
+subapLocation=FITS.Read("/home/dani/git/canaryLaserCommissioning/ShackHartmannsubapLocation_led1.fits")[1].astype("f")
 try:
     a=prefix
 except:
