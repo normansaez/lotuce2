@@ -71,7 +71,7 @@ for i in range(nsubaps):
     subapLocation[i]=((i//16)*37+20,(i//16+1)*37+20,1,(i%16)*37+100,(i%16+1)*37+100,1)
 #guid for red camera is 2892819690320999
 #guid for fire-i camera is 582164335728668360
-subapLocation=FITS.Read("/home/dani/git/canaryLaserCommissioning/ShackHartmannsubapLocation_led1.fits")[1].astype("f")
+subapLocation=FITS.Read("/home/dani/git/canaryLaserCommissioning/SHsubapLocation_led0.fits")[1].astype("f")
 try:
     a=prefix
 except:
@@ -105,8 +105,8 @@ cameraParams=numpy.array([guid,guid,1,vmode,color,width,height,0,0,fr,2]).astype
 #[9] framerate (36==30Hz, 35, -1==15Hz), 
 #[10] [ISO speed (-1==don't set, 0=100, 1=200,2=400 (probably want -1 or 2), 3=800,4=1600,5=3200.)]
 
-#130326 170040 Streams: ['ShackHartmannrtcTimeBuf']. still to go {'ShackHartmannrtcTimeBuf': 53} got {'ShackHartmannrtcTimeBuf': 47}
-#130326 170046 Streams: ['ShackHartmannrtcTimeBuf']. still to go {'ShackHartmannrtcTimeBuf': 6} got {'ShackHartmannrtcTimeBuf': 94}
+#130326 170040 Streams: ['SHrtcTimeBuf']. still to go {'SHrtcTimeBuf': 53} got {'SHrtcTimeBuf': 47}
+#130326 170046 Streams: ['SHrtcTimeBuf']. still to go {'SHrtcTimeBuf': 6} got {'SHrtcTimeBuf': 94}
 #0.126656 +- 5.94603e-05 s (range 0.126577 - 0.126873 = 0.000296116)
 #7.8954 +- 0.00370659 Hz
 
