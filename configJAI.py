@@ -65,7 +65,7 @@ for k in range(ncam):
             if subapFlag[indx]:
                 subapLocation[indx]=(0+i*suby[k],0+i*suby[k]+suby[k],1,0+j*subx[k],0+j*subx[k]+subx[k],1)
 
-cameraName="libcamAravis.so"
+cameraName="libjaicam.so"
 cameraParams=numpy.zeros((18,),numpy.int32)
 cameraParams[0]=2#bytes per pixel
 cameraParams[1]=1500#timeout/ms
