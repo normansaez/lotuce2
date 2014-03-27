@@ -116,7 +116,7 @@ for k in range(ncam):
   //The names as a string.
   //recordTimestamp
 """
-camList=["Manta_G-031B"][:ncam]
+camList=["Allied Vision Technologies-50-0503342077"][:ncam]
 camNames=string.join(camList,";")#"Imperx, inc.-110323;Imperx, inc.-110324"
 print camNames
 while len(camNames)%4!=0:
