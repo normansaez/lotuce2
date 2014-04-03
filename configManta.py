@@ -41,6 +41,7 @@ else:
         ncam=int(prefix)
     except:
         ncam=4
+#ncam = 1
 print "Using %d cameras"%ncam
 ncamThreads=numpy.ones((ncam,),numpy.int32)*1
 npxly=numpy.zeros((ncam,),numpy.int32)
@@ -116,7 +117,7 @@ for k in range(ncam):
   //The names as a string.
   //recordTimestamp
 """
-camList=["Allied Vision Technologies-50-0503342077"][:ncam]
+camList=["Allied Vision Technologies-50-0503342076"][:ncam]
 camNames=string.join(camList,";")#"Imperx, inc.-110323;Imperx, inc.-110324"
 print camNames
 while len(camNames)%4!=0:
@@ -136,10 +137,11 @@ cameraParams[6*ncam+2+(namelen+3)//4]=0#record timestamp
 
 rmx=numpy.random.random((nacts,ncents)).astype("f")
 
-camCommand="ProgFrameTimeEnable=true;ProgFrameTimeAbs=50000;"
+camCommand="ProgFrameTimeEnable=true;ProgFrameTimeAbs=50000;ExposureTimeAbs=58;"
 
 
 control={
+#    "ExposureTimeAbs":58,
     "switchRequested":0,#this is the only item in a currently active buffer that can be changed...
     "pause":0,
     "go":1,
