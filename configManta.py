@@ -109,6 +109,7 @@ for k in range(ncam):
 #pxlCnt[nsubaps/2-5]=128*256
 #pxlCnt[nsubaps/2-6]=128*256
 
+
 #The params are dependent on the interface library used.
 """
   //Parameters are:
