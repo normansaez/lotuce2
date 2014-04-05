@@ -41,6 +41,12 @@ else:
         ncam=int(prefix)
     except:
         ncam=4
+
+if prefix == "bob":
+    ncam = 1
+if prefix == "bob2":
+    ncam = 2
+
 #ncam = 1
 print "Using %d cameras"%ncam
 ncamThreads=numpy.ones((ncam,),numpy.int32)*1
@@ -117,7 +123,7 @@ for k in range(ncam):
   //The names as a string.
   //recordTimestamp
 """
-camList=["Allied Vision Technologies-50-0503342076"][:ncam]
+camList=["Allied Vision Technologies-50-0503342076","Allied Vision Technologies-50-0503342077"][:ncam]
 camNames=string.join(camList,";")#"Imperx, inc.-110323;Imperx, inc.-110324"
 print camNames
 while len(camNames)%4!=0:
