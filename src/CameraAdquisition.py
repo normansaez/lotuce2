@@ -58,12 +58,12 @@ class Camera:
             sys.exit(-1)
         #Cross check: read config file, read darc configuration before do something
         if not (npxlx == self.npxlx):
-            self.logger.log(ERROR,"Problem in definition of PIXEL X %s: darc says: %d, configuration file says: %d" % (self.camera_name, self.npxlx, npxlx))
+            self.logger.log(ERROR,"Problem in definition of PIXEL X %s: darc says: %d, configuration file says: %d" % (self.camera_name, npxlx, self.npxlx))
             self.logger.log(ERROR,"Fix one of them before continue!")
             sys.exit(-1)
 
         if not (npxly == self.npxly):
-            self.logger.log(ERROR,"Problem in definition of PIXEL Y %s: darc says: %d, configuration file says: %d" % (self.camera_name, self.npxly, npxly))
+            self.logger.log(ERROR,"Problem in definition of PIXEL Y %s: darc says: %d, configuration file says: %d" % (self.camera_name, npxly, self.npxly))
             self.logger.log(ERROR,"Fix one of them before continue!")
             sys.exit(-1)
 
@@ -75,45 +75,24 @@ class Camera:
         FITS.Write(data, fitsname, writeMode='a') #writing fits file
 
     def set_shutter(self, shutter):
-        if self.camera_name is "pulnix":
-            self.logger.log(INFO, "Shutter Register Value: %d " % shutter)
-            self.darc_instance.Set("fwShutter",shutter)
-
-        elif self.camera_name is "manta76":
-            self.logger.log(INFO, "Shutter Register Value: %d " % shutter)
-            self.darc_instance.Set("aravisCmd0",'ProgFrameTimeEnable=true;ProgFrameTimeAbs=50000;ExposureTimeAbs=%d;'%shutter)
-
-        elif self.camera_name is "manta77":
-            self.logger.log(INFO, "Shutter Register Value: %d " % shutter)
-            self.darc_instance.Set("aravisCmd1",'ProgFrameTimeEnable=true;ProgFrameTimeAbs=50000;ExposureTimeAbs=%d;'%shutter)
-
-        else:
-            self.logger.log(INFO, "CAMERA: %s" % self.camera_name )
-            self.logger.log(INFO, "Shutter Register Value: %d " % shutter)
-#            self.logger.log(INFO, "Shutter*TimeBase + Offset= %d*%d [ms]+ %d [ms] = %.3f [ms]" % (shutter,self.timebase,71,shutter*self.timebase + 71.0))
-            self.darc_instance.Set("aravisCmd0",'ProgFrameTimeEnable=true;ProgFrameTimeAbs=50000;ExposureTimeAbs=%d;'%shutter)
-            self.darc_instance.Set("aravisCmd1",'ProgFrameTimeEnable=true;ProgFrameTimeAbs=50000;ExposureTimeAbs=%d;'%shutter)
-#            self.darc_instance.Set("fwShutter",shutter)
         if shutter >= self.shutter_end:
             self.logger.log(WARNING, "Shutter reach maximum limit : %d" % self.shutter_end)
             shutter = self.shutter_end
             self.log.log(WARNING, "Shutter set to : %d" % self.shutter_end)
+        self.logger.log(INFO, "CAMERA: %s" % self.camera_name )
+        self.logger.log(INFO, "Shutter Register Value: %d " % shutter)
+        self.darc_instance.Set("aravisCmd0",'ProgFrameTimeEnable=true;ProgFrameTimeAbs=50000;ExposureTimeAbs=%d;'%shutter)
+        self.darc_instance.Set("aravisCmd1",'ProgFrameTimeEnable=true;ProgFrameTimeAbs=50000;ExposureTimeAbs=%d;'%shutter)
 
     def set_gain(self, gain):
-        if self.camera_name is "pulnix":
-            self.logger.log(INFO, "Gain: %d " % gain)
-            self.darc_instance.Set("fwGain",gain)
-        else:
-            self.logger.log(INFO, "Gain: %d " % gain)
-            self.darc_instance.Set("fwGain", gain)
+        #detector@tololo:~$ arv-tool-0.4 -n "Allied Vision Technologies-50-0503342077" control Gain
+        #Allied Vision Technologies-50-0503342077
+        #Gain = 0 (min:0;max:32)
+        self.darc_instance.Set("aravisCmd0",'ProgFrameTimeEnable=true;ProgFrameTimeAbs=50000;Gain=%d;'%gain)
+        self.darc_instance.Set("aravisCmd1",'ProgFrameTimeEnable=true;ProgFrameTimeAbs=50000;Gain=%d;'%gain)
 
     def set_brightness(self, brightness):
-        if self.camera_name is "pulnix":
-            self.logger.log(INFO, "Brightness: %d " % brightness)
-            self.darc_instance.Set("fwBrightness",brightness)
-        else:
-            self.logger.log(INFO, "Brightness: %d " % brightness)
-            self.darc_instance.Set("fwBrightness", brightness)
+        pass
 
     def make_sequence_dir(self):
         # creates initial path
@@ -174,7 +153,7 @@ if __name__ == '__main__':
     usage_message = """
     CameraAdquisition.py --<OPTIONS>
 
-    Cameras available: pike, guppy and pulnix
+    Cameras available: manta77
     Example:
     python CameraAdquisition.py --camera pike --images 5 --sequences 10
 
@@ -189,7 +168,7 @@ if __name__ == '__main__':
     Inside that directory, each secuence will create a new directory:
     Example:
     
-    pulnix_2013_11_29.27
+    mNT77_2013_11_29.27
     ^        ^        ^  
     |        |        `--
     `-camera |           |
@@ -197,7 +176,7 @@ if __name__ == '__main__':
                          `- secuence number of that day
     """
     #Options in the script:
-    cams_available = ["pike","guppy","pulnix","manta76","manta77"]
+    cams_available = ["manta77"]
 
     parser = OptionParser(usage=usage_message)
     parser.add_option('-c', '--camera', dest='camera', default=None, help='Set a camera to be used: %s' % ', '.join(map(str,cams_available)))
@@ -210,7 +189,7 @@ if __name__ == '__main__':
     if options.camera is None:
         print "It is mandatory use --camera , to set a camera.\nFor help use: %s -h" % __file__
         sys.exit(-1)
-    if not options.camera in ["pike","guppy","pulnix","manta76","manta77"]:
+    if not options.camera in ["manta77"]:
         print "Use one of these cameras: %s\nFor help use: %s -h" % (', '.join(map(str,cams_available)), __file__)
         sys.exit(-1)
 
