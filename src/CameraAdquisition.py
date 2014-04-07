@@ -15,7 +15,7 @@ from logging import WARNING
 from logging import INFO
 from logging import DEBUG
 
-BRAND2DARC = {"pulnix":"main","guppy":"sci","pike":"ShackHartmann","manta76":"bob","manta77":"bob2"}
+BRAND2DARC = {"manta77":"bob2"}
 LEVEL = { 1: ERROR, 2: WARNING, 3: INFO, 4:DEBUG }
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s')
 
@@ -53,6 +53,7 @@ class Camera:
             npxlx    = self.darc_instance.Get("npxlx")[0]
             npxly    = self.darc_instance.Get("npxly")[0]
         except Exception, e:
+            print BRAND2DARC[self.camera_name]
             self.logger.log(ERROR,e)
             self.logger.log(ERROR,"Error trying to get Camera instance from Darc ... is Darc running?")
             sys.exit(-1)
@@ -155,7 +156,7 @@ if __name__ == '__main__':
 
     Cameras available: manta77
     Example:
-    python CameraAdquisition.py --camera pike --images 5 --sequences 10
+    python CameraAdquisition.py --camera manta77 --images 5 --sequences 10
 
     Therefore, it will takes 10 sequences with 5 images each one: 
     10*5 = 50 images
