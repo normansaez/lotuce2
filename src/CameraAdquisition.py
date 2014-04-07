@@ -88,6 +88,7 @@ class Camera:
             self.darc_instance.Set("aravisCmd1",'ProgFrameTimeEnable=true;ProgFrameTimeAbs=50000;ExposureTimeAbs=%d;'%shutter)
 
         else:
+            self.logger.log(INFO, "CAMERA: %s" % self.camera_name )
             self.logger.log(INFO, "Shutter Register Value: %d " % shutter)
 #            self.logger.log(INFO, "Shutter*TimeBase + Offset= %d*%d [ms]+ %d [ms] = %.3f [ms]" % (shutter,self.timebase,71,shutter*self.timebase + 71.0))
             self.darc_instance.Set("aravisCmd0",'ProgFrameTimeEnable=true;ProgFrameTimeAbs=50000;ExposureTimeAbs=%d;'%shutter)
