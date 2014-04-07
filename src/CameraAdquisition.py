@@ -15,7 +15,7 @@ from logging import WARNING
 from logging import INFO
 from logging import DEBUG
 
-BRAND2DARC = {"pulnix":"main","guppy":"sci","pike":"ShackHartmann"}
+BRAND2DARC = {"pulnix":"main","guppy":"sci","pike":"ShackHartmann","manta76":"bob","manta77":"bob2"}
 LEVEL = { 1: ERROR, 2: WARNING, 3: INFO, 4:DEBUG }
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s')
 
@@ -78,6 +78,14 @@ class Camera:
         if self.camera_name is "pulnix":
             self.logger.log(INFO, "Shutter Register Value: %d " % shutter)
             self.darc_instance.Set("fwShutter",shutter)
+        elif self.camera_name is "manta76":
+            self.logger.log(INFO, "Shutter Register Value: %d " % shutter)
+            self.darc_instance.Set("aravisCmd0",'ProgFrameTimeEnable=true;ProgFrameTimeAbs=50000;ExposureTimeAbs=%d;'%shutter)
+
+        elif self.camera_name is "manta77":
+            self.logger.log(INFO, "Shutter Register Value: %d " % shutter)
+            self.darc_instance.Set("aravisCmd1",'ProgFrameTimeEnable=true;ProgFrameTimeAbs=50000;ExposureTimeAbs=%d;'%shutter)
+
         else:
             self.logger.log(INFO, "Shutter Register Value: %d " % shutter)
             self.logger.log(INFO, "Shutter*TimeBase + Offset= %d*%d [ms]+ %d [ms] = %.3f [ms]" % (shutter,self.timebase,71,shutter*self.timebase + 71.0))
@@ -147,8 +155,8 @@ class Camera:
             self.logger.log(DEBUG,"sec:%d stored in %s" % (sec, self.sequence_dir))
             t0 = time.clock() #initialize time
             self.set_shutter(shutter)
-            self.set_gain(self.gain)
-            self.set_brightness(self.brightness)
+#            self.set_gain(self.gain)
+#            self.set_brightness(self.brightness)
             for n_img in range(1, options.images+1):
                 self.logger.log(DEBUG,"sec:%d -> img num: %d" % (sec, n_img))
                 self.take_images(self.sequence_dir, self.camera_name, n_img)
@@ -185,7 +193,7 @@ if __name__ == '__main__':
                          `- secuence number of that day
     """
     #Options in the script:
-    cams_available = ["pike","guppy","pulnix"]
+    cams_available = ["pike","guppy","pulnix","manta76","manta77"]
 
     parser = OptionParser(usage=usage_message)
     parser.add_option('-c', '--camera', dest='camera', default=None, help='Set a camera to be used: %s' % ', '.join(map(str,cams_available)))
@@ -198,7 +206,7 @@ if __name__ == '__main__':
     if options.camera is None:
         print "It is mandatory use --camera , to set a camera.\nFor help use: %s -h" % __file__
         sys.exit(-1)
-    if not options.camera in ["pike","guppy","pulnix"]:
+    if not options.camera in ["pike","guppy","pulnix","manta76","manta77"]:
         print "Use one of these cameras: %s\nFor help use: %s -h" % (', '.join(map(str,cams_available)), __file__)
         sys.exit(-1)
 
