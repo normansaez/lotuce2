@@ -15,7 +15,7 @@ from logging import WARNING
 from logging import INFO
 from logging import DEBUG
 
-BRAND2DARC = {"pulnix":"main","guppy":"sci","pike":"ShackHartmann","manta76":"bob",ddd"manta77":"bob2"}
+BRAND2DARC = {"pulnix":"main","guppy":"sci","pike":"ShackHartmann","manta76":"bob","manta77":"bob2"}
 LEVEL = { 1: ERROR, 2: WARNING, 3: INFO, 4:DEBUG }
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s')
 
@@ -71,7 +71,7 @@ class Camera:
         fitsname = sec_dir+"/" + img_prefix + str(img_number).zfill(3) + '.fits'
         self.logger.log(INFO,"Image name: " +fitsname)
         bg=self.darc_instance.SumData('rtcPxlBuf',1,'f')[0]/1. #acquisition from the camera
-        data = bg.reshape(self.npxly, self.npxlx) #reorganizing lines and columns
+        data = bg.reshape(self.npxly*2, self.npxlx) #reorganizing lines and columns
         FITS.Write(data, fitsname, writeMode='a') #writing fits file
 
     def set_shutter(self, shutter):
