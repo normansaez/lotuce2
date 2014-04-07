@@ -15,7 +15,7 @@ from logging import WARNING
 from logging import INFO
 from logging import DEBUG
 
-BRAND2DARC = {"pulnix":"main","guppy":"sci","pike":"ShackHartmann","manta76":"bob","manta77":"bob2"}
+BRAND2DARC = {"pulnix":"main","guppy":"sci","pike":"ShackHartmann","manta76":"bob",ddd"manta77":"bob2"}
 LEVEL = { 1: ERROR, 2: WARNING, 3: INFO, 4:DEBUG }
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s')
 
