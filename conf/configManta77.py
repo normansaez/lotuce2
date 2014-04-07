@@ -41,7 +41,7 @@ else:
         ncam=int(prefix)
     except:
         ncam=4
-#ncam = 1
+ncam = 1
 print "Using %d cameras"%ncam
 ncamThreads=numpy.ones((ncam,),numpy.int32)*1
 npxly=numpy.zeros((ncam,),numpy.int32)
@@ -227,8 +227,9 @@ control={
     "reconlibOpen":1,
     "maxAdapOffset":0,
     "version":" "*120,
+    "aravisCmd1":camCommand,
     #"lastActs":numpy.zeros((nacts,),numpy.uint16),
     }
-for i in range(ncam):
-    control["aravisCmd%d"%i]=camCommand
+#for i in range(ncam):
+#    control["aravisCmd%d"%i]=camCommand
 #control["pxlCnt"][-3:]=npxls#not necessary, but means the RTC reads in all of the pixels... so that the display shows whole image
