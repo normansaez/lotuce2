@@ -78,6 +78,7 @@ class Camera:
         if self.camera_name is "pulnix":
             self.logger.log(INFO, "Shutter Register Value: %d " % shutter)
             self.darc_instance.Set("fwShutter",shutter)
+
         elif self.camera_name is "manta76":
             self.logger.log(INFO, "Shutter Register Value: %d " % shutter)
             self.darc_instance.Set("aravisCmd0",'ProgFrameTimeEnable=true;ProgFrameTimeAbs=50000;ExposureTimeAbs=%d;'%shutter)
@@ -88,8 +89,10 @@ class Camera:
 
         else:
             self.logger.log(INFO, "Shutter Register Value: %d " % shutter)
-            self.logger.log(INFO, "Shutter*TimeBase + Offset= %d*%d [ms]+ %d [ms] = %.3f [ms]" % (shutter,self.timebase,71,shutter*self.timebase + 71.0))
-            self.darc_instance.Set("fwShutter",shutter)
+#            self.logger.log(INFO, "Shutter*TimeBase + Offset= %d*%d [ms]+ %d [ms] = %.3f [ms]" % (shutter,self.timebase,71,shutter*self.timebase + 71.0))
+            self.darc_instance.Set("aravisCmd0",'ProgFrameTimeEnable=true;ProgFrameTimeAbs=50000;ExposureTimeAbs=%d;'%shutter)
+            self.darc_instance.Set("aravisCmd1",'ProgFrameTimeEnable=true;ProgFrameTimeAbs=50000;ExposureTimeAbs=%d;'%shutter)
+#            self.darc_instance.Set("fwShutter",shutter)
         if shutter >= self.shutter_end:
             self.logger.log(WARNING, "Shutter reach maximum limit : %d" % self.shutter_end)
             shutter = self.shutter_end
