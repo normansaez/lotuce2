@@ -15,7 +15,7 @@ from logging import WARNING
 from logging import INFO
 from logging import DEBUG
 
-BRAND2DARC = {"manta77":"bob2"}
+BRAND2DARC = {"manta76":"manta76","manta77":"manta77","bob2":"bob2"}
 LEVEL = { 1: ERROR, 2: WARNING, 3: INFO, 4:DEBUG }
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s')
 
@@ -72,7 +72,9 @@ class Camera:
         fitsname = sec_dir+"/" + img_prefix + str(img_number).zfill(3) + '.fits'
         self.logger.log(INFO,"Image name: " +fitsname)
         bg=self.darc_instance.SumData('rtcPxlBuf',1,'f')[0]/1. #acquisition from the camera
-        data = bg.reshape(self.npxly*2, self.npxlx) #reorganizing lines and columns
+        if self.camera_name == "bob2":
+            data = bg.reshape(self.npxly*2, self.npxlx) #reorganizing lines and columns
+        data = bg.reshape(self.npxly, self.npxlx) #reorganizing lines and columns
         FITS.Write(data, fitsname, writeMode='a') #writing fits file
 
     def set_shutter(self, shutter):
@@ -82,16 +84,26 @@ class Camera:
             self.log.log(WARNING, "Shutter set to : %d" % self.shutter_end)
         self.logger.log(INFO, "CAMERA: %s" % self.camera_name )
         self.logger.log(INFO, "Shutter Register Value: %d " % shutter)
-        self.darc_instance.Set("aravisCmd0",'ProgFrameTimeEnable=true;ProgFrameTimeAbs=50000;ExposureTimeAbs=%d;'%shutter)
-        self.darc_instance.Set("aravisCmd1",'ProgFrameTimeEnable=true;ProgFrameTimeAbs=50000;ExposureTimeAbs=%d;'%shutter)
-
+        try:
+            self.darc_instance.Set("aravisCmd0",'ProgFrameTimeEnable=true;ProgFrameTimeAbs=50000;ExposureTimeAbs=%d;'%shutter)
+        except:
+            self.logger.log(INFO, "manta76 is not in use")
+        try:
+            self.darc_instance.Set("aravisCmd1",'ProgFrameTimeEnable=true;ProgFrameTimeAbs=50000;ExposureTimeAbs=%d;'%shutter)
+        except:
+            self.logger.log(INFO, "manta77 is not in use")
     def set_gain(self, gain):
         #detector@tololo:~$ arv-tool-0.4 -n "Allied Vision Technologies-50-0503342077" control Gain
         #Allied Vision Technologies-50-0503342077
         #Gain = 0 (min:0;max:32)
-        self.darc_instance.Set("aravisCmd0",'ProgFrameTimeEnable=true;ProgFrameTimeAbs=50000;Gain=%d;'%gain)
-        self.darc_instance.Set("aravisCmd1",'ProgFrameTimeEnable=true;ProgFrameTimeAbs=50000;Gain=%d;'%gain)
-
+        try:
+            self.darc_instance.Set("aravisCmd0",'ProgFrameTimeEnable=true;ProgFrameTimeAbs=50000;Gain=%d;'%gain)
+        except:
+            self.logger.log(INFO, "manta76 is not in use")
+        try:
+            self.darc_instance.Set("aravisCmd1",'ProgFrameTimeEnable=true;ProgFrameTimeAbs=50000;Gain=%d;'%gain)
+        except:
+            self.logger.log(INFO, "manta77 is not in use")
     def set_brightness(self, brightness):
         pass
 
@@ -177,7 +189,7 @@ if __name__ == '__main__':
                          `- secuence number of that day
     """
     #Options in the script:
-    cams_available = ["manta77"]
+    cams_available = ["manta76","manta77","bob2"]
 
     parser = OptionParser(usage=usage_message)
     parser.add_option('-c', '--camera', dest='camera', default=None, help='Set a camera to be used: %s' % ', '.join(map(str,cams_available)))
