@@ -71,11 +71,11 @@ class Camera:
     def take_images(self, sec_dir, img_prefix, img_number):
         fitsname = sec_dir+"/" + img_prefix + str(img_number).zfill(3) + '.fits'
         self.logger.log(INFO,"Image name: " +fitsname)
-        bg=self.darc_instance.SumData('rtcPxlBuf',1,'f')[0]/1. #acquisition from the camera
+        bg=self.darc_instance.GetStream('%srtcPxlBuf'%self.camera_name)#a single frame
         if self.camera_name == "bob2":
-            data = bg.reshape(self.npxly*2, self.npxlx) #reorganizing lines and columns
+            data = bg[0].reshape(self.npxly*2, self.npxlx) #reorganizing lines and columns
         else:
-            data = bg.reshape(self.npxly, self.npxlx) #reorganizing lines and columns
+            data = bg[0].reshape(self.npxly, self.npxlx) #reorganizing lines and columns
         FITS.Write(data, fitsname, writeMode='a') #writing fits file
 
     def set_shutter(self, shutter):
