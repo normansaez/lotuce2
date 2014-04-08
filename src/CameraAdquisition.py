@@ -74,7 +74,8 @@ class Camera:
         bg=self.darc_instance.SumData('rtcPxlBuf',1,'f')[0]/1. #acquisition from the camera
         if self.camera_name == "bob2":
             data = bg.reshape(self.npxly*2, self.npxlx) #reorganizing lines and columns
-        data = bg.reshape(self.npxly, self.npxlx) #reorganizing lines and columns
+        else:
+            data = bg.reshape(self.npxly, self.npxlx) #reorganizing lines and columns
         FITS.Write(data, fitsname, writeMode='a') #writing fits file
 
     def set_shutter(self, shutter):
@@ -202,7 +203,7 @@ if __name__ == '__main__':
     if options.camera is None:
         print "It is mandatory use --camera , to set a camera.\nFor help use: %s -h" % __file__
         sys.exit(-1)
-    if not options.camera in ["manta77"]:
+    if not options.camera in cams_available:
         print "Use one of these cameras: %s\nFor help use: %s -h" % (', '.join(map(str,cams_available)), __file__)
         sys.exit(-1)
 
