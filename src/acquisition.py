@@ -2,7 +2,7 @@ import FITS
 import darc
 
 #Takes camera instance
-d=darc.Control('SH')
+d=darc.Control('bob2')
 #Get the buffer and set as bg Image
 #bg=d.SumData('rtcPxlBuf',1,'f')[0]/1
 #d.Set('bgImage',bg)
@@ -33,7 +33,7 @@ for i in range(0, dark_to_take+1):
     if i == 0:
         fitsname = "bias_%s.fits" % str(i).zfill(2)
     else:
-        exptime += 100
+        exptime += 1000
         fitsname = "dark_%s.fits" % str(i).zfill(2)
     print "Taking %s ...." % fitsname
     d.Set("aravisCmd0",'ProgFrameTimeEnable=true;ProgFrameTimeAbs=50000;ExposureTimeAbs=%d;'%exptime)
@@ -41,7 +41,7 @@ for i in range(0, dark_to_take+1):
     #Getting image from buffer
     bg=d.SumData('rtcPxlBuf',1,'f')[0]/1
     #change the default shape of image (default shape is usually: (x*y,1))
-    data = bg.reshape(pxlx,pxly)
+    data = bg.reshape(pxlx,2*pxly)
     #writes a fits
     FITS.Write(data, fitsname, writeMode='a')
     print "done ...\n"
