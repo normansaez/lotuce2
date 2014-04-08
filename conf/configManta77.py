@@ -24,11 +24,11 @@ import numpy
 try:
     print prefix
 except:
-    prefix="SH"
+    prefix="manta77"
     print prefix
 
 nacts=54#97#54#+256
-if prefix[:3]=="SH":
+if prefix[:3]=="manta77":
     if len(prefix)>3:
         try:
             ncam=int(prefix[3:])
@@ -103,6 +103,7 @@ for k in range(ncam):
 #pxlCnt[nsubaps/2-5]=128*256
 #pxlCnt[nsubaps/2-6]=128*256
 
+
 #The params are dependent on the interface library used.
 """
   //Parameters are:
@@ -137,7 +138,7 @@ cameraParams[6*ncam+2+(namelen+3)//4]=0#record timestamp
 
 rmx=numpy.random.random((nacts,ncents)).astype("f")
 
-camCommand="ProgFrameTimeEnable=true;ProgFrameTimeAbs=50000;ExposureTimeAbs=58;"
+camCommand="ProgFrameTimeEnable=true;ProgFrameTimeAbs=50000;ExposureTimeAbs=14000;PixelFormat=Mono12;"
 
 
 control={

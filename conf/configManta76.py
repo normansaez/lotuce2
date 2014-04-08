@@ -103,6 +103,7 @@ for k in range(ncam):
 #pxlCnt[nsubaps/2-5]=128*256
 #pxlCnt[nsubaps/2-6]=128*256
 
+
 #The params are dependent on the interface library used.
 """
   //Parameters are:
@@ -230,6 +231,6 @@ control={
     "aravisCmd0":camCommand,
     #"lastActs":numpy.zeros((nacts,),numpy.uint16),
     }
-for i in range(ncam):
-    control["aravisCmd%d"%i]=camCommand
+#for i in range(ncam):
+#    control["aravisCmd%d"%i]=camCommand
 #control["pxlCnt"][-3:]=npxls#not necessary, but means the RTC reads in all of the pixels... so that the display shows whole image
