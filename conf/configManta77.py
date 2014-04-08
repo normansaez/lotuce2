@@ -138,7 +138,8 @@ cameraParams[6*ncam+2+(namelen+3)//4]=0#record timestamp
 
 rmx=numpy.random.random((nacts,ncents)).astype("f")
 
-camCommand="ProgFrameTimeEnable=true;ProgFrameTimeAbs=50000;ExposureTimeAbs=14000;PixelFormat=Mono12;"
+#camCommand="ProgFrameTimeEnable=true;ProgFrameTimeAbs=50000;ExposureTimeAbs=14000;PixelFormat=Mono12;"
+camCommand="ProgFrameTimeEnable=true;ProgFrameTimeAbs=50000;"
 
 
 control={

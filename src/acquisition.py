@@ -2,7 +2,7 @@ import FITS
 import darc
 
 #Takes camera instance
-d=darc.Control('bob2')
+d=darc.Control('manta77')
 #Get the buffer and set as bg Image
 #bg=d.SumData('rtcPxlBuf',1,'f')[0]/1
 #d.Set('bgImage',bg)
@@ -31,17 +31,17 @@ print "Exposure Time %d" % exptime
 for i in range(0, dark_to_take+1):
     #Preparing name for fits:
     if i == 0:
-        fitsname = "bias_%s.fits" % str(i).zfill(2)
+        fitsname = "bias_exp%s.fits" % str(exptime).zfill(2)
     else:
         exptime += 1000
-        fitsname = "dark_%s.fits" % str(i).zfill(2)
+        fitsname = "dark_exp%s.fits" % str(exptime).zfill(2)
     print "Taking %s ...." % fitsname
     d.Set("aravisCmd0",'ProgFrameTimeEnable=true;ProgFrameTimeAbs=50000;ExposureTimeAbs=%d;'%exptime)
     print "Exposure Time for %s is : %d [us]" % (fitsname, exptime)
     #Getting image from buffer
-    bg=d.SumData('rtcPxlBuf',1,'f')[0]/1
+    stream=d.GetStream('manta77rtcPxlBuf')#a single frame
     #change the default shape of image (default shape is usually: (x*y,1))
-    data = bg.reshape(pxlx,2*pxly)
+    data = stream[0].reshape(pxlx,pxly)
     #writes a fits
     FITS.Write(data, fitsname, writeMode='a')
     print "done ...\n"
