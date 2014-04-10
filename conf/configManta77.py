@@ -125,7 +125,7 @@ while len(camNames)%4!=0:
     camNames+="\0"
 namelen=len(camNames)
 cameraParams=numpy.zeros((6*ncam+3+(namelen+3)//4,),numpy.int32)
-cameraParams[0:ncam]=8#8 bpp - cam0, cam1
+cameraParams[0:ncam]=12#8#8 bpp - cam0, cam1
 cameraParams[ncam:2*ncam]=5184#block size
 cameraParams[2*ncam:3*ncam]=0#x offset
 cameraParams[3*ncam:4*ncam]=0#y offset
@@ -138,8 +138,8 @@ cameraParams[6*ncam+2+(namelen+3)//4]=0#record timestamp
 
 rmx=numpy.random.random((nacts,ncents)).astype("f")
 
-#camCommand="ProgFrameTimeEnable=true;ProgFrameTimeAbs=50000;ExposureTimeAbs=14000;PixelFormat=Mono12;"
-camCommand="ProgFrameTimeEnable=true;ProgFrameTimeAbs=50000;"
+camCommand="ProgFrameTimeEnable=true;ProgFrameTimeAbs=50000;ExposureTimeAbs=14000;PixelFormat=Mono12;"
+#camCommand="ProgFrameTimeEnable=true;ProgFrameTimeAbs=50000;"
 
 
 control={
@@ -229,7 +229,7 @@ control={
     "reconlibOpen":1,
     "maxAdapOffset":0,
     "version":" "*120,
-    "aravisCmd1":camCommand,
+    "aravisCmd0":camCommand,
     #"lastActs":numpy.zeros((nacts,),numpy.uint16),
     }
 #for i in range(ncam):
