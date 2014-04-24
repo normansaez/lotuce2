@@ -124,7 +124,7 @@ for k in range(ncam):
   //The names as a string.
   //recordTimestamp
 """
-camList=["Allied Vision Technologies-50-0503342076","Allied Vision Technologies-50-0503342077"][:ncam]
+camList=["Allied Vision Technologies-50-0503342077","Allied Vision Technologies-50-0503342076"][:ncam]
 camNames=string.join(camList,";")#"Imperx, inc.-110323;Imperx, inc.-110324"
 print camNames
 while len(camNames)%4!=0:
@@ -144,7 +144,7 @@ cameraParams[6*ncam+2+(namelen+3)//4]=0#record timestamp
 
 rmx=numpy.random.random((nacts,ncents)).astype("f")
 
-camCommand="ProgFrameTimeEnable=true;ProgFrameTimeAbs=50000;ExposureTimeAbs=14000;PixelFormat=Mono12;"
+camCommand="ExposureTimeAbs=140000;PixelFormat=Mono12;"
 
 
 control={
