@@ -21,51 +21,38 @@ import string
 import FITS
 import tel
 import numpy
-try:
-    print prefix
-except:
-    prefix="SH"
-    print prefix
+from pprint import pprint
 
-nacts=54#97#54#+256
-if prefix[:3]=="SH":
-    if len(prefix)>3:
-        try:
-            ncam=int(prefix[3:])
-        except:
-            ncam=1
-    else:
-        ncam=1
-else:
-    try:
-        ncam=int(prefix)
-    except:
-        ncam=4
+ncam_selector = { "76": 1, "77": 1, "both": 2}
+ncam = ncam_selector[prefix]
 
-if prefix == "bob":
-    ncam = 1
-if prefix == "bob2":
-    ncam = 2
-
-#ncam = 1
 print "Using %d cameras"%ncam
+#####################################
+nacts_number = 54
+subap_number = 1 #This means: subap_numberxsubap_number
+pixel_number_x = 656
+pixel_number_y = 492
+#####################################
+nacts = nacts_number
 ncamThreads=numpy.ones((ncam,),numpy.int32)*1
 npxly=numpy.zeros((ncam,),numpy.int32)
-npxly[:]=492#200#656#492
+npxly[:]= pixel_number_y
 npxlx=npxly.copy()
-npxlx[:]=656#200#492#656
+npxlx[:]=pixel_number_x
 nsuby=npxlx.copy()
-nsuby[:]=30#for config purposes only... not sent to rtc
-nsubx=nsuby.copy()#for config purposes - not sent to rtc
+nsuby[:]= subap_number #sub aps [cam0_subap, cam1_subap] 
+nsubx=nsuby.copy()#sub aps [cam0_subap, cam1_subap]  
 nsub=nsubx*nsuby#This is used by rtc.
 nsubaps=nsub.sum()#(nsuby*nsubx).sum()
-individualSubapFlag=tel.Pupil(30,15,2,30).subflag.astype("i")
-subapFlag=numpy.zeros((nsubaps,),"i")
+individualSubapFlag=tel.Pupil(subap_number, int(subap_number/2.), 0, subap_number).subflag.astype("i")
+pprint(individualSubapFlag)
+subapFlag=numpy.ones((nsubaps,),"i")
+pprint(subapFlag)
+#print subapFlag.reshape(subap_number,subap_number)
 for i in range(ncam):
     tmp=subapFlag[nsub[:i].sum():nsub[:i+1].sum()]
     tmp.shape=nsuby[i],nsubx[i]
     tmp[:]=individualSubapFlag
-#ncents=nsubaps*2
 ncents=subapFlag.sum()*2
 npxls=(npxly*npxlx).sum()
 
@@ -104,11 +91,6 @@ for k in range(ncam):
         n=subapLocation[indx,1]*npxlx[k]#whole rows together...
         pxlCnt[indx]=n
 
-#pxlCnt[-5]=128*256
-#pxlCnt[-6]=128*256
-#pxlCnt[nsubaps/2-5]=128*256
-#pxlCnt[nsubaps/2-6]=128*256
-
 
 #The params are dependent on the interface library used.
 """
@@ -124,8 +106,11 @@ for k in range(ncam):
   //The names as a string.
   //recordTimestamp
 """
-camList=["Allied Vision Technologies-50-0503342077","Allied Vision Technologies-50-0503342076"][:ncam]
-camNames=string.join(camList,";")#"Imperx, inc.-110323;Imperx, inc.-110324"
+cameras_selected = { "76":["Allied Vision Technologies-50-0503342076"][:ncam],
+                     "76":["Allied Vision Technologies-50-0503342076"][:ncam],
+                     "both":["Allied Vision Technologies-50-0503342076","Allied Vision Technologies-50-0503342077"][:ncam]}                     
+camList= cameras_selected[prefix]
+camNames=string.join(camList,";")
 print camNames
 while len(camNames)%4!=0:
     camNames+="\0"
@@ -148,7 +133,6 @@ camCommand="ExposureTimeAbs=140000;PixelFormat=Mono12;"
 
 
 control={
-#    "ExposureTimeAbs":58,
     "switchRequested":0,#this is the only item in a currently active buffer that can be changed...
     "pause":0,
     "go":1,
@@ -191,6 +175,7 @@ control={
     "camerasOpen":1,
     "camerasFraming":1,
     "cameraName":"libcamAravis.so",#"camfile",
+    #"cameraName":"libcamera.so",
     "cameraParams":cameraParams,
     "mirrorName":"libmirror.so",
     "mirrorParams":None,
@@ -234,8 +219,7 @@ control={
     "reconlibOpen":1,
     "maxAdapOffset":0,
     "version":" "*120,
-    #"lastActs":numpy.zeros((nacts,),numpy.uint16),
     }
 for i in range(ncam):
     control["aravisCmd%d"%i]=camCommand
-#control["pxlCnt"][-3:]=npxls#not necessary, but means the RTC reads in all of the pixels... so that the display shows whole image
+pprint(control)
