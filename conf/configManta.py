@@ -129,7 +129,7 @@ cameraParams[6*ncam+2+(namelen+3)//4]=0#record timestamp
 
 rmx=numpy.random.random((nacts,ncents)).astype("f")
 
-camCommand="ExposureTimeAbs=140000;PixelFormat=Mono12;"
+camCommand="ExposureTimeAbs=10500;PixelFormat=Mono12;"
 
 
 control={
