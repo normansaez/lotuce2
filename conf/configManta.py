@@ -107,7 +107,7 @@ for k in range(ncam):
   //recordTimestamp
 """
 cameras_selected = { "76":["Allied Vision Technologies-50-0503342076"][:ncam],
-                     "76":["Allied Vision Technologies-50-0503342076"][:ncam],
+                     "77":["Allied Vision Technologies-50-0503342077"][:ncam],
                      "both":["Allied Vision Technologies-50-0503342076","Allied Vision Technologies-50-0503342077"][:ncam]}                     
 camList= cameras_selected[prefix]
 camNames=string.join(camList,";")
