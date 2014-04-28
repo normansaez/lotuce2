@@ -32,6 +32,7 @@ nacts_number = 54
 subap_number = 1 #This means: subap_numberxsubap_number
 pixel_number_x = 50
 pixel_number_y = 50
+exposure_time_val = 3000
 #####################################
 nacts = nacts_number
 ncamThreads=numpy.ones((ncam,),numpy.int32)*1
@@ -129,7 +130,7 @@ cameraParams[6*ncam+2+(namelen+3)//4]=0#record timestamp
 
 rmx=numpy.random.random((nacts,ncents)).astype("f")
 
-camCommand="ExposureTimeAbs=12000;PixelFormat=Mono12;"
+camCommand="ExposureTimeAbs=%d;PixelFormat=Mono12;Width=%d;Height=%d" % (exposure_time_val, pixel_number_x, pixel_number_y)
 
 
 control={
