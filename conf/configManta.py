@@ -30,8 +30,8 @@ print "Using %d cameras"%ncam
 #####################################
 nacts_number = 54
 subap_number = 1 #This means: subap_numberxsubap_number
-pixel_number_x = 656
-pixel_number_y = 120
+pixel_number_x = 50
+pixel_number_y = 50
 #####################################
 nacts = nacts_number
 ncamThreads=numpy.ones((ncam,),numpy.int32)*1
@@ -129,7 +129,7 @@ cameraParams[6*ncam+2+(namelen+3)//4]=0#record timestamp
 
 rmx=numpy.random.random((nacts,ncents)).astype("f")
 
-camCommand="ExposureTimeAbs=5000;PixelFormat=Mono12;"
+camCommand="ExposureTimeAbs=12000;PixelFormat=Mono12;"
 
 
 control={

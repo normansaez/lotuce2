@@ -160,7 +160,7 @@ class Camera:
                 #self.get_status()
             msg = 'Frame rate=' + str(options.images/(time.clock() - t0)) + ' fps'
             self.logger.log(INFO, msg)
-            shutter += self.shutter_step
+#            shutter += self.shutter_step
 
 
 if __name__ == '__main__':
