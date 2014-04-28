@@ -15,7 +15,7 @@ from logging import WARNING
 from logging import INFO
 from logging import DEBUG
 
-BRAND2DARC = {"manta76":"manta76","manta77":"manta77","bob2":"bob2"}
+BRAND2DARC = {"manta76":"manta76","manta77":"manta77","both":"both"}
 LEVEL = { 1: ERROR, 2: WARNING, 3: INFO, 4:DEBUG }
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s')
 
@@ -70,9 +70,9 @@ class Camera:
 
     def take_images(self, sec_dir, img_prefix, img_number):
         fitsname = sec_dir+"/" + img_prefix + str(img_number).zfill(3) + '.fits'
-        self.logger.log(INFO,"Image name: " +fitsname)
+#        self.logger.log(INFO,"Image name: " +fitsname)
         bg=self.darc_instance.GetStream('%srtcPxlBuf'%self.camera_name)#a single frame
-        if self.camera_name == "bob2":
+        if self.camera_name == "both":
             data = bg[0].reshape(self.npxly*2, self.npxlx) #reorganizing lines and columns
         else:
             data = bg[0].reshape(self.npxly, self.npxlx) #reorganizing lines and columns
@@ -83,7 +83,7 @@ class Camera:
             self.logger.log(WARNING, "Shutter reach maximum limit : %d" % self.shutter_end)
             shutter = self.shutter_end
             self.log.log(WARNING, "Shutter set to : %d" % self.shutter_end)
-        self.logger.log(INFO, "CAMERA: %s" % self.camera_name )
+#        self.logger.log(INFO, "CAMERA: %s" % self.camera_name )
         self.logger.log(INFO, "Shutter Register Value: %d " % shutter)
         try:
             self.darc_instance.Set("aravisCmd0",'ProgFrameTimeEnable=true;ProgFrameTimeAbs=50000;ExposureTimeAbs=%d;'%shutter)
@@ -135,7 +135,7 @@ class Camera:
         else:
             dir_name = current+'.0'
         sequence_dir = os.path.normpath(self.image_path+"/"+dir_name)
-        self.logger.log(LEVEL[3],'Secuence Directory Name: %s'% (sequence_dir))
+#        self.logger.log(LEVEL[3],'Secuence Directory Name: %s'% (sequence_dir))
         os.mkdir(sequence_dir)
         return sequence_dir
 
@@ -190,7 +190,7 @@ if __name__ == '__main__':
                          `- secuence number of that day
     """
     #Options in the script:
-    cams_available = ["manta76","manta77","bob2"]
+    cams_available = ["manta76","manta77","both"]
 
     parser = OptionParser(usage=usage_message)
     parser.add_option('-c', '--camera', dest='camera', default=None, help='Set a camera to be used: %s' % ', '.join(map(str,cams_available)))
@@ -222,9 +222,9 @@ if __name__ == '__main__':
     camera.logger.log(INFO, "Camera:                        %s" % camera.camera_name)
     camera.logger.log(INFO, "X pixel:                       %s" % camera.npxlx)
     camera.logger.log(INFO, "Y pixel:                       %s" % camera.npxly)
-    camera.logger.log(INFO, "Exposure time min:             %s" % camera.exp_time_init)
-    camera.logger.log(INFO, "Exposure time increase step:   %s" % camera.exp_time_step)
-    camera.logger.log(INFO, "Exposure time max:             %s" % camera.exp_time_end)
+    camera.logger.log(INFO, "Shutter Exposure time min:             %s" % camera.shutter_init)
+    camera.logger.log(INFO, "Shutter Exposure time increase step:   %s" % camera.shutter_step)
+    camera.logger.log(INFO, "Shutter Exposure time max:             %s" % camera.shutter_end)
     camera.logger.log(INFO, "Path to be store images:       %s" % camera.image_path)
     #Routine to get a full set of images:
     camera.acquiring_images()
