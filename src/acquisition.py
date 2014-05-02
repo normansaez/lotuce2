@@ -39,7 +39,7 @@ img_to_take =  options.nimg
 #    exptime=-1
 #print "Current ExposureTimeAbs =%d" % exptime
 #print "Setting to %d in both cameras" % options.exptime
-times_x = [3000,5000,10000,12000,15000]
+times_x = [500]#,5000,10000,12000,15000]
 fps_e = []
 for exptime in times_x:
     d.Set("aravisCmdAll",'ExposureTimeAbs=%d;'% exptime)
@@ -70,5 +70,5 @@ for exptime in times_x:
     print "Theory:  %dx%d = %.3f Hz.  %d num of img. Exptime: %d [us]. %.2f Mbps aprox" % (pxlx,pxly,hz, img_to_take,exptime, Mbps)
     print "Empirical: %dx%d = %.3f fps. %d num of img. Exptime: %d [us]" % (pxlx,pxly,fps, img_to_take, exptime)
     print "########"
-    print fps_e
+#    print fps_e
 
