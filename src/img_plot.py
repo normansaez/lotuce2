@@ -13,4 +13,7 @@ while(True):
     stream=d.GetStream('%srtcPxlBuf'%prefix)
     data = stream[0].reshape(ncam*px,py)
     imgplot = plt.imshow(data)
+    #imgplot.set_cmap('spectral')
+    imgplot.set_cmap('hot')
     draw()
+    time.sleep(0.5)
