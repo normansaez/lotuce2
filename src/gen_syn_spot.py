@@ -7,44 +7,65 @@ import matplotlib.pyplot as plt
 from matplotlib.path import Path
 import matplotlib.patches as patches
 
-# syntetic img to be convolved
-rad = 5
-kernel = 20
-y,x = np.ogrid[-kernel: kernel+1, -kernel: kernel+1]
-mask = x**2+y**2 <= pi*rad**2
-mask = mask*1
+def get_subap_square(cx, cy, subap):
+    verts = [
+        (cx-subap, cy-subap), # left, bottom
+        (cx-subap, cy+subap), # left, top
+        (cx+subap, cy+subap), # right, top
+        (cx+subap, cy-subap), # right, bottom
+        (cx, cy), # ignored
+        ]
+    
+    codes = [Path.MOVETO,
+             Path.LINETO,
+             Path.LINETO,
+             Path.LINETO,
+             Path.CLOSEPOLY,
+             ]
+    
+    path = Path(verts, codes)
+    
+    patch = patches.PathPatch(path, facecolor='none', EdgeColor='red', lw=1)
+    return patch
 
-#getting img to be convolved
-f = FITS.Read('bob2000407.fits')[1]
-#split img per camera
-manta76 = f[0:492,]
-manta77 = f[492:984,]
+def get_centroid(img, mask):
+    correlation = signal.fftconvolve(img,mask,mode='same')
+    #Getting max 
+    cy, cx = np.unravel_index(correlation.argmax(),correlation.shape)
+    return cy,cx
 
-correlation = signal.fftconvolve(manta77,mask,mode='same')
-#Getting max 
-cy77,cx77 = np.unravel_index(correlation.argmax(),correlation.shape)
-print cy77,cx77
-plt.scatter([cx77], [cy77],c='b',s=10)
-imshow(manta77)
-#Put subap
-subap = 60
-verts = [
-    (cx77-subap, cy77-subap), # left, bottom
-    (cx77-subap, cy77+subap), # left, top
-    (cx77+subap, cy77+subap), # right, top
-    (cx77+subap, cy77-subap), # right, bottom
-    (cx77, cy77), # ignored
-    ]
+def get_mask(rad=5, kernel=20):
+    # syntetic img to be convolved
+    rad = 5
+    kernel = 20
+    y,x = np.ogrid[-kernel: kernel+1, -kernel: kernel+1]
+    mask = x**2+y**2 <= pi*rad**2
+    mask = mask*1
+    return mask
 
-codes = [Path.MOVETO,
-         Path.LINETO,
-         Path.LINETO,
-         Path.LINETO,
-         Path.CLOSEPOLY,
-         ]
+if __name__ == '__main__':
+    #getting img to be convolved
+    f = FITS.Read('bob2000407.fits')[1]
+    #split img per camera
+    manta76 = f[0:492,]
+    manta77 = f[492:984,]
+    #get mask
+    mask = get_mask(rad=5,kernel=20)
+    #img1
+    subap = 60
+    img = manta77
+    cy, cx = get_centroid(img, mask)
+    plt.scatter([cx], [cy],c='b',s=10)
+    patch = get_subap_square(cx,cy,subap)
+    plt.gca().add_patch(patch)
+    imshow(img)
+    plt.figure(2)
+    subap = 60
+    img = manta76
+    cy, cx = get_centroid(img, mask)
+    plt.scatter([cx], [cy],c='b',s=10)
+    patch = get_subap_square(cx,cy,subap)
+    plt.gca().add_patch(patch)
+    imshow(img)
 
-path = Path(verts, codes)
-
-patch = patches.PathPatch(path, facecolor='none', EdgeColor='red', lw=1)
-plt.gca().add_patch(patch)
-plt.show()
+    plt.show()
