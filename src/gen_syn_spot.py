@@ -6,8 +6,9 @@ from scipy import signal, misc
 import matplotlib.pyplot as plt
 from matplotlib.path import Path
 import matplotlib.patches as patches
+import time
 
-def get_subap_square(cx, cy, subap):
+def get_subap_square(cx, cy, subap,color='red'):
     verts = [
         (cx-subap, cy-subap), # left, bottom
         (cx-subap, cy+subap), # left, top
@@ -25,7 +26,7 @@ def get_subap_square(cx, cy, subap):
     
     path = Path(verts, codes)
     
-    patch = patches.PathPatch(path, facecolor='none', EdgeColor='red', lw=1)
+    patch = patches.PathPatch(path, facecolor='none', EdgeColor=color, lw=1)
     return patch
 
 def get_centroid(img, mask):
@@ -44,6 +45,7 @@ def get_mask(rad=5, kernel=20):
     return mask
 
 if __name__ == '__main__':
+    start_time = time.time()
     #getting img to be convolved
     f = FITS.Read('bob2000407.fits')[1]
     #split img per camera
@@ -58,6 +60,8 @@ if __name__ == '__main__':
     plt.scatter([cx], [cy],c='b',s=10)
     patch = get_subap_square(cx,cy,subap)
     plt.gca().add_patch(patch)
+    patch = get_subap_square(cx,cy,subap+20,color='green')
+    plt.gca().add_patch(patch)
     imshow(img)
     plt.figure(2)
     subap = 60
@@ -66,6 +70,8 @@ if __name__ == '__main__':
     plt.scatter([cx], [cy],c='b',s=10)
     patch = get_subap_square(cx,cy,subap)
     plt.gca().add_patch(patch)
+    patch = get_subap_square(cx,cy,subap+20,color='green')
+    plt.gca().add_patch(patch)
     imshow(img)
-
+    print time.time() - start_time, "seconds"
     plt.show()
