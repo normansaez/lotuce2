@@ -7,8 +7,8 @@ import glob
 import time
 
 all_fits = glob.glob('*.fits')
-plt.ion()
-plt.show()
+#plt.ion()
+#plt.show()
 plt.gca().invert_yaxis()
 #plt.autoscale(False)
 for fits_name in all_fits:
@@ -33,7 +33,8 @@ for fits_name in all_fits:
     x = range(0,656)
     plt.subplot(221)
     p1 = plt.plot(x,ny,'-')
-    plt.draw()
-    time.sleep(0.5)
-
+#    plt.draw()
+#    time.sleep(0.5)
+    plt.show()
+#    time.sleep(10.5)
     
