@@ -18,7 +18,6 @@ pxly =d.Get("npxly")[0]
 
 img_to_take =  options.nimg
 exptime = 12000
-width = 2 
 d.Set("aravisCmdAll",'ExposureTimeAbs=%d;'% exptime)
 d.Set("aravisGet","?0:ExposureTimeAbs")
 exptime=int(d.Get("aravisGet"))
@@ -32,35 +31,38 @@ streamBlock = d.GetStreamBlock('%srtcPxlBuf'%options.prefix,img_to_take)
 t1 = time.clock()
 streams = streamBlock['%srtcPxlBuf'%options.prefix]
 
-i = 0
+i = 1
+width = 10
+threshold = 500
 for stream in streams:
     data = stream[0].reshape((2*pxly,pxlx))
     #
-    y = 770
-    x = 532
-    b077 = 3000<data[y-width:y+width,x-width:x+width].mean()
-    y = 861
-    x = 294
-    b177 = 3000<data[y-width:y+width,x-width:x+width].mean()
-    y = 644
-    x = 309
-    b277 = 3000<data[y-width:y+width,x-width:x+width].mean()
-    y = 776
-    x = 57
-    b377 = 3000<data[y-width:y+width,x-width:x+width].mean()
+#pprint(data)
+    y = 783
+    x = 540
+    b077 = threshold<data[y-width:y+width,x-width:x+width].mean()
+    y = 884
+    x = 306
+    b177 = threshold<data[y-width:y+width,x-width:x+width].mean()
+    y = 671
+    x = 312
+    b277 = threshold<data[y-width:y+width,x-width:x+width].mean()
+    y = 785
+    x = 73
+    b377 = threshold<data[y-width:y+width,x-width:x+width].mean()
     
-    y = 243
-    x = 225
-    b076 = 3000<data[y-width:y+width,x-width:x+width].mean()
-    y = 287
-    x = 350
-    b176 = 3000<data[y-width:y+width,x-width:x+width].mean()
-    y = 180
-    x = 334
-    b276 = 3000<data[y-width:y+width,x-width:x+width].mean()
-    y = 242
-    x = 462
-    b376 = 3000<data[y-width:y+width,x-width:x+width].mean()
+    y = 250
+    x = 214
+    b076 = threshold<data[y-width:y+width,x-width:x+width].mean()
+    y = 300
+    x = 331
+    b176 = threshold<data[y-width:y+width,x-width:x+width].mean()
+    y = 194
+    x = 326
+    b276 = threshold<data[y-width:y+width,x-width:x+width].mean()
+    y = 250
+    x = 447
+    b376 = threshold<data[y-width:y+width,x-width:x+width].mean()
     counter77 = '0b'+str(int(b377))+str(int(b277))+str(int(b177))+str(int(b077))
     
     counter76 = '0b'+str(int(b376))+str(int(b276))+str(int(b176))+str(int(b076))
@@ -77,5 +79,6 @@ for stream in streams:
     i +=  1
 print "OK : %d" % win
 print "FAIL : %d" % lose
+print "ds9 ",
 for j in failures:
-    print "ds9 %s &" %j
+    print "%s " %j ,
