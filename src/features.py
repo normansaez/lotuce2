@@ -278,12 +278,15 @@ if __name__ == '__main__':
     c = darc.Control(options.prefix)
     count = 0
     for feat in features:
-        cmd = "?%s:%s" % (options.camera, feat)
-        c.Set("aravisGet", cmd)
-        f = c.Get("aravisGet")
-        if f.__contains__('Error') or f.__contains__("(null"):
-            pass
-        else:
-            print "%s => %s" % (feat, f)
-            count += 1
+        try:
+            cmd = "?%s:%s" % (options.camera, feat)
+            c.Set("aravisGet", cmd)
+            f = c.Get("aravisGet")
+            if f.__contains__('Error') or f.__contains__("(null"):
+                pass
+            else:
+                print "%s => %s" % (feat, f)
+                count += 1
+        except Exception, e:
+            print e
     print "Total Features found: %d" % count
