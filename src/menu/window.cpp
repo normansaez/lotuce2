@@ -91,7 +91,7 @@ void Window::browse()
 void Window::goDarc()
 {
     QProcess process;
-    process.startDetached("ls /home/nsaez/ &> /tmp/lala.txt");
+    process.startDetached("ls .");
 }
 
 QPushButton *Window::createButton(const QString &text, const char *member)
