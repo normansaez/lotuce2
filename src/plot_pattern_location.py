@@ -39,6 +39,7 @@ plt.title('77=o, 76=x')
 plt.ylabel('y')
 plt.xlabel('x')
 ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+#plt.gca().invert_yaxis()
 plt.show()             
 
 

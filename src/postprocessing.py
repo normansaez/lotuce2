@@ -24,5 +24,5 @@ if __name__=="__main__":
         f = FITS.Read(i)[1]
         plt.imshow(f)
         plt.draw()
-#        time.sleep(0.01)
+        time.sleep(1)
     
