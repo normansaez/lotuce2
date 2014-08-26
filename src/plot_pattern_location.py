@@ -4,42 +4,43 @@ import numpy
 from matplotlib import dates
 from pylab import legend
 
-cam76ay = 820
-cam76ax = 557
-cam76by = 700
-cam76bx = 333
-cam76cy = 913
-cam76cx = 320
-cam76dy = 810
-cam76dx = 88
-cam77ay = 256
-cam77ax = 190
-cam77by = 200
-cam77bx = 302
-cam77cy = 306
-cam77cx = 308
-cam77dy = 254
-cam77dx = 422
+cam76b0y = 820
+cam76b0x = 557
+cam76b1y = 700
+cam76b1x = 333
+cam76b2y = 913
+cam76b2x = 320
+cam76b3y = 810
+cam76b3x = 88
+cam77b0y = 256
+cam77b0x = 190
+cam77b1y = 200
+cam77b1x = 302
+cam77b2y = 306
+cam77b2x = 308
+cam77b3y = 254
+cam77b3x = 422
 #plotting
 fig = plt.figure()
 ax = plt.subplot(111)
-
-p1 = ax.plot(cam77ax, cam77ay,'go',label='b0')
-p2 = ax.plot(cam77bx, cam77by,'ro', label='b1')
-p3 = ax.plot(cam77cx, cam77cy,'yo', label='b2')
-p4 = ax.plot(cam77dx, cam77dy,'bo', label='b3')
-p1 = ax.plot(cam76ax, cam76ay,'gx',label='b0')
-p2 = ax.plot(cam76bx, cam76by,'rx', label='b1')
-p3 = ax.plot(cam76cx, cam76cy,'yx', label='b2')
-p4 = ax.plot(cam76dx, cam76dy,'bx', label='b3')
+b0 = 1
+b1 = 1 
+b2 = 1 
+b3 = 1 
+ax.plot(b0*cam77b0x, b0*cam77b0y,'go',label='b0')
+ax.plot(b1*cam77b1x, b1*cam77b1y,'ro', label='b1')
+ax.plot(b2*cam77b2x, b2*cam77b2y,'yo', label='b2')
+ax.plot(b3*cam77b3x, b3*cam77b3y,'bo', label='b3')
+ax.plot(b0*cam76b0x, b0*cam76b0y,'gx',label='b0')
+ax.plot(b1*cam76b1x, b1*cam76b1y,'rx', label='b1')
+ax.plot(b2*cam76b2x, b2*cam76b2y,'yx', label='b2')
+ax.plot(b3*cam76b3x, b3*cam76b3y,'bx', label='b3')
 
 box = ax.get_position()
 ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
-plt.title('77=o, 76=x')
+title = '77=o, 76=x b=%d%d%d%d = %d'% (b3,b2,b1,b0, b3*2**3+b2*2**2+b1*2**1+b0*2**0)
+plt.title(title)
 plt.ylabel('y')
 plt.xlabel('x')
 ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-#plt.gca().invert_yaxis()
 plt.show()             
-
-
