@@ -80,7 +80,7 @@ for i in range(1,83+1):
         f = FITS.Read(glob.glob(img)[0])[1]
         cam76 = f[xi76:xf76,yi76:yf76]
         b0_76 = bit_check(x0_76, y0_76, cam76, limit)
-        b1_76 = bit_check(x1_76, y1_76, cam76, limit)
+        b1_76 = bit_check(x1_76, y1_76, cam76, limit)*0
         b2_76 = bit_check(x2_76, y2_76, cam76, limit)
         b3_76 = bit_check(x3_76, y3_76, cam76, limit)
         num76 = '0b'+str(b3_76)+str(b2_76)+str(b1_76)+str(b0_76)
@@ -89,7 +89,7 @@ for i in range(1,83+1):
         print num76
         cam77 = f[xi77:xf77,yi77:yf77]
         b0_77 = bit_check(x0_77, y0_77, cam77, limit)
-        b1_77 = bit_check(x1_77, y1_77, cam77, limit)
+        b1_77 = bit_check(x1_77, y1_77, cam77, limit)*0
         b2_77 = bit_check(x2_77, y2_77, cam77, limit)
         b3_77 = bit_check(x3_77, y3_77, cam77, limit)
         num77 = '0b'+str(b3_77)+str(b2_77)+str(b1_77)+str(b0_77)
@@ -114,7 +114,7 @@ ax.plot(axis_x, pattern77, 'b-x', label='camera77')
 
 box = ax.get_position()
 ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
-title = '#images v/s #patterns. %.1f%% bad, %.1f%% good' % (100.*(bad*1./len(axis_x)) , 100.*(good*1./len(axis_x)))
+title = '#images v/s #patterns. %s %.1f%% bad, %.1f%% good' % (dirname, 100.*(bad*1./len(axis_x)) , 100.*(good*1./len(axis_x)))
 plt.title(title)
 plt.ylabel('pattern number')
 plt.xlabel('image number')
