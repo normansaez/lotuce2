@@ -114,7 +114,7 @@ ax.plot(axis_x, pattern77, 'b-x', label='camera77')
 
 box = ax.get_position()
 ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
-title = '#images v/s #patterns'
+title = '#images v/s #patterns. %.1f%% bad, %.1f%% good' % (100.*(bad*1./len(axis_x)) , 100.*(good*1./len(axis_x)))
 plt.title(title)
 plt.ylabel('pattern number')
 plt.xlabel('image number')
