@@ -26,15 +26,37 @@ ax = plt.subplot(111)
 b0 = 1
 b1 = 1 
 b2 = 1 
-b3 = 1 
-ax.plot(b0*cam77b0x, b0*cam77b0y,'go',label='b0')
-ax.plot(b1*cam77b1x, b1*cam77b1y,'ro', label='b1')
-ax.plot(b2*cam77b2x, b2*cam77b2y,'yo', label='b2')
-ax.plot(b3*cam77b3x, b3*cam77b3y,'bo', label='b3')
-ax.plot(b0*cam76b0x, b0*cam76b0y,'gx',label='b0')
-ax.plot(b1*cam76b1x, b1*cam76b1y,'rx', label='b1')
-ax.plot(b2*cam76b2x, b2*cam76b2y,'yx', label='b2')
-ax.plot(b3*cam76b3x, b3*cam76b3y,'bx', label='b3')
+b3 = 1
+
+b0color76 =  'go'
+b1color76 =  'ro'
+b2color76 =  'yo'
+b3color76 =  'bo'
+b0color77 =  'gx'
+b1color77 =  'rx'
+b2color77 =  'yx'
+b3color77 =  'bx'
+if b0 == 0:
+    b0color76 = 'wx'
+    b0color77 = 'wx'
+if b1 == 0:
+    b1color76 = 'wx'
+    b1color77 = 'wx'
+if b2 == 0:
+    b2color76 = 'wx'
+    b2color77 = 'wx'
+if b3 == 0:
+    b3color76 = 'wx'
+    b3color77 = 'wx'
+
+ax.plot(cam77b0x, cam77b0y, b0color77,label='b0')
+ax.plot(cam77b1x, cam77b1y, b1color77, label='b1')
+ax.plot(cam77b2x, cam77b2y, b2color77, label='b2')
+ax.plot(cam77b3x, cam77b3y, b3color77, label='b3')
+ax.plot(cam76b0x, cam76b0y, b0color76,label='b0')
+ax.plot(cam76b1x, cam76b1y, b1color76, label='b1')
+ax.plot(cam76b2x, cam76b2y, b2color76, label='b2')
+ax.plot(cam76b3x, cam76b3y, b3color76, label='b3')
 
 box = ax.get_position()
 ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
