@@ -32,7 +32,8 @@ if __name__=="__main__":
 #    parser.add_argument('-t', '--template', dest='template', action='store_true', help='obtains template to convolution.', default=False)
 #    (options, unknown) = parser.parse_known_args()
     # vars
-    path = '/Users/nsaez/Downloads/run1/'
+    dirname = 'run5'
+    path = '/Users/nsaez/Downloads/run1'
     xi76 = 493
     xf76 = 984
     yi76 = 0
@@ -44,6 +45,7 @@ if __name__=="__main__":
     yf77 = 656
 
     limit = 1500
+
     #76
     mask76_01 = np.where(FITS.Read(glob.glob(path+'/img_004*.fits')[0])[1][xi76:xf76,yi76:yf76]> limit,1,0) 
     mask76_02 = np.where(FITS.Read(glob.glob(path+'/img_005*.fits')[0])[1][xi76:xf76,yi76:yf76]> limit,1,0)
@@ -54,6 +56,7 @@ if __name__=="__main__":
     mask77_02 = np.where(FITS.Read(glob.glob(path+'/img_006*.fits')[0])[1][xi77:xf77,yi77:yf77]> limit,1,0)
     mask77_04 = np.where(FITS.Read(glob.glob(path+'/img_008*.fits')[0])[1][xi77:xf77,yi77:yf77]> limit,1,0)
     mask77_08 = np.where(FITS.Read(glob.glob(path+'/img_011*.fits')[0])[1][xi77:xf77,yi77:yf77]> limit,1,0)
+    path = '/Users/nsaez/Downloads/'+dirname
     
     y0_76, x0_76 = get_centroid(mask76_01)
     y1_76, x1_76 = get_centroid(mask76_02)
@@ -68,44 +71,57 @@ print "GO !!"
 pattern76 = []
 pattern77 = []
 axis_x = []
+good = 0
+bad = 0
 for i in range(1,83+1):
-    img = path+'img_'+str(i).zfill(3)+'*.fits'
-#    img = path+'img_'+'017'+'*.fits'
+    img = path+'/img_'+str(i).zfill(3)+'*.fits'
     print img
-    f = FITS.Read(glob.glob(img)[0])[1]
-    cam76 = f[xi76:xf76,yi76:yf76]
-    b0_76 = bit_check(x0_76, y0_76, cam76, limit)
-    b1_76 = bit_check(x1_76, y1_76, cam76, limit)
-    b2_76 = bit_check(x2_76, y2_76, cam76, limit)
-    b3_76 = bit_check(x3_76, y3_76, cam76, limit)
-    num76 = '0b'+str(b3_76)+str(b2_76)+str(b1_76)+str(b0_76)
-    num76 = eval(num76)
-    print num76
-    cam77 = f[xi77:xf77,yi77:yf77]
-    b0_77 = bit_check(x0_77, y0_77, cam77, limit)
-    b1_77 = bit_check(x1_77, y1_77, cam77, limit)
-    b2_77 = bit_check(x2_77, y2_77, cam77, limit)
-    b3_77 = bit_check(x3_77, y3_77, cam77, limit)
-    num77 = '0b'+str(b3_77)+str(b2_77)+str(b1_77)+str(b0_77)
-    num77 = eval(num77)
-    print num77
-   
-    pattern76.append(num76)
-    pattern77.append(num77)
+    try:
+        f = FITS.Read(glob.glob(img)[0])[1]
+        cam76 = f[xi76:xf76,yi76:yf76]
+        b0_76 = bit_check(x0_76, y0_76, cam76, limit)
+        b1_76 = bit_check(x1_76, y1_76, cam76, limit)
+        b2_76 = bit_check(x2_76, y2_76, cam76, limit)
+        b3_76 = bit_check(x3_76, y3_76, cam76, limit)
+        num76 = '0b'+str(b3_76)+str(b2_76)+str(b1_76)+str(b0_76)
+        print num76
+        num76 = eval(num76)
+        print num76
+        cam77 = f[xi77:xf77,yi77:yf77]
+        b0_77 = bit_check(x0_77, y0_77, cam77, limit)
+        b1_77 = bit_check(x1_77, y1_77, cam77, limit)
+        b2_77 = bit_check(x2_77, y2_77, cam77, limit)
+        b3_77 = bit_check(x3_77, y3_77, cam77, limit)
+        num77 = '0b'+str(b3_77)+str(b2_77)+str(b1_77)+str(b0_77)
+        print num77
+        num77 = eval(num77)
+        print num77
+        if num77 == num76:
+            good += 1
+        else:
+            bad += 1
+        pattern76.append(num76)
+        pattern77.append(num77)
 
-    axis_x.append(i)
-
+        axis_x.append(i)
+    except IndexError, e:
+        print e
 fig = plt.figure()
 ax = plt.subplot(111)
 
-ax.plot(axis_x, pattern76, 'r-o',label='76')
-ax.plot(axis_x, pattern77, 'b-o', label='77')
+ax.plot(axis_x, pattern76, 'r-x',label='camera76')
+ax.plot(axis_x, pattern77, 'b-x', label='camera77')
 
 box = ax.get_position()
 ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
-title = '#pattern v/s #image'
+title = '#images v/s #patterns'
 plt.title(title)
 plt.ylabel('pattern number')
 plt.xlabel('image number')
 ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-plt.show()             
+plt.savefig(dirname+'.png')
+print "%.2f%% good" % ( 100.*(good*1./len(axis_x)))
+print "%.2f%% bad" % ( 100.*(bad*1./len(axis_x)))
+print "%d total"% (len(axis_x))
+plt.show()
+
