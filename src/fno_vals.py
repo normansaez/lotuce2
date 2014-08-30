@@ -1,5 +1,5 @@
-data=d.GetStreamBlock("rtcPxlBuf",n_img,-1,asArray=1)
 #data=d.GetStreamBlock("rtcPxlBuf",100,asArray=1)
+data=d.GetStreamBlock("rtcPxlBuf",n_img,-1,asArray=1)
 fno=data["rtcPxlBuf"][2]
 print fno
 print fno[1:]-fno[:-1]
