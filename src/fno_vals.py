@@ -1,13 +1,52 @@
+#!/usr/bin/env python
+import re
+import darc
+
+#Setting up!
+n_img = 5
+prefix = "76"
+d = darc.Control(prefix)
+exptime = 8000#1e6 #1s = 1
+d.Set("aravisCmdAll",'ExposureTimeAbs=%d;'% exptime)
+d.Set("aravisGet","?0:ExposureTimeAbs")
+#exptime=int(d.Get("aravisGet"))
+#print "exptime: %d [us]" % exptime
+#-------------------------------------------------------------
+
+#Getting data:
 #data=d.GetStreamBlock("rtcPxlBuf",100,asArray=1)
 data=d.GetStreamBlock("rtcPxlBuf",n_img,-1,asArray=1)
+
+#-------------------------------------------------------------
+#frame number
 fno=data["rtcPxlBuf"][2]
+print "fno"
 print fno
+#print fno.size
+#print fno.shape
+#this should be an array with 1, if everything is ok.
 print fno[1:]-fno[:-1]
 
+#-------------------------------------------------------------
+#timestamp
+print "timestamp"
 timestamp=data["rtcPxlBuf"][1]
 print timestamp
-print timestamp[1:]-timestamp[:-1]
+#this should be an array with exptime in micro secs [us]
+print (timestamp[1:]-timestamp[:-1])
 
+#-------------------------------------------------------------
+#status
+data,ftime,fno=d.GetStream(prefix+"rtcStatusBuf")
+line = data.tostring()
+#Frame time 1.00187s (0.998133Hz)
+sts = re.search(r'Frame time .*s (.*)', line, re.M|re.I)
+try:
+    print "\nsts: ", sts.group()
+#    print "sts: ", sts.group(1)
+#    print "sts: ", sts.group(2)
+except:
+    pass
 #pxls=data["rtcPxlBuf"][0]
 #s1=pxls[:,:pxls.size/2].sum(1)
 #s2=pxls[:,pxls.size/2:].sum(1)
