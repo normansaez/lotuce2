@@ -2,15 +2,16 @@
 import re
 import darc
 import pylab
+import matplotlib.pyplot as plt
 
 #Setting up!
 print "Setup"
-plot_on = False
-n_img = 50000
+plot_on = True
+n_img = 10000
 prefix = "both"
 d = darc.Control(prefix)
 #ExposureTimeAbs = 30000 (min:58-max:6e+07)
-exptime = 2500#2200#9500#8000#1e6 #1s = 1
+exptime = 2200#32000#2200#9500#8000#1e6 #1s = 1
 d.Set("aravisCmdAll",'ExposureTimeAbs=%d;'% exptime)
 d.Set("aravisGet","?0:ExposureTimeAbs")
 exptime_obtained =int(d.Get("aravisGet"))
@@ -38,7 +39,8 @@ print "timestamp"
 timestamp=data["rtcPxlBuf"][1]
 #print timestamp
 print "this should be an array with exptime in micro secs [us]"
-print (timestamp[1:]-timestamp[:-1])*1e6
+y = (timestamp[1:]-timestamp[:-1])*1e6
+print y
 print "max  %.3f" % ((timestamp[1:]-timestamp[:-1])*1e6).max()
 print "min  %.3f" % ((timestamp[1:]-timestamp[:-1])*1e6).min()
 print "mean %.3f" % ((timestamp[1:]-timestamp[:-1])*1e6).mean()
@@ -69,7 +71,14 @@ if prefix == "both" and plot_on:
     s2=pxls[:,pxls.size/2:].sum(1)
     
     #Then have a look at s1 and s2:
-    pylab.plot(s1)
-    pylab.plot(s2)
-    pylab.show()
+#    pylab.plot(s1)
+#    pylab.plot(s2)
+#    pylab.show()
+    x = range(0,len(y))
+    fig = plt.figure()
+    ax = plt.subplot(111)
+    ax.plot(x, y, 'b-x',label='cameras')
+    box = ax.get_position()
+    ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
+    plt.show()
     
