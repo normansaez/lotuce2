@@ -7,11 +7,11 @@ import matplotlib.pyplot as plt
 #Setting up!
 print "Setup"
 plot_on = True
-n_img = 10000
+n_img = 1000#10000
 prefix = "both"
 d = darc.Control(prefix)
 #ExposureTimeAbs = 30000 (min:58-max:6e+07)
-exptime = 2200#32000#2200#9500#8000#1e6 #1s = 1
+exptime = 2200#9500#8000#1e6 #1s = 1
 d.Set("aravisCmdAll",'ExposureTimeAbs=%d;'% exptime)
 d.Set("aravisGet","?0:ExposureTimeAbs")
 exptime_obtained =int(d.Get("aravisGet"))
@@ -19,8 +19,8 @@ print "exptime: %d [us]\n" % exptime_obtained
 #-------------------------------------------------------------
 
 #Getting data:
-#data=d.GetStreamBlock("rtcPxlBuf",100,asArray=1)
-data=d.GetStreamBlock("rtcPxlBuf",n_img,-1,asArray=1)
+data=d.GetStreamBlock("rtcPxlBuf",n_img,asArray=1)
+#data=d.GetStreamBlock("rtcPxlBuf",n_img,-1,asArray=1)
 
 #-------------------------------------------------------------
 #frame number
@@ -77,8 +77,13 @@ if prefix == "both" and plot_on:
     x = range(0,len(y))
     fig = plt.figure()
     ax = plt.subplot(111)
-    ax.plot(x, y, 'b-x',label='cameras')
+    ax.plot(x, y, 'b-x')#,label='time between frames')
     box = ax.get_position()
     ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
+    title = 'time v/s img'
+    plt.title(title)
+    plt.ylabel('y = time')
+    plt.xlabel('x = img')
+    ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
     plt.show()
     
