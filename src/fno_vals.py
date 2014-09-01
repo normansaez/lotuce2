@@ -19,8 +19,8 @@ print "exptime: %d [us]\n" % exptime_obtained
 #-------------------------------------------------------------
 
 #Getting data:
-data=d.GetStreamBlock("rtcPxlBuf",n_img,asArray=1)
-#data=d.GetStreamBlock("rtcPxlBuf",n_img,-1,asArray=1)
+#data=d.GetStreamBlock("rtcPxlBuf",n_img,asArray=1)
+data=d.GetStreamBlock("rtcPxlBuf",n_img,-1,asArray=1)
 
 #-------------------------------------------------------------
 #frame number
