@@ -9,6 +9,7 @@ print "Setup"
 plot_on = True
 n_img = 500#1000#10000
 prefix = "both"
+mu = unichr(0x3bc).encode('utf-8')
 d = darc.Control(prefix)
 #ExposureTimeAbs = 30000 (min:58-max:6e+07)
 exptimes =[2200,3200,4200]#,5200,6200,7200,8200,9200,10200,11200]
@@ -19,7 +20,7 @@ for exptime in exptimes:
     d.Set("aravisCmdAll",'ExposureTimeAbs=%d;'% exptime)
     d.Set("aravisGet","?0:ExposureTimeAbs")
     exptime_obtained =int(d.Get("aravisGet"))
-    print "exptime: %d [us]\n" % exptime_obtained
+    print "exptime: %d [%ss]\n" % (exptime_obtained, mu)
     #-------------------------------------------------------------
     
     #Getting data:
@@ -42,13 +43,13 @@ for exptime in exptimes:
     print "timestamp"
     timestamp=data["rtcPxlBuf"][1]
     #print timestamp
-    print "this should be an array with exptime in micro secs [us]"
+    print "this should be an array with exptime in micro secs [%ss]" % mu
     y = (timestamp[1:]-timestamp[:-1])*1e6
 #    print y
     y_s.append(y)
-    print "max  %.3f" % ((timestamp[1:]-timestamp[:-1])*1e6).max()
-    print "min  %.3f" % ((timestamp[1:]-timestamp[:-1])*1e6).min()
-    print "mean %.3f" % ((timestamp[1:]-timestamp[:-1])*1e6).mean()
+    print "max  %.3f [%ss]" % (((timestamp[1:]-timestamp[:-1])*1e6).max(), mu)
+    print "min  %.3f [%ss]" % (((timestamp[1:]-timestamp[:-1])*1e6).min(), mu)
+    print "mean %.3f [%ss]" % (((timestamp[1:]-timestamp[:-1])*1e6).mean(), mu)
     #print "this should be an array with zero (or close to it)"
     #print (timestamp[1:]-timestamp[:-1])*1e6 -exptime_obtained
     print
