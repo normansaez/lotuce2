@@ -30,8 +30,8 @@ print "Using %d cameras"%ncam
 #####################################
 nacts_number = 54
 subap_number = 1 #This means: subap_numberxsubap_number
-pixel_number_x = 50#656#50
-pixel_number_y = 50#492#50
+pixel_number_x = 656#50
+pixel_number_y = 492#50
 exposure_time_val = 30000#12500#24000
 #####################################
 nacts = nacts_number

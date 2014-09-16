@@ -12,7 +12,7 @@ prefix = "both"
 mu = unichr(0x3bc).encode('utf-8')
 d = darc.Control(prefix)
 #ExposureTimeAbs = 30000 (min:58-max:6e+07)
-exptimes =[2200,3200,4200]#,5200,6200,7200,8200,9200,10200,11200]
+exptimes =[4200]#[2200,3200,4200]#,5200,6200,7200,8200,9200,10200,11200]
 y_s = []
 hz_s = []
 for exptime in exptimes:
