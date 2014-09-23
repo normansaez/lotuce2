@@ -32,8 +32,8 @@ if __name__=="__main__":
 #    parser.add_argument('-t', '--template', dest='template', action='store_true', help='obtains template to convolution.', default=False)
 #    (options, unknown) = parser.parse_known_args()
     # vars
-    dirname = 'run5'
-    path = '/Users/nsaez/Downloads/run1'
+    dirname = "120Hz" 
+    path = '/home/lotuce2/lotuce2/src/map'
     xi76 = 493
     xf76 = 984
     yi76 = 0
@@ -44,19 +44,19 @@ if __name__=="__main__":
     yi77 = 0
     yf77 = 656
 
-    limit = 1500
+    limit = 1000
 
     #76
-    mask76_01 = np.where(FITS.Read(glob.glob(path+'/img_004*.fits')[0])[1][xi76:xf76,yi76:yf76]> limit,1,0) 
-    mask76_02 = np.where(FITS.Read(glob.glob(path+'/img_005*.fits')[0])[1][xi76:xf76,yi76:yf76]> limit,1,0)
-    mask76_04 = np.where(FITS.Read(glob.glob(path+'/img_007*.fits')[0])[1][xi76:xf76,yi76:yf76]> limit,1,0)
-    mask76_08 = np.where(FITS.Read(glob.glob(path+'/img_010*.fits')[0])[1][xi76:xf76,yi76:yf76]> limit,1,0)
+    mask76_01 = np.where(FITS.Read(glob.glob(path+'/img_002*.fits')[0])[1][xi76:xf76,yi76:yf76]> limit,1,0) 
+    mask76_02 = np.where(FITS.Read(glob.glob(path+'/img_018*.fits')[0])[1][xi76:xf76,yi76:yf76]> limit,1,0)
+    mask76_04 = np.where(FITS.Read(glob.glob(path+'/img_033*.fits')[0])[1][xi76:xf76,yi76:yf76]> limit,1,0)
+    mask76_08 = np.where(FITS.Read(glob.glob(path+'/img_024*.fits')[0])[1][xi76:xf76,yi76:yf76]> limit,1,0)
     #77 
-    mask77_01 = np.where(FITS.Read(glob.glob(path+'/img_005*.fits')[0])[1][xi77:xf77,yi77:yf77]> limit,1,0) 
-    mask77_02 = np.where(FITS.Read(glob.glob(path+'/img_006*.fits')[0])[1][xi77:xf77,yi77:yf77]> limit,1,0)
-    mask77_04 = np.where(FITS.Read(glob.glob(path+'/img_008*.fits')[0])[1][xi77:xf77,yi77:yf77]> limit,1,0)
-    mask77_08 = np.where(FITS.Read(glob.glob(path+'/img_011*.fits')[0])[1][xi77:xf77,yi77:yf77]> limit,1,0)
-    path = '/Users/nsaez/Downloads/'+dirname
+    mask77_01 = np.where(FITS.Read(glob.glob(path+'/img_001*.fits')[0])[1][xi77:xf77,yi77:yf77]> limit,1,0) 
+    mask77_02 = np.where(FITS.Read(glob.glob(path+'/img_017*.fits')[0])[1][xi77:xf77,yi77:yf77]> limit,1,0)
+    mask77_04 = np.where(FITS.Read(glob.glob(path+'/img_019*.fits')[0])[1][xi77:xf77,yi77:yf77]> limit,1,0)
+    mask77_08 = np.where(FITS.Read(glob.glob(path+'/img_023*.fits')[0])[1][xi77:xf77,yi77:yf77]> limit,1,0)
+    path = '/home/lotuce2/lotuce2/src/map/' + dirname
     
     y0_76, x0_76 = get_centroid(mask76_01)
     y1_76, x1_76 = get_centroid(mask76_02)

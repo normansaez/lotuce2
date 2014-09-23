@@ -2,9 +2,10 @@ import sys
 
 
 def get_Mbps(exp_time):
-    x = 50#656
-    y = 50#492#120#492
+    x = 300#656
+    y = 300#492#120#492
     hz = (1./exp_time)*1e6
+    print hz
     Mbps = (x*y*hz*2.*8.)/1e6
     return hz, Mbps
 
