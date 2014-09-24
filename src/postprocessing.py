@@ -32,31 +32,32 @@ if __name__=="__main__":
 #    parser.add_argument('-t', '--template', dest='template', action='store_true', help='obtains template to convolution.', default=False)
 #    (options, unknown) = parser.parse_known_args()
     # vars
-    dirname = "120Hz" 
-    path = '/home/lotuce2/lotuce2/src/map'
-    xi76 = 493
-    xf76 = 984
+    dirname = "200Hz_200plx_run1" 
+    ref_path = '/home/lotuce2/lotuce2/src/ref_200Hz_200plx/'
+    path = '/home/lotuce2/lotuce2/src/' + dirname
+
+    xi76 = 201
+    xf76 = 400
     yi76 = 0
-    yf76 = 656
+    yf76 = 200
 
     xi77 = 0
-    xf77 = 492
+    xf77 = 200
     yi77 = 0
-    yf77 = 656
+    yf77 = 200
 
-    limit = 1000
+    limit = 3000
 
-    #76
-    mask76_01 = np.where(FITS.Read(glob.glob(path+'/img_002*.fits')[0])[1][xi76:xf76,yi76:yf76]> limit,1,0) 
-    mask76_02 = np.where(FITS.Read(glob.glob(path+'/img_018*.fits')[0])[1][xi76:xf76,yi76:yf76]> limit,1,0)
-    mask76_04 = np.where(FITS.Read(glob.glob(path+'/img_033*.fits')[0])[1][xi76:xf76,yi76:yf76]> limit,1,0)
-    mask76_08 = np.where(FITS.Read(glob.glob(path+'/img_024*.fits')[0])[1][xi76:xf76,yi76:yf76]> limit,1,0)
     #77 
-    mask77_01 = np.where(FITS.Read(glob.glob(path+'/img_001*.fits')[0])[1][xi77:xf77,yi77:yf77]> limit,1,0) 
-    mask77_02 = np.where(FITS.Read(glob.glob(path+'/img_017*.fits')[0])[1][xi77:xf77,yi77:yf77]> limit,1,0)
-    mask77_04 = np.where(FITS.Read(glob.glob(path+'/img_019*.fits')[0])[1][xi77:xf77,yi77:yf77]> limit,1,0)
-    mask77_08 = np.where(FITS.Read(glob.glob(path+'/img_023*.fits')[0])[1][xi77:xf77,yi77:yf77]> limit,1,0)
-    path = '/home/lotuce2/lotuce2/src/map/' + dirname
+    mask77_01 = np.where(FITS.Read(glob.glob(ref_path+'/img_000*.fits')[0])[1][xi77:xf77,yi77:yf77]> limit,1,0) 
+    mask77_02 = np.where(FITS.Read(glob.glob(ref_path+'/img_001*.fits')[0])[1][xi77:xf77,yi77:yf77]> limit,1,0)
+    mask77_04 = np.where(FITS.Read(glob.glob(ref_path+'/img_003*.fits')[0])[1][xi77:xf77,yi77:yf77]> limit,1,0)
+    mask77_08 = np.where(FITS.Read(glob.glob(ref_path+'/img_007*.fits')[0])[1][xi77:xf77,yi77:yf77]> limit,1,0)
+    #76
+    mask76_01 = np.where(FITS.Read(glob.glob(ref_path+'/img_001*.fits')[0])[1][xi76:xf76,yi76:yf76]> limit,1,0) 
+    mask76_02 = np.where(FITS.Read(glob.glob(ref_path+'/img_002*.fits')[0])[1][xi76:xf76,yi76:yf76]> limit,1,0)
+    mask76_04 = np.where(FITS.Read(glob.glob(ref_path+'/img_004*.fits')[0])[1][xi76:xf76,yi76:yf76]> limit,1,0)
+    mask76_08 = np.where(FITS.Read(glob.glob(ref_path+'/img_008*.fits')[0])[1][xi76:xf76,yi76:yf76]> limit,1,0)
     
     y0_76, x0_76 = get_centroid(mask76_01)
     y1_76, x1_76 = get_centroid(mask76_02)
@@ -73,14 +74,14 @@ pattern77 = []
 axis_x = []
 good = 0
 bad = 0
-for i in range(1,83+1):
+for i in range(1,500+1):
     img = path+'/img_'+str(i).zfill(3)+'*.fits'
     print img
     try:
         f = FITS.Read(glob.glob(img)[0])[1]
         cam76 = f[xi76:xf76,yi76:yf76]
         b0_76 = bit_check(x0_76, y0_76, cam76, limit)
-        b1_76 = bit_check(x1_76, y1_76, cam76, limit)*0
+        b1_76 = bit_check(x1_76, y1_76, cam76, limit)
         b2_76 = bit_check(x2_76, y2_76, cam76, limit)
         b3_76 = bit_check(x3_76, y3_76, cam76, limit)
         num76 = '0b'+str(b3_76)+str(b2_76)+str(b1_76)+str(b0_76)
@@ -89,7 +90,7 @@ for i in range(1,83+1):
         print num76
         cam77 = f[xi77:xf77,yi77:yf77]
         b0_77 = bit_check(x0_77, y0_77, cam77, limit)
-        b1_77 = bit_check(x1_77, y1_77, cam77, limit)*0
+        b1_77 = bit_check(x1_77, y1_77, cam77, limit)
         b2_77 = bit_check(x2_77, y2_77, cam77, limit)
         b3_77 = bit_check(x3_77, y3_77, cam77, limit)
         num77 = '0b'+str(b3_77)+str(b2_77)+str(b1_77)+str(b0_77)

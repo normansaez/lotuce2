@@ -37,3 +37,11 @@ d.Set("aravisCmd1",'OffsetY=%d;'% cam77_offsetY)
 d.Set("aravisGet","?1:OffsetY")
 print "Cam1 => cam77 => OffsetY: %d" % int(d.Get("aravisGet"))
 
+#Cam0 => cam76 => Width: 200
+#Cam0 => cam76 => Height: 200
+#Cam0 => cam76 => OffsetX: 278
+#Cam0 => cam76 => OffsetY: 146
+#Cam1 => cam77 => Width: 200
+#Cam1 => cam77 => Height: 200
+#Cam1 => cam77 => OffsetX: 198
+#Cam1 => cam77 => OffsetY: 146
