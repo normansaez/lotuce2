@@ -1,42 +1,34 @@
 import darc
 prefix = "both"
 d = darc.Control(prefix)
-#cam0 =76
-d.Set("aravisGet","?0:Width")
-x =  int(d.Get("aravisGet"))
-print "Cam0 => cam76 => Width: %d" % x
-d.Set("aravisGet","?0:Height")
-y = int(d.Get("aravisGet"))
-print "Cam0 => cam76 => Height: %d" % y
 
-cam76_offsetX = int((656 - x )/2.0)
-cam76_offsetY = int((492 - y)/2.0)
+def set(camera, parameter, value):
+    cam = "aravisCmd%d" % camera
+    cmd = '%s=%s;' % (parameter, str(value))
+    d.Set(cam, cmd)
 
-d.Set("aravisCmd0",'OffsetX=%d;'% cam76_offsetX)
-d.Set("aravisGet","?0:OffsetX")
-print "Cam0 => cam76 => OffsetX: %d" % int(d.Get("aravisGet"))
-d.Set("aravisCmd0",'OffsetY=%d;'% cam76_offsetY)
-d.Set("aravisGet","?0:OffsetY")
-print "Cam0 => cam76 => OffsetY: %d" % int(d.Get("aravisGet"))
+def get(camera, parameter):
+    cmd = '?%d=%s;' % (camera, parameter)
+    d.Set("aravisGet",cmd)
+    return int(d.Get("aravisGet"))
 
-#cam1 =77
-d.Set("aravisGet","?1:Width")
-x =  int(d.Get("aravisGet"))
-print "Cam1 => cam77 => Width: %d" % x
-d.Set("aravisGet","?1:Height")
-y = int(d.Get("aravisGet"))
-print "Cam1 => cam77 => Height: %d" % y
-
-cam77_offsetX = int((656 - x )/2.0)
-cam77_offsetY = int((492 - y)/2.0)
-
-d.Set("aravisCmd1",'OffsetX=%d;'% cam77_offsetX)
-d.Set("aravisGet","?1:OffsetX")
-print "Cam1 => cam77 => OffsetX: %d" % int(d.Get("aravisGet"))
-d.Set("aravisCmd1",'OffsetY=%d;'% cam77_offsetY)
-d.Set("aravisGet","?1:OffsetY")
-print "Cam1 => cam77 => OffsetY: %d" % int(d.Get("aravisGet"))
-
+#cam0 = 76
+#cam1 = 77
+print "76 => cam 0"
+print "77 => cam 0"
+for cam in range(0,1+1):
+    x =  get(cam, 'Width')
+    print "Cam%d => Width: %d" % (cam, x)
+    y  = get(cam, 'Height')
+    print "Cam%d => Height: %d" % (cam, y)
+    
+    offsetX = int((656 - x )/2.0)
+    offsetY = int((492 - y)/2.0)
+    
+    set(cam, 'OffsetX', offsetX)
+    print "Cam%d => OffsetX: %d" % (cam, get(0,'OffsetX'))
+    set(cam, 'OffsetY', offsetY)
+    print "Cam%d => OffsetY: %d" % (cam, get(0,'OffsetY'))
 #Cam0 => cam76 => Width: 200
 #Cam0 => cam76 => Height: 200
 #Cam0 => cam76 => OffsetX: 278
