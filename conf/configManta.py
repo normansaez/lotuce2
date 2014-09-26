@@ -133,8 +133,8 @@ cameraParams[6*ncam+2+(namelen+3)//4]=0#record timestamp
 rmx=numpy.random.random((nacts,ncents)).astype("f")
 
 #camCommand="OffsetX=%d;OffsetY=%d;ExposureTimeAbs=%d;PixelFormat=Mono12;Width=%d;Height=%d;TriggerSource=Line1;TriggerMode=On;TriggerActivation=AnyEdge;" % (OffsetX, OffsetY, exposure_time_val, pixel_number_x, pixel_number_y)
-camCommand="ExposureTimeAbs=%d;PixelFormat=Mono12;Width=%d;Height=%d;TriggerSource=Line1;TriggerMode=On;TriggerActivation=AnyEdge;" % (exposure_time_val, pixel_number_x, pixel_number_y)
-#camCommand="ExposureTimeAbs=%d;PixelFormat=Mono12;Width=%d;Height=%d;TriggerSource=Freerun;TriggerMode=On;TriggerActivation=AnyEdge;" % (exposure_time_val, pixel_number_x, pixel_number_y)
+#camCommand="ExposureTimeAbs=%d;PixelFormat=Mono12;Width=%d;Height=%d;TriggerSource=Line1;TriggerMode=On;TriggerActivation=AnyEdge;" % (exposure_time_val, pixel_number_x, pixel_number_y)
+camCommand="ExposureTimeAbs=%d;PixelFormat=Mono12;Width=%d;Height=%d;TriggerSource=Freerun;TriggerMode=On;TriggerActivation=AnyEdge;" % (exposure_time_val, pixel_number_x, pixel_number_y)
 
 
 control={

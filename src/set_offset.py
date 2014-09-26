@@ -1,4 +1,6 @@
 import darc
+import time
+
 prefix = "both"
 d = darc.Control(prefix)
 
@@ -6,34 +8,37 @@ def set(camera, parameter, value):
     cam = "aravisCmd%d" % camera
     cmd = '%s=%s;' % (parameter, str(value))
     d.Set(cam, cmd)
+    print "Cam%d => %s: %s" % (camera, parameter, str(value))
 
 def get(camera, parameter):
-    cmd = '?%d=%s;' % (camera, parameter)
-    d.Set("aravisGet",cmd)
-    return int(d.Get("aravisGet"))
+    cmd = "?%d:%s" % (camera, parameter)
+    d.Set('aravisGet',cmd)
+    r = int(d.Get("aravisGet"))
+    print "Cam%d => %s: %d" % (cam, parameter, r)
+    return r
 
-#cam0 = 76
-#cam1 = 77
-print "76 => cam 0"
-print "77 => cam 0"
+print "76 => cam0"
+print "77 => cam1"
+print "---------------"
 for cam in range(0,1+1):
     x =  get(cam, 'Width')
-    print "Cam%d => Width: %d" % (cam, x)
     y  = get(cam, 'Height')
-    print "Cam%d => Height: %d" % (cam, y)
     
     offsetX = int((656 - x )/2.0)
     offsetY = int((492 - y)/2.0)
     
     set(cam, 'OffsetX', offsetX)
-    print "Cam%d => OffsetX: %d" % (cam, get(0,'OffsetX'))
     set(cam, 'OffsetY', offsetY)
-    print "Cam%d => OffsetY: %d" % (cam, get(0,'OffsetY'))
-#Cam0 => cam76 => Width: 200
-#Cam0 => cam76 => Height: 200
-#Cam0 => cam76 => OffsetX: 278
-#Cam0 => cam76 => OffsetY: 146
-#Cam1 => cam77 => Width: 200
-#Cam1 => cam77 => Height: 200
-#Cam1 => cam77 => OffsetX: 198
-#Cam1 => cam77 => OffsetY: 146
+    print "---------------"
+
+if x == 200:
+    print "200x200, defined offset:"
+    #Cam0 => cam76 => OffsetX: 278
+    #Cam0 => cam76 => OffsetY: 146
+    set(0,'OffsetX', 278)
+    set(0,'OffsetY', 146)
+    #Cam1 => cam77 => OffsetX: 198
+    #Cam1 => cam77 => OffsetY: 146
+    set(1,'OffsetX', 198)
+    set(1,'OffsetY', 146)
+
