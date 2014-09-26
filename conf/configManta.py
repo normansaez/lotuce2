@@ -32,9 +32,9 @@ nacts_number = 54
 subap_number = 1 #This means: subap_numberxsubap_number
 pixel_number_x = 200#656#50
 pixel_number_y = 200#492#50
-exposure_time_val = 12500#30000#12500#24000
-OffsetX = 228
-OffsetY = 146
+exposure_time_val = 1000#30000#12500#24000
+OffsetX = 1
+OffsetY = 1
 #####################################
 nacts = nacts_number
 ncamThreads=numpy.ones((ncam,),numpy.int32)*1
@@ -132,9 +132,9 @@ cameraParams[6*ncam+2+(namelen+3)//4]=0#record timestamp
 
 rmx=numpy.random.random((nacts,ncents)).astype("f")
 
-#camCommand="OffsetX=%d;OffsetY=%d;ExposureTimeAbs=%d;PixelFormat=Mono12;Width=%d;Height=%d;TriggerSource=Line1;TriggerMode=On;TriggerActivation=AnyEdge;" % (OffsetX, OffsetY, exposure_time_val, pixel_number_x, pixel_number_y)
 #camCommand="ExposureTimeAbs=%d;PixelFormat=Mono12;Width=%d;Height=%d;TriggerSource=Line1;TriggerMode=On;TriggerActivation=AnyEdge;" % (exposure_time_val, pixel_number_x, pixel_number_y)
-camCommand="ExposureTimeAbs=%d;PixelFormat=Mono12;Width=%d;Height=%d;TriggerSource=Freerun;TriggerMode=On;TriggerActivation=AnyEdge;" % (exposure_time_val, pixel_number_x, pixel_number_y)
+#camCommand="ExposureTimeAbs=%d;PixelFormat=Mono12;Width=%d;Height=%d;TriggerSource=Freerun;TriggerMode=On;TriggerActivation=AnyEdge;" % (exposure_time_val, pixel_number_x, pixel_number_y)
+camCommand="Width=%d;Height=%d;OffsetX=%d;OffsetY=%d;ExposureTimeAbs=%d;PixelFormat=Mono12;TriggerSource=Freerun;TriggerMode=On;TriggerActivation=AnyEdge;" % (pixel_number_x, pixel_number_y, OffsetX, OffsetY, exposure_time_val)
 
 
 control={
@@ -228,3 +228,4 @@ control={
 for i in range(ncam):
     control["aravisCmd%d"%i]=camCommand
 pprint(control)
+
