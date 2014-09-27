@@ -9,12 +9,6 @@ from skimage.measure import label
 from math import floor
 import sys
 
-def bit_check(x, y, img, limit):
-    intensity = img[y,x]
-    if intensity >= limit:
-        return 1
-    return 0
-
 def get_centroid(img):
     label_img = label(img)
     regions = regionprops(label_img)
@@ -36,15 +30,16 @@ if __name__=="__main__":
     (options, unknown) = parser.parse_known_args()
     # vars
     if options.camera == 0:
-        xi_cam = 201
+        xi_cam = 200
         xf_cam = 400
         yi_cam = 0
         yf_cam = 200
+
     if options.camera == 1:
-        xi_cam = 0
-        xf_cam = 200
+        xi_cam = 200
+        xf_cam = 400 
         yi_cam = 0
-        yf_cam = 200
+        yf_cam = 200 
 
     if options.reference is None:
         print "No reference directory is given, you need give a path with a directory with images as references"
@@ -69,28 +64,29 @@ if __name__=="__main__":
             print img
             plt.show()
     else:
-        b0 = options.reference+'/img_008.fits'
+        b0 = options.reference+'/img_007.fits'
         f = FITS.Read(b0)[1][xi_cam:xf_cam,yi_cam:yf_cam]
+        print f.shape
         fig = plt.figure()
-        #   234 =     "2x3 grid, 4th subplot".
+        #234 =     "2x3 grid, 4th subplot".
         ax = plt.subplot(121)
         ax.set_xlim(xi_cam,xf_cam)
         ax.set_ylim(yi_cam,yf_cam)
         ax.autoscale(False)
         ax.imshow(f)
-#        print b0           
-#        print              f[xi_cam:xf_cam,yi_cam:yf_cam]
+        #Doing mask
         mask_01 = np.where(f[xi_cam:xf_cam,yi_cam:yf_cam] > options.threshold,1,0)
         mask = mask_01 * f[xi_cam:xf_cam,yi_cam:yf_cam]
-        y0_cam, x0_cam = get_centroid(mask_01)
-        print x0_cam
-        print y0_cam
-        ax.plot(x0_cam, y0_cam, 'x',label='b0')
-        ax2 = plt.subplot(122)
-        ax2.set_xlim(xi_cam,xf_cam)
-        ax2.set_ylim(yi_cam,yf_cam)
-        ax2.autoscale(False)
-        ax2.imshow(mask)
+        #get centroid
+#        y0_cam, x0_cam = get_centroid(mask_01)
+#        print x0_cam
+#        print y0_cam
+#        ax.plot(x0_cam, y0_cam, 'x',label='b0')
+#        ax2 = plt.subplot(122)
+#        ax2.set_xlim(xi_cam,xf_cam)
+#        ax2.set_ylim(yi_cam,yf_cam)
+#        ax2.autoscale(False)
+#        ax2.imshow(mask)
         plt.show()
 #box = ax.get_position()
 #ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
