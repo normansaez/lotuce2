@@ -3,7 +3,7 @@ import time
 import darc
 
 ion()                        
-prefix = "both"
+prefix = "all"
 d = darc.Control(prefix)
 ncam = d.Get("ncam")
 px   = d.Get("npxlx")[0]

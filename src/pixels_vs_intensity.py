@@ -10,7 +10,7 @@ line.axes.set_ylim(0, 4095)
  
 starttime = time.time()         
 t = 0                          
-prefix = "both"
+prefix = "all"
 d = darc.Control(prefix)
 while(True):
     stream=d.GetStream('%srtcPxlBuf'%prefix)

@@ -272,7 +272,7 @@ features = ['Root'
 if __name__ == '__main__':
     parse = OptionParser()
     parse.add_option('-c', '--camera', dest='camera', type='str', help='Camera num: 0,1,2,3 etc', default="0")
-    parse.add_option('-p', '--prefix', dest='prefix', type='str', help='Camera prefix: default both', default="both")
+    parse.add_option('-p', '--prefix', dest='prefix', type='str', help='Camera prefix: default all', default="all")
 
     (options , argv) = parse.parse_args()
     c = darc.Control(options.prefix)

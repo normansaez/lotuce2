@@ -2,7 +2,7 @@ import darc
 import time
 import sys
 
-prefix = "both"
+prefix = "all"
 d = darc.Control(prefix)
 
 def set(camera, parameter, value):
@@ -22,8 +22,10 @@ def get(camera, parameter):
 
 print "76 => cam0"
 print "77 => cam1"
+print "60 => cam2"
+print "61 => cam3"
 print "---------------"
-for cam in range(0,1+1):
+for cam in range(0,3+1):
     x =  get(cam, 'Width')
     y  = get(cam, 'Height')
         

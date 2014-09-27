@@ -23,18 +23,18 @@ import tel
 import numpy
 from pprint import pprint
 
-ncam_selector = { "76": 1, "77": 1, "both": 2}
+ncam_selector = { "cam0": 1, "cam1": 1, "cam2":1, "cam3":1, "all": 4}
 ncam = ncam_selector[prefix]
 
 print "Using %d cameras"%ncam
 #####################################
 nacts_number = 54
 subap_number = 1 #This means: subap_numberxsubap_number
-pixel_number_x = 200#656#50
-pixel_number_y = 200#492#50
-exposure_time_val = 1000#30000#12500#24000
-OffsetX = 1
-OffsetY = 1
+pixel_number_x = 656#50
+pixel_number_y = 492#50
+exposure_time_val = 30000#12500#24000
+OffsetX = 0
+OffsetY = 0
 #####################################
 nacts = nacts_number
 ncamThreads=numpy.ones((ncam,),numpy.int32)*1
@@ -109,9 +109,11 @@ for k in range(ncam):
   //The names as a string.
   //recordTimestamp
 """
-cameras_selected = { "76":["Allied Vision Technologies-50-0503342076"][:ncam],
-                     "77":["Allied Vision Technologies-50-0503342077"][:ncam],
-                     "both":["Allied Vision Technologies-50-0503342076","Allied Vision Technologies-50-0503342077"][:ncam]}                     
+cameras_selected = { "cam0":["Allied Vision Technologies-50-0503342076"][:ncam],
+                     "cam1":["Allied Vision Technologies-50-0503342077"][:ncam],
+                     "cam2":["Allied Vision Technologies-50-0503347160"][:ncam],
+                     "cam3":["Allied Vision Technologies-50-0503347161"][:ncam],
+                     "all":["Allied Vision Technologies-50-0503342076","Allied Vision Technologies-50-0503342077","Allied Vision Technologies-50-0503347160","Allied Vision Technologies-50-0503347161"][:ncam]}
 camList= cameras_selected[prefix]
 camNames=string.join(camList,";")
 print camNames

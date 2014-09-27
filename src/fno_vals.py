@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 print "Setup"
 plot_on = True
 n_img = 500#1000#10000
-prefix = "both"
+prefix = "all"
 mu = unichr(0x3bc).encode('utf-8')
 d = darc.Control(prefix)
 #ExposureTimeAbs = 30000 (min:58-max:6e+07)
@@ -72,7 +72,7 @@ for exptime in exptimes:
         pass
 #-------------------------------------------------------------
 #plot
-if prefix == "both" and plot_on:
+if prefix == "all" and plot_on:
 #    pxls=data["rtcPxlBuf"][0]
 #    s1=pxls[:,:pxls.size/2].sum(1)
 #    s2=pxls[:,pxls.size/2:].sum(1)

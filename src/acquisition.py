@@ -5,7 +5,7 @@ from optparse import OptionParser
 from pprint import pprint
 parse = OptionParser()
 #parse.add_option('-c', '--camera', dest='camera', type='str', help='Camera num: 0,1,2,3 etc', default="0")
-parse.add_option('-p', '--prefix', dest='prefix', type='str', help='Camera prefix: default both', default="both")
+parse.add_option('-p', '--prefix', dest='prefix', type='str', help='Camera prefix: default all', default="all")
 parse.add_option('-e', '--exptime', dest='exptime', type=int, help='Value for ExposureTimeAbs', default=12000)
 parse.add_option('-i', '--nimg', dest='nimg', type=int, help='Number of images', default=100)
 (options , argv) = parse.parse_args()
@@ -39,7 +39,7 @@ img_to_take =  options.nimg
 #    print "Can't get exptime"
 #    exptime=-1
 #print "Current ExposureTimeAbs =%d" % exptime
-#print "Setting to %d in both cameras" % options.exptime
+#print "Setting to %d in all cameras" % options.exptime
 times_x = [12000]#,5000,10000,12000,15000]
 fps_e = []
 for exptime in times_x:
