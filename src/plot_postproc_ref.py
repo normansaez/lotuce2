@@ -27,7 +27,7 @@ if __name__=="__main__":
     usage = '''
     '''
     parser = argparse.ArgumentParser(usage=usage)
-    parser.add_argument('-c', '--camera', dest='camera', type=int, help='Camera', default=0)
+    parser.add_argument('-c', '--camera', dest='camera', type=int, help='Camera', default=1)
     parser.add_argument('-r', '--reference', dest='reference', type=str, help='Path to get reference images', default='ref_200Hz_200plx/')
     parser.add_argument('-d', '--dirname', dest='dirname', type=str, help='Path to get images', default='200Hz_200plx_run1')
     parser.add_argument('-t', '--threshold', dest='threshold', type=int, help='Threshold to filter image', default=3000)
@@ -48,12 +48,18 @@ if __name__=="__main__":
     print "Search pattern b1"
     images = glob.glob(options.reference+'/*.fits')
     for img in images:
-        FITS.Read(img)[1][xi_cam:xf_cam,yi_cam:yf_cam] 
-        print img    
+        f = FITS.Read(img)[1][xi_cam:xf_cam,yi_cam:yf_cam] 
+        fig = plt.figure()
+        ax = plt.subplot(111)
+        ax.set_xlim(xi_cam,xf_cam)
+        ax.set_ylim(yi_cam,yf_cam)
+        ax.autoscale(False)
+        ax.imshow(f)
+        plt.show(5)
+
+#        break
 #    y0_cam, x0_cam = get_centroid(mask_cam1_01)
 
-#fig = plt.figure()
-#ax = plt.subplot(111)
 
 #ax.plot(x0_cam0, y0_cam0, 'r-x',label='b1')
 
