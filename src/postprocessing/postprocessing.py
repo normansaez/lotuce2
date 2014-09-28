@@ -48,6 +48,8 @@ if __name__=="__main__":
     parser.add_argument('-t', '--threshold', dest='threshold', type=int, help='Threshold to filter image', default=4000)
     parser.add_argument('-i', '--init', dest='init', type=int, help='inital image to proces', default=0)
     parser.add_argument('-e', '--end', dest='end', type=int, help='final image to proces', default=29)
+    parser.add_argument('-s', '--show', dest='show', action='store_true' , help='Enable show or not to show plots. default not shows')
+
     (options, unknown) = parser.parse_known_args()
     # vars
     xi_cam0 = 200
@@ -209,5 +211,7 @@ plt.savefig(basename+'.png')
 print "%.2f%% synchronized" % on
 print "%.2f%% NOT synchronized" % off
 print "%d total"% (len(axis_x))
-plt.show()
+
+if options.show is True:
+    plt.show()
 
