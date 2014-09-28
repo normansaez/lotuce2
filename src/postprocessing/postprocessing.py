@@ -50,6 +50,19 @@ if __name__=="__main__":
     parser.add_argument('-s', '--show', dest='show', action='store_true' , help='Enable show or not to show plots. default not shows')
 
     (options, unknown) = parser.parse_known_args()
+
+    if options.reference is None:
+        print "No reference directory is given, you need give a path with a directory with images as references"
+        print "Use -r /path/directory/images/reference/"
+        sys.exit(-1)
+
+    if options.dirname is None:
+        print "No directory with images to analisis is given, you need give a path with a directory with images"
+        print "Use -d /path/directory/images/"
+        sys.exit(-1)
+
+    options.dirname = os.path.normpath(options.dirname)
+
     # camera coordinates according windows size
     xi_cam0 = 200
     xf_cam0 = 400
@@ -65,19 +78,6 @@ if __name__=="__main__":
     padding = 7
     #area to search intensity (mean) taking account centroid
     width = 5
-
-
-    if options.reference is None:
-        print "No reference directory is given, you need give a path with a directory with images as references"
-        print "Use -r /path/directory/images/reference/"
-        sys.exit(-1)
-
-    if options.dirname is None:
-        print "No directory with images to analisis is given, you need give a path with a directory with images"
-        print "Use -d /path/directory/images/"
-        sys.exit(-1)
-
-    options.dirname = os.path.normpath(options.dirname)
 
     #XXX: image reference: this is according each windows size
     cam0_b0 = options.reference+'/img_000.fits'
