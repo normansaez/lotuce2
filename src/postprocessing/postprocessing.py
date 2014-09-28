@@ -144,6 +144,7 @@ if __name__=="__main__":
 print "GO !!"
 pattern_cam0 = []
 pattern_cam1 = []
+diff = []
 axis_x = []
 sync_on = 0
 sync_off = 0
@@ -190,6 +191,8 @@ for i in range(options.init, options.end+1):
         print num_cam1
         num_cam1 = eval(num_cam1)
         print num_cam1
+        #plot diff
+        dif = num_cam0 - num_cam1
         if num_cam1 == num_cam0:
             sync_on += 1
         else:
@@ -198,7 +201,7 @@ for i in range(options.init, options.end+1):
         print "-------------------------------------------------------------"
         pattern_cam0.append(num_cam0)
         pattern_cam1.append(num_cam1)
-
+        diff.append(dif)
         axis_x.append(i)
     except Exception, e:
         print e
@@ -222,10 +225,23 @@ plt.xlabel('image number')
 ax.xaxis.grid(True)
 grid()
 ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-plt.savefig(basename+'.png')
+plt.savefig(basename+'-pattern.png')
 print "%.2f%% synchronized" % on
 print "%.2f%% NOT synchronized" % off
 print "%d total"% (len(axis_x))
+if options.show is True:
+    plt.show()
+############### line plot #######################
+ax2 = plt.subplot(111)
+ax2.plot(axis_x, diff, 'rx',label='cam0 - cam1')
+box = ax.get_position()
+ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
+plt.ylabel('pattern diff')
+plt.xlabel('image number')
+title = 'img v.s pat diff: %s\nsynchronized: YES: %d , NO: %d' % (basename, sync_on, sync_off)
+plt.title(title)
+ax2.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+plt.savefig(basename+'-diff.png')
 
 if options.show is True:
     plt.show()
