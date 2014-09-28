@@ -19,8 +19,7 @@ BLACK    = '\033[30m'
 CRIM     = '\033[36m'
 NO_COLOR = '\033[0m'
 
-def bit_check(x, y, img, threshold):
-    width = 5
+def bit_check(x, y, img, threshold, width):
     intensity = img[y-width:y+width,x-width:x+width].mean()
     print "(%.0f >= %.0f)" % (intensity, threshold),
     if intensity >= threshold:
@@ -51,7 +50,7 @@ if __name__=="__main__":
     parser.add_argument('-s', '--show', dest='show', action='store_true' , help='Enable show or not to show plots. default not shows')
 
     (options, unknown) = parser.parse_known_args()
-    # vars
+    # camera coordinates according windows size
     xi_cam0 = 200
     xf_cam0 = 400
     yi_cam0 = 0
@@ -61,6 +60,12 @@ if __name__=="__main__":
     xf_cam1 = 200 
     yi_cam1 = 0
     yf_cam1 = 200 
+    
+    #Padding in pixels to make closed shapes and get a correct centroid
+    padding = 7
+    #area to search intensity (mean) taking account centroid
+    width = 5
+
 
     if options.reference is None:
         print "No reference directory is given, you need give a path with a directory with images as references"
@@ -71,7 +76,10 @@ if __name__=="__main__":
         print "No directory with images to analisis is given, you need give a path with a directory with images"
         print "Use -d /path/directory/images/"
         sys.exit(-1)
+
     options.dirname = os.path.normpath(options.dirname)
+
+    #XXX: image reference: this is according each windows size
     cam0_b0 = options.reference+'/img_000.fits'
     cam0_b1 = options.reference+'/img_001.fits'
     cam0_b2 = options.reference+'/img_003.fits'
@@ -82,6 +90,7 @@ if __name__=="__main__":
     cam1_b2 = options.reference+'/img_004.fits'
     cam1_b3 = options.reference+'/img_008.fits'
 
+    #Getting central coordinates
     b0_0 = FITS.Read(cam0_b0)[1][xi_cam0:xf_cam0,yi_cam0:yf_cam0]
     b1_0 = FITS.Read(cam0_b1)[1][xi_cam0:xf_cam0,yi_cam0:yf_cam0]
     b2_0 = FITS.Read(cam0_b2)[1][xi_cam0:xf_cam0,yi_cam0:yf_cam0]
@@ -92,6 +101,7 @@ if __name__=="__main__":
     b2_1 = FITS.Read(cam1_b2)[1][xi_cam1:xf_cam1,yi_cam1:yf_cam1]
     b3_1 = FITS.Read(cam1_b3)[1][xi_cam1:xf_cam1,yi_cam1:yf_cam1]
 
+    #Fixed limit to not convert a binary image
     mask_b0_0 = np.where(b0_0 > 4000,1,0)
     mask_b1_0 = np.where(b1_0 > 4000,1,0)
     mask_b2_0 = np.where(b2_0 > 4000,1,0)
@@ -101,14 +111,15 @@ if __name__=="__main__":
     mask_b1_1 = np.where(b1_1 > 4000,1,0)
     mask_b2_1 = np.where(b2_1 > 4000,1,0)
     mask_b3_1 = np.where(b3_1 > 4000,1,0)
-
-    padding = 7
+    
+    #Apply border (padding)
     border = np.ones(b0_0.shape)
     border[:padding,:] = 0
     border[:,:padding] = 0
     border[xf_cam0 - xi_cam0 - padding:,:] = 0
     border[:, xf_cam0 - xi_cam0 - padding:] = 0
-
+    
+    #(binary image )*(original image)*(border) = acurate centroid (in theory)  
     mask_b0_cam0 = mask_b0_0 * b0_0 * border
     mask_b1_cam0 = mask_b1_0 * b1_0 * border
     mask_b2_cam0 = mask_b2_0 * b2_0 * border
@@ -119,6 +130,7 @@ if __name__=="__main__":
     mask_b2_cam1 = mask_b2_1 * b2_1 * border
     mask_b3_cam1 = mask_b3_1 * b3_1 * border
 
+    #Getting centroid
     y0_cam0, x0_cam0 = get_centroid(mask_b0_cam0)
     y1_cam0, x1_cam0 = get_centroid(mask_b1_cam0)
     y2_cam0, x2_cam0 = get_centroid(mask_b2_cam0)
@@ -128,6 +140,7 @@ if __name__=="__main__":
     y1_cam1, x1_cam1 = get_centroid(mask_b1_cam1)
     y2_cam1, x2_cam1 = get_centroid(mask_b2_cam1)
     y3_cam1, x3_cam1 = get_centroid(mask_b3_cam1)
+
 print "GO !!"
 pattern_cam0 = []
 pattern_cam1 = []
@@ -140,13 +153,14 @@ for i in range(options.init, options.end+1):
     print img
     try:
         f = FITS.Read(img)[1]
+        #check bits for cam0   
         print "-------------------------------------------------------------"
         print "cam0"
         cam_cam0 = f[xi_cam0:xf_cam0,yi_cam0:yf_cam0]
-        b0_cam0 = bit_check(x0_cam0, y0_cam0, cam_cam0, options.threshold)
-        b1_cam0 = bit_check(x1_cam0, y1_cam0, cam_cam0, options.threshold)
-        b2_cam0 = bit_check(x2_cam0, y2_cam0, cam_cam0, options.threshold)
-        b3_cam0 = bit_check(x3_cam0, y3_cam0, cam_cam0, options.threshold)
+        b0_cam0 = bit_check(x0_cam0, y0_cam0, cam_cam0, options.threshold, width)
+        b1_cam0 = bit_check(x1_cam0, y1_cam0, cam_cam0, options.threshold, width)
+        b2_cam0 = bit_check(x2_cam0, y2_cam0, cam_cam0, options.threshold, width)
+        b3_cam0 = bit_check(x3_cam0, y3_cam0, cam_cam0, options.threshold, width)
         num_cam0 = '0b'+str(b3_cam0)+str(b2_cam0)+str(b1_cam0)+str(b0_cam0)
         print num_cam0
         num_cam0 = eval(num_cam0)
@@ -164,13 +178,14 @@ for i in range(options.init, options.end+1):
             plt.show()
             break
         #-------------------------------------------------------------------
+        #check bits for cam0   
         cam_cam1 = f[xi_cam1:xf_cam1,yi_cam1:yf_cam1]
         print "-------------"
         print "cam1"
-        b0_cam1 = bit_check(x0_cam1, y0_cam1, cam_cam1, options.threshold)
-        b1_cam1 = bit_check(x1_cam1, y1_cam1, cam_cam1, options.threshold)
-        b2_cam1 = bit_check(x2_cam1, y2_cam1, cam_cam1, options.threshold)
-        b3_cam1 = bit_check(x3_cam1, y3_cam1, cam_cam1, options.threshold)
+        b0_cam1 = bit_check(x0_cam1, y0_cam1, cam_cam1, options.threshold, width)
+        b1_cam1 = bit_check(x1_cam1, y1_cam1, cam_cam1, options.threshold, width)
+        b2_cam1 = bit_check(x2_cam1, y2_cam1, cam_cam1, options.threshold, width)
+        b3_cam1 = bit_check(x3_cam1, y3_cam1, cam_cam1, options.threshold, width)
         num_cam1 = '0b'+str(b3_cam1)+str(b2_cam1)+str(b1_cam1)+str(b0_cam1)
         print num_cam1
         num_cam1 = eval(num_cam1)
