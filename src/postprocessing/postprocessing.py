@@ -1,6 +1,7 @@
 import FITS
 import glob
 import sys
+import os
 from pylab import grid#imshow,show
 import matplotlib.pyplot as plt
 import argparse 
@@ -10,10 +11,13 @@ from skimage.measure import label
 from math import floor
 
 def bit_check(x, y, img, threshold):
-    width = 3
+    width = 5
     intensity = img[y-width:y+width,x-width:x+width].mean()
+    print "(%.0f >= %.0f)" % (intensity, threshold),
     if intensity >= threshold:
+        print " ON" 
         return 1
+    print 
     return 0
 
 def get_centroid(img):
@@ -56,11 +60,11 @@ if __name__=="__main__":
         print "No directory with images to analisis is given, you need give a path with a directory with images"
         print "Use -d /path/directory/images/"
         sys.exit(-1)
-
+    options.dirname = os.path.normpath(options.dirname)
     cam0_b0 = options.reference+'/img_000.fits'
     cam0_b1 = options.reference+'/img_001.fits'
-    cam0_b2 = options.reference+'/img_002.fits'
-    cam0_b3 = options.reference+'/img_003.fits'
+    cam0_b2 = options.reference+'/img_003.fits'
+    cam0_b3 = options.reference+'/img_007.fits'
 
     cam1_b0 = options.reference+'/img_001.fits'
     cam1_b1 = options.reference+'/img_002.fits'
@@ -77,17 +81,17 @@ if __name__=="__main__":
     b2_1 = FITS.Read(cam1_b2)[1][xi_cam1:xf_cam1,yi_cam1:yf_cam1]
     b3_1 = FITS.Read(cam1_b3)[1][xi_cam1:xf_cam1,yi_cam1:yf_cam1]
 
-    mask_b0_0 = np.where(b0_0 > options.threshold,1,0)
-    mask_b1_0 = np.where(b1_0 > options.threshold,1,0)
-    mask_b2_0 = np.where(b2_0 > options.threshold,1,0)
-    mask_b3_0 = np.where(b3_0 > options.threshold,1,0)
+    mask_b0_0 = np.where(b0_0 > 4000,1,0)
+    mask_b1_0 = np.where(b1_0 > 4000,1,0)
+    mask_b2_0 = np.where(b2_0 > 4000,1,0)
+    mask_b3_0 = np.where(b3_0 > 4000,1,0)
 
-    mask_b0_1 = np.where(b0_1 > options.threshold,1,0)
-    mask_b1_1 = np.where(b1_1 > options.threshold,1,0)
-    mask_b2_1 = np.where(b2_1 > options.threshold,1,0)
-    mask_b3_1 = np.where(b3_1 > options.threshold,1,0)
+    mask_b0_1 = np.where(b0_1 > 4000,1,0)
+    mask_b1_1 = np.where(b1_1 > 4000,1,0)
+    mask_b2_1 = np.where(b2_1 > 4000,1,0)
+    mask_b3_1 = np.where(b3_1 > 4000,1,0)
 
-    padding = 5
+    padding = 7
     border = np.ones(b0_0.shape)
     border[:padding,:] = 0
     border[:,:padding] = 0
@@ -119,8 +123,9 @@ pattern_cam1 = []
 axis_x = []
 good = 0
 bad = 0
+check = False
 for i in range(options.init, options.end+1):
-    img = options.reference + '/img_'+str(i).zfill(3)+'.fits'
+    img = os.path.normpath(options.dirname + '/img_'+str(i).zfill(3)+'.fits')
     print img
     try:
         f = FITS.Read(glob.glob(img)[0])[1]
@@ -133,6 +138,19 @@ for i in range(options.init, options.end+1):
         print num_cam0
         num_cam0 = eval(num_cam0)
         print num_cam0
+        #################################
+        if check is True:
+            fig = plt.figure()
+            #234 =     "2x3 grid, 4th subplot".
+            ax = plt.subplot(111)
+            ax.set_xlim(0,xf_cam0-xi_cam0)
+            ax.set_ylim(0,yf_cam0-yi_cam0)
+            ax.autoscale(False)
+            ax.imshow(cam_cam0)
+            ax.plot(x0_cam0, y0_cam0, 'x',label='b0')
+            plt.show()
+            break
+        #-------------------------------------------------------------------
         cam_cam1 = f[xi_cam1:xf_cam1,yi_cam1:yf_cam1]
         b0_cam1 = bit_check(x0_cam1, y0_cam1, cam_cam1, options.threshold)
         b1_cam1 = bit_check(x1_cam1, y1_cam1, cam_cam1, options.threshold)
@@ -160,14 +178,14 @@ ax.plot(axis_x, pattern_cam1, 'b-x', label='camera_cam1')
 
 box = ax.get_position()
 ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
-title = '#images v/s #patterns. %.1f%% bad, %.1f%% good' % (100.*(bad*1./len(axis_x)) , 100.*(good*1./len(axis_x)))
+title = '%s #images v/s #patterns. %.1f%% bad, %.1f%% good' % (os.path.basename(options.dirname),100.*(bad*1./len(axis_x)) , 100.*(good*1./len(axis_x)))
 plt.title(title)
 plt.ylabel('pattern number')
 plt.xlabel('image number')
 ax.xaxis.grid(True)
 grid()
 ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-#plt.savefig(dirname+'.png')
+plt.savefig(os.path.basename(options.dirname)+'.png')
 print "%.2f%% good" % ( 100.*(good*1./len(axis_x)))
 print "%.2f%% bad" % ( 100.*(bad*1./len(axis_x)))
 print "%d total"% (len(axis_x))
