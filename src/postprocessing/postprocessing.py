@@ -8,9 +8,9 @@ from skimage.measure import regionprops
 from skimage.measure import label
 from math import floor
 
-def bit_check(x, y, img, limit):
+def bit_check(x, y, img, threshold):
     intensity = img[y,x]
-    if intensity >= limit:
+    if intensity >= threshold:
         return 1
     return 0
 
@@ -27,82 +27,124 @@ if __name__=="__main__":
     print "Calibrating centroid pattern ..."
     usage = '''
     '''
-#    parser = argparse.ArgumentParser(usage=usage)
-#    parser.add_argument('-p', '--path', dest='path', type=str, help='Path to get images', default=None)
-#    parser.add_argument('-t', '--template', dest='template', action='store_true', help='obtains template to convolution.', default=False)
-#    (options, unknown) = parser.parse_known_args()
+    parser = argparse.ArgumentParser(usage=usage)
+    parser.add_argument('-r', '--reference', dest='reference', type=str, help='Path to get reference images', default=None)
+    parser.add_argument('-d', '--dirname', dest='dirname', type=str, help='Path to get images', default=None)
+    parser.add_argument('-t', '--threshold', dest='threshold', type=int, help='Threshold to filter image', default=4000)
+    parser.add_argument('-l', '--lookpattern', dest='lookpattern', action='store_true' ,help='lookpattern')
+    (options, unknown) = parser.parse_known_args()
     # vars
-    dirname = "200Hz_200plx_run1" 
-    ref_path = '/home/lotuce2/lotuce2/src/ref_200Hz_200plx/'
-    path = '/home/lotuce2/lotuce2/src/' + dirname
+    xi_cam0 = 200
+    xf_cam0 = 400
+    yi_cam0 = 0
+    yf_cam0 = 200
 
-    xi76 = 201
-    xf76 = 400
-    yi76 = 0
-    yf76 = 200
+    xi_cam1 = 0
+    xf_cam1 = 200 
+    yi_cam1 = 0
+    yf_cam1 = 200 
 
-    xi77 = 0
-    xf77 = 200
-    yi77 = 0
-    yf77 = 200
+    if options.reference is None:
+        print "No reference directory is given, you need give a path with a directory with images as references"
+        print "Use -r /path/directory/images/reference/"
+        sys.exit(-1)
 
-    limit = 3000
+    if options.dirname is None:
+        print "No directory with images to analisis is given, you need give a path with a directory with images"
+        print "Use -d /path/directory/images/"
+        sys.exit(-1)
 
-    #77 
-    mask77_01 = np.where(FITS.Read(glob.glob(ref_path+'/img_000*.fits')[0])[1][xi77:xf77,yi77:yf77]> limit,1,0) 
-    mask77_02 = np.where(FITS.Read(glob.glob(ref_path+'/img_001*.fits')[0])[1][xi77:xf77,yi77:yf77]> limit,1,0)
-    mask77_04 = np.where(FITS.Read(glob.glob(ref_path+'/img_003*.fits')[0])[1][xi77:xf77,yi77:yf77]> limit,1,0)
-    mask77_08 = np.where(FITS.Read(glob.glob(ref_path+'/img_007*.fits')[0])[1][xi77:xf77,yi77:yf77]> limit,1,0)
-    #76
-    mask76_01 = np.where(FITS.Read(glob.glob(ref_path+'/img_001*.fits')[0])[1][xi76:xf76,yi76:yf76]> limit,1,0) 
-    mask76_02 = np.where(FITS.Read(glob.glob(ref_path+'/img_002*.fits')[0])[1][xi76:xf76,yi76:yf76]> limit,1,0)
-    mask76_04 = np.where(FITS.Read(glob.glob(ref_path+'/img_004*.fits')[0])[1][xi76:xf76,yi76:yf76]> limit,1,0)
-    mask76_08 = np.where(FITS.Read(glob.glob(ref_path+'/img_008*.fits')[0])[1][xi76:xf76,yi76:yf76]> limit,1,0)
-    
-    y0_76, x0_76 = get_centroid(mask76_01)
-    y1_76, x1_76 = get_centroid(mask76_02)
-    y2_76, x2_76 = get_centroid(mask76_04)
-    y3_76, x3_76 = get_centroid(mask76_08)
+    cam0_b0 = options.reference+'/img_000.fits'
+    cam0_b1 = options.reference+'/img_001.fits'
+    cam0_b2 = options.reference+'/img_002.fits'
+    cam0_b3 = options.reference+'/img_003.fits'
 
-    y0_77, x0_77 = get_centroid(mask77_01)
-    y1_77, x1_77 = get_centroid(mask77_02)
-    y2_77, x2_77 = get_centroid(mask77_04)
-    y3_77, x3_77 = get_centroid(mask77_08)
+    cam1_b0 = options.reference+'/img_001.fits'
+    cam1_b1 = options.reference+'/img_002.fits'
+    cam1_b2 = options.reference+'/img_004.fits'
+    cam1_b3 = options.reference+'/img_008.fits'
+
+    b0_0 = FITS.Read(cam0_b0)[1][xi_cam0:xf_cam0,yi_cam0:yf_cam0]
+    b1_0 = FITS.Read(cam0_b1)[1][xi_cam0:xf_cam0,yi_cam0:yf_cam0]
+    b2_0 = FITS.Read(cam0_b2)[1][xi_cam0:xf_cam0,yi_cam0:yf_cam0]
+    b3_0 = FITS.Read(cam0_b3)[1][xi_cam0:xf_cam0,yi_cam0:yf_cam0]
+
+    b0_1 = FITS.Read(cam1_b0)[1][xi_cam1:xf_cam1,yi_cam1:yf_cam1]
+    b1_1 = FITS.Read(cam1_b1)[1][xi_cam1:xf_cam1,yi_cam1:yf_cam1]
+    b2_1 = FITS.Read(cam1_b2)[1][xi_cam1:xf_cam1,yi_cam1:yf_cam1]
+    b3_1 = FITS.Read(cam1_b3)[1][xi_cam1:xf_cam1,yi_cam1:yf_cam1]
+
+    mask_b0_0 = np.where(b0_0 > options.threshold,1,0)
+    mask_b1_0 = np.where(b1_0 > options.threshold,1,0)
+    mask_b2_0 = np.where(b2_0 > options.threshold,1,0)
+    mask_b3_0 = np.where(b3_0 > options.threshold,1,0)
+
+    mask_b0_1 = np.where(b0_1 > options.threshold,1,0)
+    mask_b1_1 = np.where(b1_1 > options.threshold,1,0)
+    mask_b2_1 = np.where(b2_1 > options.threshold,1,0)
+    mask_b3_1 = np.where(b3_1 > options.threshold,1,0)
+
+    padding = 5
+    border = np.ones(b0_b0.shape)
+    border[:padding,:] = 0
+    border[:,:padding] = 0
+    border[xf_cam0 - xi_cam0 - padding:,:] = 0
+    border[:, xf_cam0 - xi_cam0 - padding:] = 0
+
+    mask_b0_cam0 = mask_b0_0 * b0_0 * border
+    mask_b1_cam0 = mask_b1_0 * b1_0 * border
+    mask_b2_cam0 = mask_b2_0 * b2_0 * border
+    mask_b3_cam0 = mask_b3_0 * b3_0 * border
+
+    mask_b0_cam1 = mask_b0_1 * b0_1 * border
+    mask_b1_cam1 = mask_b1_1 * b1_1 * border
+    mask_b2_cam1 = mask_b2_1 * b2_1 * border
+    mask_b3_cam1 = mask_b3_1 * b3_1 * border
+
+    y0_cam0, x0_cam0 = get_centroid(mask_b0_cam0)
+    y1_cam0, x1_cam0 = get_centroid(mask_b1_cam0)
+    y2_cam0, x2_cam0 = get_centroid(mask_b2_cam0)
+    y3_cam0, x3_cam0 = get_centroid(mask_b3_cam0)
+
+    y0_77, x0_77 = get_centroid(mask_b0_cam1)
+    y1_77, x1_77 = get_centroid(mask_b1_cam1)
+    y2_77, x2_77 = get_centroid(mask_b2_cam1)
+    y3_77, x3_77 = get_centroid(mask_b3_cam1)
 print "GO !!"
-pattern76 = []
-pattern77 = []
+pattern_cam0 = []
+pattern_cam1 = []
 axis_x = []
 good = 0
 bad = 0
-for i in range(1,500+1):
+for i in range(0,50+1):
     img = path+'/img_'+str(i).zfill(3)+'*.fits'
     print img
     try:
         f = FITS.Read(glob.glob(img)[0])[1]
-        cam76 = f[xi76:xf76,yi76:yf76]
-        b0_76 = bit_check(x0_76, y0_76, cam76, limit)
-        b1_76 = bit_check(x1_76, y1_76, cam76, limit)
-        b2_76 = bit_check(x2_76, y2_76, cam76, limit)
-        b3_76 = bit_check(x3_76, y3_76, cam76, limit)
-        num76 = '0b'+str(b3_76)+str(b2_76)+str(b1_76)+str(b0_76)
-        print num76
-        num76 = eval(num76)
-        print num76
-        cam77 = f[xi77:xf77,yi77:yf77]
-        b0_77 = bit_check(x0_77, y0_77, cam77, limit)
-        b1_77 = bit_check(x1_77, y1_77, cam77, limit)
-        b2_77 = bit_check(x2_77, y2_77, cam77, limit)
-        b3_77 = bit_check(x3_77, y3_77, cam77, limit)
-        num77 = '0b'+str(b3_77)+str(b2_77)+str(b1_77)+str(b0_77)
-        print num77
-        num77 = eval(num77)
-        print num77
-        if num77 == num76:
+        cam_cam0 = f[xi_cam0:xf_cam0,yi_cam0:yf_cam0]
+        b0_cam0 = bit_check(x0_cam0, y0_cam0, cam_cam0, options.threshold)
+        b1_cam0 = bit_check(x1_cam0, y1_cam0, cam_cam0, options.threshold)
+        b2_cam0 = bit_check(x2_cam0, y2_cam0, cam_cam0, options.threshold)
+        b3_cam0 = bit_check(x3_cam0, y3_cam0, cam_cam0, options.threshold)
+        num_cam0 = '0b'+str(b3_cam0)+str(b2_cam0)+str(b1_cam0)+str(b0_cam0)
+        print num_cam0
+        num_cam0 = eval(num_cam0)
+        print num_cam0
+        cam_cam1 = f[xi_cam1:xf_cam1,yi_cam1:yf_cam1]
+        b0_cam1 = bit_check(x0_cam1, y0_cam1, cam_cam1, options.threshold)
+        b1_cam1 = bit_check(x1_cam1, y1_cam1, cam_cam1, options.threshold)
+        b2_cam1 = bit_check(x2_cam1, y2_cam1, cam_cam1, options.threshold)
+        b3_cam1 = bit_check(x3_cam1, y3_cam1, cam_cam1, options.threshold)
+        num_cam1 = '0b'+str(b3_cam1)+str(b2_cam1)+str(b1_cam1)+str(b0_cam1)
+        print num_cam1
+        num_cam1 = eval(num_cam1)
+        print num_cam1
+        if num_cam1 == num_cam0:
             good += 1
         else:
             bad += 1
-        pattern76.append(num76)
-        pattern77.append(num77)
+        pattern_cam0.append(num_cam0)
+        pattern_cam1.append(num_cam1)
 
         axis_x.append(i)
     except IndexError, e:
@@ -110,8 +152,8 @@ for i in range(1,500+1):
 fig = plt.figure()
 ax = plt.subplot(111)
 
-ax.plot(axis_x, pattern76, 'r-x',label='camera76')
-ax.plot(axis_x, pattern77, 'b-x', label='camera77')
+ax.plot(axis_x, pattern_cam0, 'r-x',label='camera76')
+ax.plot(axis_x, pattern_cam1, 'b-x', label='camera_cam1')
 
 box = ax.get_position()
 ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
