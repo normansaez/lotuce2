@@ -149,7 +149,6 @@ for i in range(options.init, options.end+1):
         print num_cam0
         num_cam0 = eval(num_cam0)
         print num_cam0
-        print "-------------------------------------------------------------"
         #################################
         if check is True:
             fig = plt.figure()
@@ -164,7 +163,7 @@ for i in range(options.init, options.end+1):
             break
         #-------------------------------------------------------------------
         cam_cam1 = f[xi_cam1:xf_cam1,yi_cam1:yf_cam1]
-        print "-------------------------------------------------------------"
+        print "-------------"
         print "cam1"
         b0_cam1 = bit_check(x0_cam1, y0_cam1, cam_cam1, options.threshold)
         b1_cam1 = bit_check(x1_cam1, y1_cam1, cam_cam1, options.threshold)
