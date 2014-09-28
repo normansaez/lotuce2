@@ -10,6 +10,15 @@ from skimage.measure import regionprops
 from skimage.measure import label
 from math import floor
 
+#COLOR CONST
+BLUE     = '\033[34m'
+RED      = '\033[31m'
+GREEN    = '\033[32m'
+YELLOW   = '\033[33m'
+BLACK    = '\033[30m'
+CRIM     = '\033[36m'
+NO_COLOR = '\033[0m'
+
 def bit_check(x, y, img, threshold):
     width = 5
     intensity = img[y-width:y+width,x-width:x+width].mean()
@@ -165,12 +174,12 @@ for i in range(options.init, options.end+1):
         print num_cam1
         num_cam1 = eval(num_cam1)
         print num_cam1
-        print "-------------------------------------------------------------"
         if num_cam1 == num_cam0:
             sync_on += 1
         else:
             sync_off += 1
-
+            print "%sNOT SYNC: %s %s" % (RED,img,NO_COLOR)
+        print "-------------------------------------------------------------"
         pattern_cam0.append(num_cam0)
         pattern_cam1.append(num_cam1)
 
