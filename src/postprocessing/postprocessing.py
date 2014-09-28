@@ -1,15 +1,17 @@
 import FITS
 import glob
-#from pylab import imshow,show
+import sys
+from pylab import grid#imshow,show
 import matplotlib.pyplot as plt
-#import argparse 
+import argparse 
 import numpy as np
 from skimage.measure import regionprops
 from skimage.measure import label
 from math import floor
 
 def bit_check(x, y, img, threshold):
-    intensity = img[y,x]
+    width = 3
+    intensity = img[y-width:y+width,x-width:x+width].mean()
     if intensity >= threshold:
         return 1
     return 0
@@ -31,7 +33,8 @@ if __name__=="__main__":
     parser.add_argument('-r', '--reference', dest='reference', type=str, help='Path to get reference images', default=None)
     parser.add_argument('-d', '--dirname', dest='dirname', type=str, help='Path to get images', default=None)
     parser.add_argument('-t', '--threshold', dest='threshold', type=int, help='Threshold to filter image', default=4000)
-    parser.add_argument('-l', '--lookpattern', dest='lookpattern', action='store_true' ,help='lookpattern')
+    parser.add_argument('-i', '--init', dest='init', type=int, help='inital image to proces', default=0)
+    parser.add_argument('-e', '--end', dest='end', type=int, help='final image to proces', default=29)
     (options, unknown) = parser.parse_known_args()
     # vars
     xi_cam0 = 200
@@ -85,7 +88,7 @@ if __name__=="__main__":
     mask_b3_1 = np.where(b3_1 > options.threshold,1,0)
 
     padding = 5
-    border = np.ones(b0_b0.shape)
+    border = np.ones(b0_0.shape)
     border[:padding,:] = 0
     border[:,:padding] = 0
     border[xf_cam0 - xi_cam0 - padding:,:] = 0
@@ -106,18 +109,18 @@ if __name__=="__main__":
     y2_cam0, x2_cam0 = get_centroid(mask_b2_cam0)
     y3_cam0, x3_cam0 = get_centroid(mask_b3_cam0)
 
-    y0_77, x0_77 = get_centroid(mask_b0_cam1)
-    y1_77, x1_77 = get_centroid(mask_b1_cam1)
-    y2_77, x2_77 = get_centroid(mask_b2_cam1)
-    y3_77, x3_77 = get_centroid(mask_b3_cam1)
+    y0_cam1, x0_cam1 = get_centroid(mask_b0_cam1)
+    y1_cam1, x1_cam1 = get_centroid(mask_b1_cam1)
+    y2_cam1, x2_cam1 = get_centroid(mask_b2_cam1)
+    y3_cam1, x3_cam1 = get_centroid(mask_b3_cam1)
 print "GO !!"
 pattern_cam0 = []
 pattern_cam1 = []
 axis_x = []
 good = 0
 bad = 0
-for i in range(0,50+1):
-    img = path+'/img_'+str(i).zfill(3)+'*.fits'
+for i in range(options.init, options.end+1):
+    img = options.reference + '/img_'+str(i).zfill(3)+'.fits'
     print img
     try:
         f = FITS.Read(glob.glob(img)[0])[1]
@@ -152,17 +155,19 @@ for i in range(0,50+1):
 fig = plt.figure()
 ax = plt.subplot(111)
 
-ax.plot(axis_x, pattern_cam0, 'r-x',label='camera76')
+ax.plot(axis_x, pattern_cam0, 'r-x',label='camera_cam0')
 ax.plot(axis_x, pattern_cam1, 'b-x', label='camera_cam1')
 
 box = ax.get_position()
 ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
-title = '#images v/s #patterns. %s %.1f%% bad, %.1f%% good' % (dirname, 100.*(bad*1./len(axis_x)) , 100.*(good*1./len(axis_x)))
+title = '#images v/s #patterns. %.1f%% bad, %.1f%% good' % (100.*(bad*1./len(axis_x)) , 100.*(good*1./len(axis_x)))
 plt.title(title)
 plt.ylabel('pattern number')
 plt.xlabel('image number')
+ax.xaxis.grid(True)
+grid()
 ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-plt.savefig(dirname+'.png')
+#plt.savefig(dirname+'.png')
 print "%.2f%% good" % ( 100.*(good*1./len(axis_x)))
 print "%.2f%% bad" % ( 100.*(bad*1./len(axis_x)))
 print "%d total"% (len(axis_x))
