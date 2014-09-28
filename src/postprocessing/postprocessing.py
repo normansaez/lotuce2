@@ -121,14 +121,16 @@ print "GO !!"
 pattern_cam0 = []
 pattern_cam1 = []
 axis_x = []
-good = 0
-bad = 0
+sync_on = 0
+sync_off = 0
 check = False
 for i in range(options.init, options.end+1):
     img = os.path.normpath(options.dirname + '/img_'+str(i).zfill(3)+'.fits')
     print img
     try:
-        f = FITS.Read(glob.glob(img)[0])[1]
+        f = FITS.Read(img)[1]
+        print "-------------------------------------------------------------"
+        print "cam0"
         cam_cam0 = f[xi_cam0:xf_cam0,yi_cam0:yf_cam0]
         b0_cam0 = bit_check(x0_cam0, y0_cam0, cam_cam0, options.threshold)
         b1_cam0 = bit_check(x1_cam0, y1_cam0, cam_cam0, options.threshold)
@@ -138,6 +140,7 @@ for i in range(options.init, options.end+1):
         print num_cam0
         num_cam0 = eval(num_cam0)
         print num_cam0
+        print "-------------------------------------------------------------"
         #################################
         if check is True:
             fig = plt.figure()
@@ -152,6 +155,8 @@ for i in range(options.init, options.end+1):
             break
         #-------------------------------------------------------------------
         cam_cam1 = f[xi_cam1:xf_cam1,yi_cam1:yf_cam1]
+        print "-------------------------------------------------------------"
+        print "cam1"
         b0_cam1 = bit_check(x0_cam1, y0_cam1, cam_cam1, options.threshold)
         b1_cam1 = bit_check(x1_cam1, y1_cam1, cam_cam1, options.threshold)
         b2_cam1 = bit_check(x2_cam1, y2_cam1, cam_cam1, options.threshold)
@@ -160,34 +165,41 @@ for i in range(options.init, options.end+1):
         print num_cam1
         num_cam1 = eval(num_cam1)
         print num_cam1
+        print "-------------------------------------------------------------"
         if num_cam1 == num_cam0:
-            good += 1
+            sync_on += 1
         else:
-            bad += 1
+            sync_off += 1
+
         pattern_cam0.append(num_cam0)
         pattern_cam1.append(num_cam1)
 
         axis_x.append(i)
-    except IndexError, e:
+    except Exception, e:
         print e
+#Prepare graph
+basename = os.path.basename(options.dirname)
+on  = 100.*(sync_on*1./len(axis_x))
+off = 100.*(sync_off*1./len(axis_x)) 
+title = 'img v.s pat: %s\nsynchronized: YES: %.1f%% , NO: %.1f%%' % (basename, on, off)
+#plot it
 fig = plt.figure()
 ax = plt.subplot(111)
 
-ax.plot(axis_x, pattern_cam0, 'r-x',label='camera_cam0')
-ax.plot(axis_x, pattern_cam1, 'b-x', label='camera_cam1')
+ax.plot(axis_x, pattern_cam0, 'r-x',label='cam0')
+ax.plot(axis_x, pattern_cam1, 'b-x', label='cam1')
 
 box = ax.get_position()
 ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
-title = '%s #images v/s #patterns. %.1f%% bad, %.1f%% good' % (os.path.basename(options.dirname),100.*(bad*1./len(axis_x)) , 100.*(good*1./len(axis_x)))
 plt.title(title)
 plt.ylabel('pattern number')
 plt.xlabel('image number')
 ax.xaxis.grid(True)
 grid()
 ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-plt.savefig(os.path.basename(options.dirname)+'.png')
-print "%.2f%% good" % ( 100.*(good*1./len(axis_x)))
-print "%.2f%% bad" % ( 100.*(bad*1./len(axis_x)))
+plt.savefig(basename+'.png')
+print "%.2f%% synchronized" % on
+print "%.2f%% NOT synchronized" % off
 print "%d total"% (len(axis_x))
 plt.show()
 
