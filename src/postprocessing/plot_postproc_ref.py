@@ -36,8 +36,8 @@ if __name__=="__main__":
         yf_cam = 200
 
     if options.camera == 1:
-        xi_cam = 200
-        xf_cam = 400 
+        xi_cam = 0
+        xf_cam = 200 
         yi_cam = 0
         yf_cam = 200 
 
@@ -57,36 +57,43 @@ if __name__=="__main__":
             f = FITS.Read(img)[1][xi_cam:xf_cam,yi_cam:yf_cam] 
             fig = plt.figure()
             ax = plt.subplot(111)
-            ax.set_xlim(xi_cam,xf_cam)
-            ax.set_ylim(yi_cam,yf_cam)
+            ax.set_xlim(0,xf_cam-xi_cam)
+            ax.set_ylim(0,yf_cam-yi_cam)
             ax.autoscale(False)
             ax.imshow(f)
             print img
             plt.show()
     else:
+        padding = 5
+
         b0 = options.reference+'/img_007.fits'
         f = FITS.Read(b0)[1][xi_cam:xf_cam,yi_cam:yf_cam]
         print f.shape
         fig = plt.figure()
         #234 =     "2x3 grid, 4th subplot".
         ax = plt.subplot(121)
-        ax.set_xlim(xi_cam,xf_cam)
-        ax.set_ylim(yi_cam,yf_cam)
+        ax.set_xlim(0,xf_cam-xi_cam)
+        ax.set_ylim(0,yf_cam-yi_cam)
         ax.autoscale(False)
         ax.imshow(f)
         #Doing mask
-        mask_01 = np.where(f[xi_cam:xf_cam,yi_cam:yf_cam] > options.threshold,1,0)
-        mask = mask_01 * f[xi_cam:xf_cam,yi_cam:yf_cam]
+        mask_01 = np.where(f > options.threshold,1,0)
+        border = np.ones(f.shape)
+        border[:padding,:] = 0
+        border[:,:padding] = 0
+        border[xf_cam - xi_cam - padding:,:] = 0
+        border[:, xf_cam - xi_cam - padding:] = 0
+        mask = mask_01 * f * border
         #get centroid
-#        y0_cam, x0_cam = get_centroid(mask_01)
-#        print x0_cam
-#        print y0_cam
-#        ax.plot(x0_cam, y0_cam, 'x',label='b0')
-#        ax2 = plt.subplot(122)
-#        ax2.set_xlim(xi_cam,xf_cam)
-#        ax2.set_ylim(yi_cam,yf_cam)
-#        ax2.autoscale(False)
-#        ax2.imshow(mask)
+        y0_cam, x0_cam = get_centroid(mask)
+        print x0_cam
+        print y0_cam
+        ax.plot(x0_cam, y0_cam, 'x',label='b0')
+        ax2 = plt.subplot(122)
+        ax2.set_xlim(0,xf_cam-xi_cam)
+        ax2.set_ylim(0,yf_cam-yi_cam)
+        ax2.autoscale(False)
+        ax2.imshow(mask)
         plt.show()
 #box = ax.get_position()
 #ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
