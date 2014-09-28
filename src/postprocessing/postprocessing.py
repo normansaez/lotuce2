@@ -62,6 +62,7 @@ if __name__=="__main__":
         sys.exit(-1)
 
     options.dirname = os.path.normpath(options.dirname)
+    basename = os.path.basename(options.dirname)
 
     # camera coordinates according windows size
     xi_cam0 = 200
@@ -149,6 +150,8 @@ axis_x = []
 sync_on = 0
 sync_off = 0
 check = False
+text_file = open(basename+'.txt','w')
+text_file.write('basename img_name cam0 cam1\n')
 for i in range(options.init, options.end+1):
     img = os.path.normpath(options.dirname + '/img_'+str(i).zfill(3)+'.fits')
     print img
@@ -203,10 +206,10 @@ for i in range(options.init, options.end+1):
         pattern_cam1.append(num_cam1)
         diff.append(dif)
         axis_x.append(i)
+        text_file.write('%s %s %d %d\n'%(basename, img, num_cam0, num_cam1))
     except Exception, e:
         print e
 #Prepare graph
-basename = os.path.basename(options.dirname)
 on  = 100.*(sync_on*1./len(axis_x))
 off = 100.*(sync_off*1./len(axis_x)) 
 title = 'img v.s pat: %s\nsynchronized: YES: %.1f%% , NO: %.1f%%' % (basename, on, off)
