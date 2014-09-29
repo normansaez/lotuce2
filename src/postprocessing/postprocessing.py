@@ -240,6 +240,7 @@ print "%d total"% (len(axis_x))
 if options.show is True:
     plt.show()
 ############### line plot #######################
+plt.clf()
 ax2 = plt.subplot(111)
 ax2.plot(axis_x, diff, 'rx',label='cam0 - cam1')
 box = ax2.get_position()
