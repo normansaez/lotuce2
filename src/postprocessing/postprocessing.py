@@ -4,6 +4,7 @@ import sys
 import os
 from pylab import grid#imshow,show
 import matplotlib.pyplot as plt
+import matplotlib.cm as cm
 import argparse 
 import numpy as np
 from skimage.measure import regionprops
@@ -47,7 +48,9 @@ if __name__=="__main__":
     parser.add_argument('-t', '--threshold', dest='threshold', type=int, help='Threshold to filter image', default=4000)
     parser.add_argument('-i', '--init', dest='init', type=int, help='inital image to proces', default=0)
     parser.add_argument('-e', '--end', dest='end', type=int, help='final image to proces', default=29)
-    parser.add_argument('-s', '--show', dest='show', action='store_true' , help='Enable show or not to show plots. default not shows')
+    parser.add_argument('-s', '--show', dest='show', action='store_true' , help='Enable show plots')
+    parser.add_argument('-n', '--nosave', dest='nosave', action='store_true' , help='Disable save plots')
+    parser.add_argument('-c', '--check', dest='check', action='store_true' , help='Enable check bit area/th')
 
     (options, unknown) = parser.parse_known_args()
 
@@ -151,9 +154,9 @@ diff = []
 axis_x = []
 sync_on = 0
 sync_off = 0
-check = False
-text_file = open(basename+'.txt','w')
-text_file.write('basename img_name cam0 cam1\n')
+if options.nosave is False:
+    text_file = open(basename+'.txt','w')
+    text_file.write('basename img_name cam0 cam1\n')
 end = 0
 for i in range(options.init, options.end+1):
     img = os.path.normpath(options.dirname + '/img_'+str(i).zfill(3)+'.fits')
@@ -173,15 +176,18 @@ for i in range(options.init, options.end+1):
         num_cam0 = eval(num_cam0)
         print num_cam0
         #################################
-        if check is True:
+        if options.check is True:
             fig = plt.figure()
             #234 =     "2x3 grid, 4th subplot".
             ax = plt.subplot(111)
             ax.set_xlim(0,xf_cam0-xi_cam0)
             ax.set_ylim(0,yf_cam0-yi_cam0)
             ax.autoscale(False)
-            ax.imshow(cam_cam0)
+            ax.imshow(cam_cam0, cmap =cm.Greys_r)
             ax.plot(x0_cam0, y0_cam0, 'x',label='b0')
+            ax.plot(x1_cam0, y1_cam0, 'x',label='b1')
+            ax.plot(x2_cam0, y2_cam0, 'x',label='b2')
+            ax.plot(x3_cam0, y3_cam0, 'x',label='b3')
             plt.show()
             break
         #-------------------------------------------------------------------
@@ -209,7 +215,8 @@ for i in range(options.init, options.end+1):
         pattern_cam1.append(num_cam1)
         diff.append(dif)
         axis_x.append(i)
-        text_file.write('%s %s %d %d\n'%(basename, img, num_cam0, num_cam1))
+        if options.nosave is False:
+            text_file.write('%s %s %d %d\n'%(basename, img, num_cam0, num_cam1))
         end += 1
     except Exception, e:
         print e
@@ -233,7 +240,8 @@ plt.xlabel('image number')
 ax.xaxis.grid(True)
 grid()
 ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-plt.savefig(basename+'-from-%d-to-%d-pattern.png'%(options.init, options.end))
+if options.nosave is False:
+    plt.savefig(basename+'-from-%d-to-%d-pattern.png'%(options.init, options.end))
 print "%.2f%% synchronized" % on
 print "%.2f%% NOT synchronized" % off
 print "%d total"% (len(axis_x))
@@ -250,7 +258,8 @@ plt.xlabel('image number')
 title = 'img v.s pat diff: %s\nsynchronized: YES: %d , NO: %d' % (basename, sync_on, sync_off)
 plt.title(title)
 ax2.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-plt.savefig(basename+'-from-%d-to-%d-diff.png'%(options.init, options.end))
+if options.nosave is False:
+    plt.savefig(basename+'-from-%d-to-%d-diff.png'%(options.init, options.end))
 
 if options.show is True:
     plt.show()
