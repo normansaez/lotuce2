@@ -200,7 +200,7 @@ for i in range(options.init, options.end+1):
         num_cam0 = eval(num_cam0)
         print num_cam0
         #################################
-        if options.check is True:
+        if options.check*0 is True:
             fig = plt.figure()
             #234 =     "2x3 grid, 4th subplot".
             ax = plt.subplot(111)
@@ -220,6 +220,8 @@ for i in range(options.init, options.end+1):
             plt.gca().add_patch(patch)
             patch = get_square(x3_cam0, y3_cam0, width)
             plt.gca().add_patch(patch)
+            title = 'cam0'
+            plt.title(title)
             plt.show()
         #-------------------------------------------------------------------
         #check bits for cam1 
@@ -255,6 +257,8 @@ for i in range(options.init, options.end+1):
             plt.gca().add_patch(patch)
             patch = get_square(x3_cam1, y3_cam1, width)
             plt.gca().add_patch(patch)
+            title = 'cam1'
+            plt.title(title)
             plt.show()
         #-------------------------------------------------------------------
         #plot diff
