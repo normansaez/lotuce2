@@ -154,6 +154,7 @@ sync_off = 0
 check = False
 text_file = open(basename+'.txt','w')
 text_file.write('basename img_name cam0 cam1\n')
+end = 0
 for i in range(options.init, options.end+1):
     img = os.path.normpath(options.dirname + '/img_'+str(i).zfill(3)+'.fits')
     print img
@@ -209,8 +210,10 @@ for i in range(options.init, options.end+1):
         diff.append(dif)
         axis_x.append(i)
         text_file.write('%s %s %d %d\n'%(basename, img, num_cam0, num_cam1))
+        end += 1
     except Exception, e:
         print e
+options.end = end
 #Prepare graph
 on  = 100.*(sync_on*1./len(axis_x))
 off = 100.*(sync_off*1./len(axis_x)) 
@@ -230,7 +233,7 @@ plt.xlabel('image number')
 ax.xaxis.grid(True)
 grid()
 ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-plt.savefig(basename+'-pattern.png')
+plt.savefig(basename+'-from-%d-to-%d-pattern.png'%(options.init, options.end))
 print "%.2f%% synchronized" % on
 print "%.2f%% NOT synchronized" % off
 print "%d total"% (len(axis_x))
@@ -239,14 +242,14 @@ if options.show is True:
 ############### line plot #######################
 ax2 = plt.subplot(111)
 ax2.plot(axis_x, diff, 'rx',label='cam0 - cam1')
-box = ax.get_position()
-ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
+box = ax2.get_position()
+ax2.set_position([box.x0, box.y0, box.width * 0.8, box.height])
 plt.ylabel('pattern diff')
 plt.xlabel('image number')
 title = 'img v.s pat diff: %s\nsynchronized: YES: %d , NO: %d' % (basename, sync_on, sync_off)
 plt.title(title)
 ax2.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-plt.savefig(basename+'-diff.png')
+plt.savefig(basename+'-from-%d-to-%d-diff.png'%(options.init, options.end))
 
 if options.show is True:
     plt.show()
