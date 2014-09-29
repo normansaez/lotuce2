@@ -65,31 +65,33 @@ if __name__=="__main__":
     basename = os.path.basename(options.dirname)
 
     # camera coordinates according windows size
-    xi_cam0 = 200
-    xf_cam0 = 400
-    yi_cam0 = 0
-    yf_cam0 = 200
+    #XXX commented for 200x200 
+    xi_cam0 = 492#200
+    xf_cam0 = 984#400
+    yi_cam0 = 0#0
+    yf_cam0 = 656#200
 
-    xi_cam1 = 0
-    xf_cam1 = 200 
-    yi_cam1 = 0
-    yf_cam1 = 200 
+    xi_cam1 = 0#0
+    xf_cam1 = 492#200 
+    yi_cam1 = 0#0
+    yf_cam1 = 656#200 
     
     #Padding in pixels to make closed shapes and get a correct centroid
-    padding = 7
+    padding = 5#7
     #area to search intensity (mean) taking account centroid
-    width = 5
+    width = 3#5
 
     #XXX: image reference: this is according each windows size
-    cam0_b0 = options.reference+'/img_000.fits'
-    cam0_b1 = options.reference+'/img_001.fits'
-    cam0_b2 = options.reference+'/img_003.fits'
-    cam0_b3 = options.reference+'/img_007.fits'
+    #XXX commented for 200x200
+    cam0_b0 = options.reference+'/img_003.fits'#'/img_000.fits'
+    cam0_b1 = options.reference+'/img_020.fits'#'/img_001.fits'
+    cam0_b2 = options.reference+'/img_022.fits'#'/img_003.fits'
+    cam0_b3 = options.reference+'/img_026.fits'#'/img_007.fits'
 
-    cam1_b0 = options.reference+'/img_001.fits'
-    cam1_b1 = options.reference+'/img_002.fits'
-    cam1_b2 = options.reference+'/img_004.fits'
-    cam1_b3 = options.reference+'/img_008.fits'
+    cam1_b0 = options.reference+'/img_019.fits'#'/img_001.fits'
+    cam1_b1 = options.reference+'/img_020.fits'#'/img_002.fits'
+    cam1_b2 = options.reference+'/img_022.fits'#'/img_004.fits'
+    cam1_b3 = options.reference+'/img_026.fits'#'/img_008.fits'
 
     #Getting central coordinates
     b0_0 = FITS.Read(cam0_b0)[1][xi_cam0:xf_cam0,yi_cam0:yf_cam0]
