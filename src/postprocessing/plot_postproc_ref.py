@@ -30,16 +30,16 @@ if __name__=="__main__":
     (options, unknown) = parser.parse_known_args()
     # vars
     if options.camera == 0:
-        xi_cam = 200
-        xf_cam = 400
-        yi_cam = 0
-        yf_cam = 200
+        xi_cam = 492#200
+        xf_cam = 984#400
+        yi_cam = 0#0
+        yf_cam = 656#200
 
     if options.camera == 1:
-        xi_cam = 0
-        xf_cam = 200 
-        yi_cam = 0
-        yf_cam = 200 
+        xi_cam = 0#0
+        xf_cam = 492#200 
+        yi_cam = 0#0
+        yf_cam = 656#200 
 
     if options.reference is None:
         print "No reference directory is given, you need give a path with a directory with images as references"
@@ -54,7 +54,7 @@ if __name__=="__main__":
     if options.lookpattern is True:
         images = glob.glob(options.reference+'/*.fits')
         for img in images:
-            f = FITS.Read(img)[1][xi_cam:xf_cam,yi_cam:yf_cam] 
+            f = FITS.Read(img)[1][xi_cam:xf_cam,yi_cam:yf_cam]
             fig = plt.figure()
             ax = plt.subplot(111)
             ax.set_xlim(0,xf_cam-xi_cam)
@@ -66,7 +66,7 @@ if __name__=="__main__":
     else:
         padding = 5
 
-        b0 = options.reference+'/img_007.fits'
+        b0 = options.reference+'/img_026.fits'
         f = FITS.Read(b0)[1][xi_cam:xf_cam,yi_cam:yf_cam]
         print f.shape
         fig = plt.figure()
