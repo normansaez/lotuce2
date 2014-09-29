@@ -10,6 +10,8 @@ import numpy as np
 from skimage.measure import regionprops
 from skimage.measure import label
 from math import floor
+import matplotlib.patches as patches
+from matplotlib.path import Path
 
 #COLOR CONST
 BLUE     = '\033[34m'
@@ -19,6 +21,28 @@ YELLOW   = '\033[33m'
 BLACK    = '\033[30m'
 CRIM     = '\033[36m'
 NO_COLOR = '\033[0m'
+
+def get_square(cx, cy, side, color='red'):
+    verts = [
+        (cx-side, cy-side), # left, bottom
+        (cx-side, cy+side), # left, top
+        (cx+side, cy+side), # right, top
+        (cx+side, cy-side), # right, bottom
+        (cx, cy), # ignored
+        ]
+    
+    codes = [Path.MOVETO,
+             Path.LINETO,
+             Path.LINETO,
+             Path.LINETO,
+             Path.CLOSEPOLY,
+             ]
+    
+    path = Path(verts, codes)
+    
+    patch = patches.PathPatch(path, facecolor='none', EdgeColor=color, lw=1)
+    return patch
+
 
 def bit_check(x, y, img, threshold, width):
     intensity = img[y-width:y+width,x-width:x+width].mean()
@@ -188,10 +212,17 @@ for i in range(options.init, options.end+1):
             ax.plot(x1_cam0, y1_cam0, 'x',label='b1')
             ax.plot(x2_cam0, y2_cam0, 'x',label='b2')
             ax.plot(x3_cam0, y3_cam0, 'x',label='b3')
+            patch = get_square(x0_cam0, y0_cam0, width)
+            plt.gca().add_patch(patch)
+            patch = get_square(x1_cam0, y1_cam0, width)
+            plt.gca().add_patch(patch)
+            patch = get_square(x2_cam0, y2_cam0, width)
+            plt.gca().add_patch(patch)
+            patch = get_square(x3_cam0, y3_cam0, width)
+            plt.gca().add_patch(patch)
             plt.show()
-            break
         #-------------------------------------------------------------------
-        #check bits for cam0   
+        #check bits for cam1 
         cam_cam1 = f[xi_cam1:xf_cam1,yi_cam1:yf_cam1]
         print "-------------"
         print "cam1"
@@ -203,6 +234,29 @@ for i in range(options.init, options.end+1):
         print num_cam1
         num_cam1 = eval(num_cam1)
         print num_cam1
+        #################################
+        if options.check is True:
+            fig = plt.figure()
+            #234 =     "2x3 grid, 4th subplot".
+            ax = plt.subplot(111)
+            ax.set_xlim(0,xf_cam1-xi_cam1)
+            ax.set_ylim(0,yf_cam1-yi_cam1)
+            ax.autoscale(False)
+            ax.imshow(cam_cam1, cmap =cm.Greys_r)
+            ax.plot(x0_cam1, y0_cam1, 'x',label='b0')
+            ax.plot(x1_cam1, y1_cam1, 'x',label='b1')
+            ax.plot(x2_cam1, y2_cam1, 'x',label='b2')
+            ax.plot(x3_cam1, y3_cam1, 'x',label='b3')
+            patch = get_square(x0_cam1, y0_cam1, width)
+            plt.gca().add_patch(patch)
+            patch = get_square(x1_cam1, y1_cam1, width)
+            plt.gca().add_patch(patch)
+            patch = get_square(x2_cam1, y2_cam1, width)
+            plt.gca().add_patch(patch)
+            patch = get_square(x3_cam1, y3_cam1, width)
+            plt.gca().add_patch(patch)
+            plt.show()
+        #-------------------------------------------------------------------
         #plot diff
         dif = num_cam0 - num_cam1
         if num_cam1 == num_cam0:
