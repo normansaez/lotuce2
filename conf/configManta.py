@@ -30,9 +30,9 @@ print "Using %d cameras"%ncam
 #####################################
 nacts_number = 54
 subap_number = 1 #This means: subap_numberxsubap_number
-pixel_number_x = 656#50
-pixel_number_y = 492#50
-exposure_time_val = 30000#12500#24000
+pixel_number_x = 200#100#656#50
+pixel_number_y = 200#100#492#50
+exposure_time_val = 40000#12500#24000
 OffsetX = 0
 OffsetY = 0
 #####################################
@@ -137,6 +137,7 @@ rmx=numpy.random.random((nacts,ncents)).astype("f")
 #camCommand="ExposureTimeAbs=%d;PixelFormat=Mono12;Width=%d;Height=%d;TriggerSource=Line1;TriggerMode=On;TriggerActivation=AnyEdge;" % (exposure_time_val, pixel_number_x, pixel_number_y)
 #camCommand="ExposureTimeAbs=%d;PixelFormat=Mono12;Width=%d;Height=%d;TriggerSource=Freerun;TriggerMode=On;TriggerActivation=AnyEdge;" % (exposure_time_val, pixel_number_x, pixel_number_y)
 camCommand="Width=%d;Height=%d;OffsetX=%d;OffsetY=%d;ExposureTimeAbs=%d;PixelFormat=Mono12;TriggerSource=Freerun;TriggerMode=On;TriggerActivation=AnyEdge;" % (pixel_number_x, pixel_number_y, OffsetX, OffsetY, exposure_time_val)
+#camCommand="Width=%d;Height=%d;OffsetX=%d;OffsetY=%d;ExposureTimeAbs=%d;PixelFormat=Mono12;TriggerSource=Line1;TriggerMode=On;TriggerActivation=AnyEdge;" % (pixel_number_x, pixel_number_y, OffsetX, OffsetY, exposure_time_val)
 
 
 control={

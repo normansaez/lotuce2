@@ -26,18 +26,12 @@ print "60 => cam2"
 print "61 => cam3"
 print "---------------"
 for cam in range(0,3+1):
-    x =  get(cam, 'Width')
-    y  = get(cam, 'Height')
-        
-    get(cam, 'OffsetX')
-    get(cam, 'OffsetY')
+    exptime =  get(cam, 'ExposureTimeAbs')
+    exptime = 1000
     print "####"
-    offsetX = int((656 - x )/2.0)
-    offsetY = int((492 - y)/2.0)
-    
-    set(cam, 'OffsetX', offsetX)
-    set(cam, 'OffsetY', offsetY)
+    set(cam, 'ExposureTimeAbs', exptime)
     print "---------------"
+    exptime =  get(cam, 'ExposureTimeAbs')
 
 #if x == 200:
 #    print "200x200, defined offset:"
