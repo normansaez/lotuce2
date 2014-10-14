@@ -30,12 +30,24 @@ if __name__=="__main__":
     (options, unknown) = parser.parse_known_args()
     # vars
     if options.camera == 0:
-        xi_cam = 492#200
-        xf_cam = 984#400
+        xi_cam = 200#492#200
+        xf_cam = 400#984#400
         yi_cam = 0#0
-        yf_cam = 656#200
+        yf_cam = 200#656#200
 
     if options.camera == 1:
+        xi_cam = 0#0
+        xf_cam = 200#492#200 
+        yi_cam = 0#0
+        yf_cam = 200#656#200 
+
+    if options.camera == 2:
+        xi_cam = 0#0
+        xf_cam = 492#200 
+        yi_cam = 0#0
+        yf_cam = 656#200 
+
+    if options.camera == 3:
         xi_cam = 0#0
         xf_cam = 492#200 
         yi_cam = 0#0
@@ -52,7 +64,8 @@ if __name__=="__main__":
         sys.exit(-1)
     #cam1
     if options.lookpattern is True:
-        images = glob.glob(options.reference+'/*.fits')
+        images = sorted(glob.glob(options.reference+'/*.fits'))
+        print "Plotting for camera: cam%d" % options.camera                                                       
         for img in images:
             f = FITS.Read(img)[1][xi_cam:xf_cam,yi_cam:yf_cam]
             fig = plt.figure()
