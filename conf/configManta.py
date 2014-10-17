@@ -23,7 +23,7 @@ import tel
 import numpy
 from pprint import pprint
 
-ncam_selector = { "cam0": 1, "cam1": 1, "cam2":1, "cam3":1, "all": 4}
+ncam_selector = { "cam0": 1, "cam1": 1, "cam2":1, "cam3":1, "cam0cam1":2, "cam1cam2":2, "cam2cam3":2, "cam3cam0":2, "cam013":3,"all": 4}
 ncam = ncam_selector[prefix]
 
 print "Using %d cameras"%ncam
@@ -113,6 +113,11 @@ cameras_selected = { "cam0":["Allied Vision Technologies-50-0503342076"][:ncam],
                      "cam1":["Allied Vision Technologies-50-0503342077"][:ncam],
                      "cam2":["Allied Vision Technologies-50-0503347160"][:ncam],
                      "cam3":["Allied Vision Technologies-50-0503347161"][:ncam],
+                     "cam0cam1":["Allied Vision Technologies-50-0503342076","Allied Vision Technologies-50-0503342077"][:ncam],
+                     "cam1cam2":["Allied Vision Technologies-50-0503342077","Allied Vision Technologies-50-0503347160"][:ncam],
+                     "cam2cam3":["Allied Vision Technologies-50-0503347160","Allied Vision Technologies-50-0503347161"][:ncam],
+                     "cam3cam0":["Allied Vision Technologies-50-0503347161","Allied Vision Technologies-50-0503342076"][:ncam],
+                     "cam013":["Allied Vision Technologies-50-0503342076","Allied Vision Technologies-50-0503342077","Allied Vision Technologies-50-0503347161"][:ncam],
                      "all":["Allied Vision Technologies-50-0503342076","Allied Vision Technologies-50-0503342077","Allied Vision Technologies-50-0503347160","Allied Vision Technologies-50-0503347161"][:ncam]}
 camList= cameras_selected[prefix]
 camNames=string.join(camList,";")

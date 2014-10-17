@@ -7,12 +7,12 @@ import matplotlib.pyplot as plt
 #Setting up!
 print "Setup"
 plot_on = True
-n_img = 500#1000#10000
-prefix = "all"
+n_img = 1000#10000
+prefix = "all"#"cam2cam3"#"cam0cam1"#"all"
 mu = unichr(0x3bc).encode('utf-8')
 d = darc.Control(prefix)
 #ExposureTimeAbs = 30000 (min:58-max:6e+07)
-exptimes =[4200]#[2200,3200,4200]#,5200,6200,7200,8200,9200,10200,11200]
+exptimes =[1000]#[2200,3200,4200]#,5200,6200,7200,8200,9200,10200,11200]
 y_s = []
 hz_s = []
 for exptime in exptimes:
@@ -42,7 +42,7 @@ for exptime in exptimes:
     #timestamp
     print "timestamp"
     timestamp=data["rtcPxlBuf"][1]
-    #print timestamp
+#    print timestamp*1e6
     print "this should be an array with exptime in micro secs [%ss]" % mu
     y = (timestamp[1:]-timestamp[:-1])*1e6
 #    print y
@@ -72,7 +72,7 @@ for exptime in exptimes:
         pass
 #-------------------------------------------------------------
 #plot
-if prefix == "all" and plot_on:
+if plot_on:
 #    pxls=data["rtcPxlBuf"][0]
 #    s1=pxls[:,:pxls.size/2].sum(1)
 #    s2=pxls[:,pxls.size/2:].sum(1)
@@ -84,9 +84,10 @@ if prefix == "all" and plot_on:
     fig = plt.figure()
     ax = plt.subplot(111)
     a = 0
+#    print y_s
     for y in y_s:
         x = range(0,len(y))
-        ax.plot(x, y, '.',label='%.1f$ms$-%.0f$Hz$'%(exptimes[a]/1e3,hz_s[a]))
+        ax.plot(x, y, 'r.-',label='%.1f$ms$-%.0f$Hz$'%(exptimes[a]/1e3,hz_s[a]))
         a += 1
     plt.ylabel('y = time between frames $\mu s$')
     plt.xlabel('x = img')

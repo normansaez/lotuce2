@@ -3,7 +3,7 @@ import time
 import sys
 import argparse 
 
-prefix = "all"
+prefix = "cam2"
 d = darc.Control(prefix)
 
 def set(camera, parameter, value):
@@ -48,5 +48,6 @@ if __name__=="__main__":
         exptime =  get(cam, 'Height')
         exptime =  get(cam, 'OffsetX')
         exptime =  get(cam, 'OffsetY')
+        exptime =  get(cam, 'SyncInLevels')
         print "---------------"
     

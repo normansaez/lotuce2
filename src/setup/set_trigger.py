@@ -45,11 +45,7 @@ if __name__=="__main__":
         trigger =  get(cam, 'TriggerSource')
         print "####"
         if options.on is True:
-            if cam == 2:
-#pass
-                set(cam, 'TriggerSource', 'Line1')
-            else:
-                set(cam, 'TriggerSource', 'Line1')
+            set(cam, 'TriggerSource', 'Line1')
         else:
             set(cam, 'TriggerSource', 'Freerun')
         print "---------------"

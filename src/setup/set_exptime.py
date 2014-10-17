@@ -2,7 +2,7 @@ import darc
 import time
 import sys
 
-prefix = "all"
+prefix = "cam2"
 d = darc.Control(prefix)
 
 def set(camera, parameter, value):
