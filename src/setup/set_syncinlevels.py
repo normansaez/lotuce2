@@ -29,7 +29,7 @@ def get(camera, parameter):
     return r
 
 print "---------------"
-for cam in range(0,3+1):
+for cam in range(0,ncam):
     exptime = 1
     print "####"
     set(cam, 'SyncInLevels', exptime)
