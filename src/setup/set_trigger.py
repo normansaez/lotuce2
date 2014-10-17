@@ -3,8 +3,14 @@ import time
 import sys
 import argparse 
 
-prefix = "all"
-d = darc.Control(prefix)
+parser = argparse.ArgumentParser()
+parser.add_argument('-o', '--on', dest='on', action='store_true' , help='Enable trigger')
+parser.add_argument('-p', '--prefix', dest='prefix', type=str, help='Camera prefix: default all', default="all")
+(options, unknown) = parser.parse_known_args()
+ncam_selector = { "cam0": 1, "cam1": 1, "cam2":1, "cam3":1, "cam0cam1":2, "cam1cam2":2, "cam2cam3":2, "cam3cam0":2, "cam013":3,"all": 4}
+
+ncam = ncam_selector[options.prefix]
+d = darc.Control(options.prefix)
 
 def set(camera, parameter, value):
     cam = "aravisCmd%d" % camera
@@ -27,27 +33,14 @@ def get(camera, parameter):
     print "Cam%d => %s: %d" % (cam, parameter, r)
     return r
 
-if __name__=="__main__":
-    print "Trigger"
-    usage = '''
-    '''
-    parser = argparse.ArgumentParser(usage=usage)
-    parser.add_argument('-o', '--on', dest='on', action='store_true' , help='Enable trigger')
-
-    (options, unknown) = parser.parse_known_args()
-
-    print "76 => cam0"
-    print "77 => cam1"
-    print "60 => cam2"
-    print "61 => cam3"
+print "---------------"
+for cam in range(0,ncam):
+    trigger =  get(cam, 'TriggerSource')
+    print "####"
+    if options.on is True:
+        set(cam, 'TriggerSource', 'Line1')
+    else:
+        set(cam, 'TriggerSource', 'Freerun')
     print "---------------"
-    for cam in range(0,3+1):
-        trigger =  get(cam, 'TriggerSource')
-        print "####"
-        if options.on is True:
-            set(cam, 'TriggerSource', 'Line1')
-        else:
-            set(cam, 'TriggerSource', 'Freerun')
-        print "---------------"
-        get(cam, 'TriggerSource')
+    get(cam, 'TriggerSource')
     

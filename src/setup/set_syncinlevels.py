@@ -3,8 +3,15 @@ import time
 import sys
 import argparse 
 
-prefix = "all"
-d = darc.Control(prefix)
+parser = argparse.ArgumentParser()
+parser.add_argument('-o', '--on', dest='on', action='store_true' , help='Enable trigger')
+parser.add_argument('-p', '--prefix', dest='prefix', type=str, help='Camera prefix: default all', default="all")
+(options, unknown) = parser.parse_known_args()
+ncam_selector = { "cam0": 1, "cam1": 1, "cam2":1, "cam3":1, "cam0cam1":2, "cam1cam2":2, "cam2cam3":2, "cam3cam0":2, "cam013":3,"all": 4}
+
+ncam = ncam_selector[options.prefix]
+d = darc.Control(options.prefix)
+
 
 def set(camera, parameter, value):
     cam = "aravisCmd%d" % camera
@@ -21,27 +28,11 @@ def get(camera, parameter):
     print "Cam%d => %s: %d" % (cam, parameter, r)
     return r
 
-print "76 => cam0"
-print "77 => cam1"
-print "60 => cam2"
-print "61 => cam3"
 print "---------------"
 for cam in range(0,3+1):
-#    exptime =  get(cam, 'SyncInLevels')
-    exptime = 3
+    exptime = 1
     print "####"
     set(cam, 'SyncInLevels', exptime)
     exptime =  get(cam, 'SyncInLevels')
     print "---------------"
 
-#if x == 200:
-#    print "200x200, defined offset:"
-#    #Cam0 => cam76 => OffsetX: 278
-#    #Cam0 => cam76 => OffsetY: 146
-#    set(0,'OffsetX', 278)
-#    set(0,'OffsetY', 146)
-#    #Cam1 => cam77 => OffsetX: 198
-#    #Cam1 => cam77 => OffsetY: 146
-#    set(1,'OffsetX', 198)
-#    set(1,'OffsetY', 146)
-#
