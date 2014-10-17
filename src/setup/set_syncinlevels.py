@@ -30,7 +30,7 @@ def get(camera, parameter):
 
 print "---------------"
 for cam in range(0,ncam):
-    exptime = 1
+    exptime = 0
     print "####"
     set(cam, 'SyncInLevels', exptime)
     exptime =  get(cam, 'SyncInLevels')
