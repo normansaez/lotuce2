@@ -1,13 +1,12 @@
-#import darc
+import darc
 import time
 import sys
 import argparse 
 
 parser = argparse.ArgumentParser()
-#parser.add_argument('-s', '--set', dest='set', action='store_true' , help='Set value')
 parser.add_argument('-p', '--prefix', dest='prefix', type=str, help='Darc prefix: default all', default="all")
 parser.add_argument('-v', '--value'   , dest='value', type=str, help='value to set', default=None)
-parser.add_argument('-n', '--name'   , dest='name', type=str, help='Name of feature, default Exposure Time', default="ExposureTimeAbs")
+parser.add_argument('-l', '--label'   , dest='label', type=str, help='Name of feature, default Exposure Time', default="ExposureTimeAbs")
 parser.add_argument('-c', '--camera', dest='camera', type=int , help='Singe camera to be commanded, otherwise, all', default=None)
 
 (options, unknown) = parser.parse_known_args()
@@ -60,7 +59,7 @@ if options.camera is  not None:
 
 for cam in range(ncam_init, ncam):
     if options.value is not None:
-        set(cam, options.name, options.value)
+        set(cam, options.label, options.value)
     else:
-        get(cam, options.name)
+        get(cam, options.label
     
