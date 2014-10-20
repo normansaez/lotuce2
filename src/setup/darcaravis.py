@@ -61,5 +61,5 @@ for cam in range(ncam_init, ncam):
     if options.value is not None:
         set(cam, options.label, options.value)
     else:
-        get(cam, options.label
+        get(cam, options.label)
     
