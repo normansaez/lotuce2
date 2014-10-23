@@ -7,7 +7,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('-o', '--on', dest='on', action='store_true' , help='Enable trigger')
 parser.add_argument('-p', '--prefix', dest='prefix', type=str, help='Camera prefix: default all', default="all")
 (options, unknown) = parser.parse_known_args()
-ncam_selector = { "cam0": 1, "cam1": 1, "cam2":1, "cam3":1, "cam0cam1":2, "cam1cam2":2, "cam2cam3":2, "cam3cam0":2, "cam013":3,"all": 4}
+ncam_selector = { "cam0": 1, "cam1": 1, "cam2":1, "cam3":1, "both":2, "cam1cam2":2, "cam2cam3":2, "cam3cam0":2, "cam013":3,"all": 4}
 
 ncam = ncam_selector[options.prefix]
 
@@ -33,7 +33,7 @@ print options.prefix
 
 for cam in range(0,ncam):
     exptime =  get(cam, 'ExposureTimeAbs')
-    exptime = 1000
+    exptime = 500
     print "####"
     set(cam, 'ExposureTimeAbs', exptime)
     print "---------------"
