@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 print "Setup"
 plot_on = True
 n_img = 1000#10000
-prefix = "all"#"cam2cam3"#"cam0cam1"#"all"
+prefix = "both"#"all"#"cam2cam3"#"cam0cam1"#"all"
 mu = unichr(0x3bc).encode('utf-8')
 d = darc.Control(prefix)
 #ExposureTimeAbs = 30000 (min:58-max:6e+07)

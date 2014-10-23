@@ -12,7 +12,7 @@ def get_Mbps(exp_time):
 exp_time = float(sys.argv[1])
 hz, Mbps = get_Mbps(exp_time)
 print "exp [us]     : %.2f" % exp_time
-print "Hz           : %.2f" % hz
+print "Hz           : %.2f -> AnyEdge: %.2f" % (hz, hz/2.)
 print "Mbps         : %.2f" % Mbps
 print "Mbps *3 cam  : %.2f" % (Mbps*3)
 if Mbps*2 > 1000:

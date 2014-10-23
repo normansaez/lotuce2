@@ -33,7 +33,7 @@ print options.prefix
 
 for cam in range(0,ncam):
     exptime =  get(cam, 'ExposureTimeAbs')
-    exptime = 500
+    exptime = 1000
     print "####"
     set(cam, 'ExposureTimeAbs', exptime)
     print "---------------"
