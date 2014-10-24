@@ -1,14 +1,11 @@
 #!/usr/bin/env python
 import os
 import sys
-#import pygtk  
-#pygtk.require("2.0")  
-#import gtk  
 from gi.repository import Gtk
 from gi.repository import GObject
 
 
-class BeagleDarcGui:
+class OffSetGui:
 
 
     def __init__( self ):
@@ -58,17 +55,41 @@ class BeagleDarcGui:
         print "%s: %s" % (data, ("disconnecting", "connecting")[widget.get_active()])
         #CONN
         if widget.get_active() is True:
-#            widget.set_label('ON')
-            print "ON"
+            print "cam0: %s" % self.togglebutton_cam0.get_active()
+            print "cam1: %s" % self.togglebutton_cam1.get_active()
+            print "cam2: %s" % self.togglebutton_cam2.get_active()
+            print "cam3: %s" % self.togglebutton_cam3.get_active()
+            if data == "cam0":
+#                self.togglebutton_cam0.set_active(False)
+                self.togglebutton_cam1.set_active(False)
+                self.togglebutton_cam2.set_active(False)
+                self.togglebutton_cam3.set_active(False)
+
+            if data == "cam1":
+                self.togglebutton_cam0.set_active(False)
+#                self.togglebutton_cam1.set_active(False)
+                self.togglebutton_cam2.set_active(False)
+                self.togglebutton_cam3.set_active(False)
+
+            if data == "cam2":
+                self.togglebutton_cam0.set_active(False)
+                self.togglebutton_cam1.set_active(False)
+#                self.togglebutton_cam2.set_active(False)
+                self.togglebutton_cam3.set_active(False)
+
+            if data == "cam3":
+                self.togglebutton_cam0.set_active(False)
+                self.togglebutton_cam1.set_active(False)
+                self.togglebutton_cam2.set_active(False)
+#                self.togglebutton_cam3.set_active(False)
 
         if widget.get_active() is False:
-#            widget.set_label('OFF')
             print "OFF"
 
     def quit(self, widget):
         sys.exit(0)
 
 
-BeagleDarcGui = BeagleDarcGui()
-BeagleDarcGui.window.show()
+OffSetGui = OffSetGui()
+OffSetGui.window.show()
 Gtk.main()
