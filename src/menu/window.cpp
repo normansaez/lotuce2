@@ -82,6 +82,7 @@ void Window::browse()
         if (configFileComboBox->findText(filename) == -1)
             configFileComboBox->addItem(filename);
         configFileComboBox->setCurrentIndex(configFileComboBox->findText(filename));
+        homePath = filename;
         startButton->setEnabled(true);
     }
 }
@@ -90,8 +91,16 @@ void Window::browse()
 //! [3]
 void Window::goDarc()
 {
-    QProcess process;
-    process.startDetached("ls .");
+
+
+    QStringList pythonCommandArguments = QStringList() << "/rtc/bin/darccontrol" << "-o" << homePath << "--prefix=both";
+    qDebug() << pythonCommandArguments.join(" ");
+    QProcess *process = new QProcess;
+    process->start("python",pythonCommandArguments);
+    process->waitForBytesWritten();
+    process->waitForFinished();
+    qDebug() << process->readAll();
+    //process.startDetached("ls .");
 }
 
 QPushButton *Window::createButton(const QString &text, const char *member)
