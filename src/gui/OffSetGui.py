@@ -5,7 +5,7 @@ import sys
 #pygtk.require("2.0")  
 #import gtk  
 from gi.repository import Gtk
-#from gi.repository import GObject
+from gi.repository import GObject
 
 
 class BeagleDarcGui:
@@ -22,9 +22,21 @@ class BeagleDarcGui:
         if self.window:
             self.window.connect("destroy", Gtk.main_quit)
 
-        #Toggle button to connect to beaglebone
-        self.connect_togglebutton = self.builder.get_object ("connect_togglebutton")
-#        self.connect_togglebutton.connect("toggled", self.callback, "Connection")
+        #Toggle button to connect to cam0
+        self.togglebutton_cam0 = self.builder.get_object ("togglebutton0")
+        self.togglebutton_cam0.connect("toggled", self.callback, "cam0")
+
+        #Toggle button to connect to cam1
+        self.togglebutton_cam1 = self.builder.get_object ("togglebutton1")
+        self.togglebutton_cam1.connect("toggled", self.callback, "cam1")
+
+        #Toggle button to connect to cam2
+        self.togglebutton_cam2 = self.builder.get_object ("togglebutton2")
+        self.togglebutton_cam2.connect("toggled", self.callback, "cam2")
+
+        #Toggle button to connect to cam3
+        self.togglebutton_cam3 = self.builder.get_object ("togglebutton3")
+        self.togglebutton_cam3.connect("toggled", self.callback, "cam3")
 
         #default entries
         self.entry1 = self.builder.get_object("entry1")
@@ -46,15 +58,12 @@ class BeagleDarcGui:
         print "%s: %s" % (data, ("disconnecting", "connecting")[widget.get_active()])
         #CONN
         if widget.get_active() is True:
-            widget.set_label(gtk.STOCK_DISCONNECT)
-            widget.set_use_stock(True)
-            self.image4.set_from_stock(gtk.STOCK_CONNECT, gtk.ICON_SIZE_MENU)
-            self.bds.ior = self.entry3.get_text()
+#            widget.set_label('ON')
+            print "ON"
 
         if widget.get_active() is False:
-            widget.set_label(gtk.STOCK_CONNECT)
-            widget.set_use_stock(True)
-            self.image4.set_from_stock(gtk.STOCK_DISCONNECT, gtk.ICON_SIZE_MENU)
+#            widget.set_label('OFF')
+            print "OFF"
 
     def quit(self, widget):
         sys.exit(0)

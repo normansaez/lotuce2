@@ -14,7 +14,7 @@
             <property name="can_focus">False</property>
             <property name="column_homogeneous">True</property>
             <child>
-              <object class="GtkToggleButton" id="togglebutton1">
+              <object class="GtkToggleButton" id="togglebutton0">
                 <property name="label" translatable="yes">cam0</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
@@ -28,7 +28,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkToggleButton" id="togglebutton2">
+              <object class="GtkToggleButton" id="togglebutton1">
                 <property name="label" translatable="yes">cam1</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
@@ -42,7 +42,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkToggleButton" id="togglebutton3">
+              <object class="GtkToggleButton" id="togglebutton2">
                 <property name="label" translatable="yes">cam2</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
@@ -56,7 +56,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkToggleButton" id="togglebutton4">
+              <object class="GtkToggleButton" id="togglebutton3">
                 <property name="label" translatable="yes">cam3</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
@@ -68,12 +68,6 @@
                 <property name="width">1</property>
                 <property name="height">1</property>
               </packing>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
             </child>
             <child>
               <placeholder/>
@@ -107,7 +101,7 @@
             <property name="row_homogeneous">True</property>
             <property name="column_homogeneous">True</property>
             <child>
-              <object class="GtkButton" id="button1">
+              <object class="GtkButton" id="button_up">
                 <property name="label">gtk-go-up</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
@@ -123,7 +117,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="button2">
+              <object class="GtkButton" id="button_back">
                 <property name="label">gtk-go-back</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
@@ -139,7 +133,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="button4">
+              <object class="GtkButton" id="button_forward">
                 <property name="label">gtk-go-forward</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
@@ -155,7 +149,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="button3">
+              <object class="GtkButton" id="button_down">
                 <property name="label">gtk-go-down</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
@@ -171,15 +165,6 @@
                 <property name="width">1</property>
                 <property name="height">1</property>
               </packing>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
             </child>
             <child>
               <placeholder/>
