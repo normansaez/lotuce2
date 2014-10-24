@@ -12,6 +12,7 @@ ncam_selector = { "cam0": 1, "cam1": 1, "cam2":1, "cam3":1, "both":2, "cam1cam2"
 ncam = ncam_selector[options.prefix]
 d = darc.Control(options.prefix)
 
+
 def set(camera, parameter, value):
     cam = "aravisCmd%d" % camera
     cmd = '%s=%s;' % (parameter, str(value))
@@ -29,16 +30,9 @@ def get(camera, parameter):
 
 print "---------------"
 for cam in range(0,ncam):
-    x =  get(cam, 'Width')
-    y  = get(cam, 'Height')
-        
-    get(cam, 'OffsetX')
-    get(cam, 'OffsetY')
+    exptime = 0
     print "####"
-    offsetX = int((656 - x )/2.0)
-    offsetY = int((492 - y)/2.0)
-    
-    set(cam, 'OffsetX', offsetX)
-    set(cam, 'OffsetY', offsetY)
+    set(cam, 'SyncInLevels', exptime)
+    exptime =  get(cam, 'SyncInLevels')
     print "---------------"
 

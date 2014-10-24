@@ -8,8 +8,8 @@ import numpy as np
 parse = OptionParser()
 #parse.add_option('-c', '--camera', dest='camera', type='str', help='Camera num: 0,1,2,3 etc', default="0")
 parse.add_option('-p', '--prefix', dest='prefix', type='str', help='Camera prefix: default all', default="all")
-parse.add_option('-e', '--exptime', dest='exptime', type=int, help='Value for ExposureTimeAbs', default=12000)
-parse.add_option('-i', '--nimg', dest='nimg', type=int, help='Number of images', default=100)
+parse.add_option('-e', '--exptime', dest='exptime', type=int, help='Value for ExposureTimeAbs', default=1000)
+parse.add_option('-i', '--nimg', dest='nimg', type=int, help='Number of images', default=500)
 (options , argv) = parse.parse_args()
 #Takes camera instance
 d=darc.Control(options.prefix)
@@ -18,7 +18,7 @@ pxlx =d.Get("npxlx")[0]
 pxly =d.Get("npxly")[0]
 
 img_to_take =  options.nimg
-exptime = 12000
+exptime = 1000
 d.Set("aravisCmdAll",'ExposureTimeAbs=%d;'% exptime)
 d.Set("aravisGet","?0:ExposureTimeAbs")
 exptime=int(d.Get("aravisGet"))
