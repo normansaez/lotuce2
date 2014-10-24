@@ -93,15 +93,15 @@ if __name__=="__main__":
 
     # camera coordinates according windows size
     #XXX commented for 200x200 
-    xi_cam0 = 492#200
-    xf_cam0 = 984#400
+    xi_cam0 = 200#492#200
+    xf_cam0 = 400#984#400
     yi_cam0 = 0#0
-    yf_cam0 = 656#200
+    yf_cam0 = 200#656#200
 
     xi_cam1 = 0#0
-    xf_cam1 = 492#200 
+    xf_cam1 = 200#492#200 
     yi_cam1 = 0#0
-    yf_cam1 = 656#200 
+    yf_cam1 = 200#656#200 
     
     #Padding in pixels to make closed shapes and get a correct centroid
     padding = 5#7

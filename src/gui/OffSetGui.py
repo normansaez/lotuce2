@@ -86,10 +86,15 @@ class OffSetGui:
         if widget.get_active() is False:
             print "OFF"
 
+    def cmd_cam(self, cam):
+        selector  = {"aravisCmd0":"cam0", "aravisCmd1":"cam1", "aravisCmd2":"cam2", "aravisCmd3":"cam3"}
     def quit(self, widget):
         sys.exit(0)
 
+if __name__ == '__main__':
+    import darc
+    d = darc.Control("both")
 
-OffSetGui = OffSetGui()
-OffSetGui.window.show()
-Gtk.main()
+    OffSetGui = OffSetGui()
+    OffSetGui.window.show()
+    Gtk.main()

@@ -43,15 +43,15 @@ if __name__=="__main__":
 
     if options.camera == 2:
         xi_cam = 0#0
-        xf_cam = 492#200 
+        xf_cam = 200#492#200 
         yi_cam = 0#0
-        yf_cam = 656#200 
+        yf_cam = 200#656#200 
 
     if options.camera == 3:
         xi_cam = 0#0
-        xf_cam = 492#200 
+        xf_cam = 200#492#200 
         yi_cam = 0#0
-        yf_cam = 656#200 
+        yf_cam = 200#656#200 
 
     if options.reference is None:
         print "No reference directory is given, you need give a path with a directory with images as references"
@@ -67,7 +67,9 @@ if __name__=="__main__":
         images = sorted(glob.glob(options.reference+'/*.fits'))
         print "Plotting for camera: cam%d" % options.camera                                                       
         for img in images:
+            print images
             f = FITS.Read(img)[1][xi_cam:xf_cam,yi_cam:yf_cam]
+            print f
             fig = plt.figure()
             ax = plt.subplot(111)
             ax.set_xlim(0,xf_cam-xi_cam)
