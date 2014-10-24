@@ -28,7 +28,7 @@ t1 = time.clock()
 streams = streamBlock['%srtcPxlBuf'%options.prefix]
 count = 0
 for stream in streams:
-    data = stream[0].reshape((4*pxly,pxlx))
+    data = stream[0].reshape((2*pxly,pxlx))
     fitsname = "img_%s.fits" % (str(count).zfill(3))
     FITS.Write(data, fitsname, writeMode='w')
     count += 1
