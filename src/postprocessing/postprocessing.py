@@ -110,15 +110,15 @@ if __name__=="__main__":
 
     #XXX: image reference: this is according each windows size
     #XXX commented for 200x200
-    cam0_b0 = options.reference+'/img_003.fits'#'/img_000.fits'
-    cam0_b1 = options.reference+'/img_020.fits'#'/img_001.fits'
-    cam0_b2 = options.reference+'/img_022.fits'#'/img_003.fits'
-    cam0_b3 = options.reference+'/img_026.fits'#'/img_007.fits'
+    cam0_b0 = options.reference+'/img_028.fits'#'/img_000.fits'
+    cam0_b1 = options.reference+'/img_030.fits'#'/img_001.fits'
+    cam0_b2 = options.reference+'/img_034.fits'#'/img_003.fits'
+    cam0_b3 = options.reference+'/img_010.fits'#'/img_007.fits'
 
-    cam1_b0 = options.reference+'/img_019.fits'#'/img_001.fits'
-    cam1_b1 = options.reference+'/img_020.fits'#'/img_002.fits'
-    cam1_b2 = options.reference+'/img_022.fits'#'/img_004.fits'
-    cam1_b3 = options.reference+'/img_026.fits'#'/img_008.fits'
+    cam1_b0 = options.reference+'/img_028.fits'#'/img_001.fits'
+    cam1_b1 = options.reference+'/img_030.fits'#'/img_002.fits'
+    cam1_b2 = options.reference+'/img_034.fits'#'/img_004.fits'
+    cam1_b3 = options.reference+'/img_010.fits'#'/img_008.fits'
 
     #Getting central coordinates
     b0_0 = FITS.Read(cam0_b0)[1][xi_cam0:xf_cam0,yi_cam0:yf_cam0]
@@ -308,7 +308,7 @@ if options.show is True:
 ############### line plot #######################
 plt.clf()
 ax2 = plt.subplot(111)
-ax2.plot(axis_x, diff, 'rx',label='cam0 - cam1')
+ax2.plot(axis_x, diff, 'r-x',label='cam0 - cam1')
 box = ax2.get_position()
 ax2.set_position([box.x0, box.y0, box.width * 0.8, box.height])
 plt.ylabel('pattern diff')

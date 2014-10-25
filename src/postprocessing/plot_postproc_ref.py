@@ -81,7 +81,7 @@ if __name__=="__main__":
     else:
         padding = 5
 
-        b0 = options.reference+'/img_026.fits'
+        b0 = options.reference+'/img_028.fits'
         f = FITS.Read(b0)[1][xi_cam:xf_cam,yi_cam:yf_cam]
         print f.shape
         fig = plt.figure()
