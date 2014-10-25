@@ -117,7 +117,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="button_back">
+              <object class="GtkButton" id="button_do">
                 <property name="label">gtk-go-back</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
@@ -133,7 +133,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="button_forward">
+              <object class="GtkButton" id="button_le">
                 <property name="label">gtk-go-forward</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
@@ -149,7 +149,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="button_down">
+              <object class="GtkButton" id="button_ri">
                 <property name="label">gtk-go-down</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>

@@ -35,12 +35,20 @@ class OffSetGui:
         self.togglebutton_cam3 = self.builder.get_object ("togglebutton3")
         self.togglebutton_cam3.connect("toggled", self.callback, "cam3")
 
-        #default entries
-        self.entry1 = self.builder.get_object("entry1")
-        self.entry2 = self.builder.get_object("entry2")
-        self.entry3 = self.builder.get_object("entry3")
-        self.image4 = self.builder.get_object("image4")
-
+        #cross to put available offset
+        # up = up
+        # do = down
+        # le = left
+        # ri = right
+        self.button_up = self.builder.get_object("button_up")
+        self.button_do = self.builder.get_object("button_do")
+        self.button_le = self.builder.get_object("button_le")
+        self.button_ri = self.builder.get_object("button_ri")
+        
+        self.button_up.connect("clicked", self.offset_callback, "up")
+        self.button_do.connect("clicked", self.offset_callback, "do")
+        self.button_le.connect("clicked", self.offset_callback, "le")
+        self.button_ri.connect("clicked", self.offset_callback, "ri")
 
         dic = { 
             "on_buttonQuit_clicked" : self.quit,
@@ -86,6 +94,12 @@ class OffSetGui:
         if widget.get_active() is False:
             print "OFF"
 
+    def offset_callback(self, widget, data=None):
+        '''
+        offset callback
+        '''
+        print "%s" % (data)
+
     def cmd_cam(self, cam):
         selector  = {"aravisCmd0":"cam0", "aravisCmd1":"cam1", "aravisCmd2":"cam2", "aravisCmd3":"cam3"}
     def quit(self, widget):
@@ -93,7 +107,7 @@ class OffSetGui:
 
 if __name__ == '__main__':
     import darc
-    d = darc.Control("both")
+#    d = darc.Control("both")
 
     OffSetGui = OffSetGui()
     OffSetGui.window.show()
