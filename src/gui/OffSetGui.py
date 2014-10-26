@@ -21,7 +21,7 @@ class OffSetGui:
         self.DarcAravis = DarcAravis("both")
 
         #step
-        self.__step = 1
+        self.__step = 10
 
         if self.window:
             self.window.connect("destroy", Gtk.main_quit)
@@ -76,7 +76,8 @@ class OffSetGui:
 
         self.step = self.builder.get_object("step")
         self.current_step = self.builder.get_object("current_step")
-        self.current_step.set_text("1 pixel(s)")
+        self.current_step.set_text("-- pixel(s)")
+        self.step.set_text("10")
 
         dic = { 
             "on_buttonQuit_clicked" : self.quit,
@@ -175,7 +176,7 @@ class OffSetGui:
         step = self.step.get_text()
         print "step %s" % step
         if step == "":
-            step = "1"
+            step = "10"
         self.__step = int(step)
         print "self.__step %d" % self.__step
         self.current_step.set_text("%s pixel(s)"% step)
