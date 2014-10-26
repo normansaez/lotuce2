@@ -141,7 +141,8 @@ rmx=numpy.random.random((nacts,ncents)).astype("f")
 
 #camCommand="ExposureTimeAbs=%d;PixelFormat=Mono12;Width=%d;Height=%d;TriggerSource=Line1;TriggerMode=On;TriggerActivation=AnyEdge;" % (exposure_time_val, pixel_number_x, pixel_number_y)
 #camCommand="ExposureTimeAbs=%d;PixelFormat=Mono12;Width=%d;Height=%d;TriggerSource=Freerun;TriggerMode=On;TriggerActivation=AnyEdge;" % (exposure_time_val, pixel_number_x, pixel_number_y)
-camCommand="Width=%d;Height=%d;OffsetX=%d;OffsetY=%d;ExposureTimeAbs=%d;PixelFormat=Mono12;TriggerSource=Freerun;TriggerMode=On;TriggerActivation=AnyEdge;" % (pixel_number_x, pixel_number_y, OffsetX, OffsetY, exposure_time_val)
+#camCommand="Width=%d;Height=%d;OffsetX=%d;OffsetY=%d;ExposureTimeAbs=%d;PixelFormat=Mono12;TriggerSource=Freerun;TriggerMode=On;TriggerActivation=AnyEdge;" % (pixel_number_x, pixel_number_y, OffsetX, OffsetY, exposure_time_val)
+camCommand="Width=%d;Height=%d;OffsetX=%d;OffsetY=%d;ExposureTimeAbs=%d;PixelFormat=Mono12;TriggerSource=Freerun;TriggerMode=On;TriggerActivation=RisingEdge;" % (pixel_number_x, pixel_number_y, OffsetX, OffsetY, exposure_time_val)
 #camCommand="Width=%d;Height=%d;OffsetX=%d;OffsetY=%d;ExposureTimeAbs=%d;PixelFormat=Mono12;TriggerSource=Line1;TriggerMode=On;TriggerActivation=AnyEdge;" % (pixel_number_x, pixel_number_y, OffsetX, OffsetY, exposure_time_val)
 
 

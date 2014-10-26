@@ -26,6 +26,18 @@ class OffSetGui:
         if self.window:
             self.window.connect("destroy", Gtk.main_quit)
 
+        self.camera = 0
+        #Offset x,y
+        self.offset_x = self.builder.get_object("offset_x")
+        print self.offset_x
+        offset_x = self.DarcAravis.get(self.camera, 'OffsetX')
+        self.offset_x.set_text("%s pixel(s)"% offset_x)
+
+        self.offset_y = self.builder.get_object("offset_y")
+        print self.offset_y
+        offset_y = self.DarcAravis.get(self.camera, 'OffsetY')
+        self.offset_y.set_text("%s pixel(s)"% offset_y)
+
         #Toggle button to connect to cam0
         self.togglebutton_cam0 = self.builder.get_object ("togglebutton0")
         self.togglebutton_cam0.connect("toggled", self.callback, "0")
@@ -44,7 +56,6 @@ class OffSetGui:
         
         #Default cam0:
         self.togglebutton_cam0.set_active(True)
-        self.camera = 0
 
         #cross to put available offset
         # up = up
@@ -68,15 +79,6 @@ class OffSetGui:
         self.step = self.builder.get_object("step")
         self.current_step = self.builder.get_object("current_step")
         self.current_step.set_text("1 pixel(s)")
-
-        #Offset x,y
-        self.offset_x = self.builder.get_object("offset_x")
-        offset_x = self.DarcAravis.get(self.camera, 'OffsetX')
-        self.offset_x.set_text("%s pixel(s)"% offset_x)
-
-        self.offset_y = self.builder.get_object("offset_y")
-        offset_y = self.DarcAravis.get(self.camera, 'OffsetY')
-        self.offset_y.set_text("%s pixel(s)"% offset_y)
 
         dic = { 
             "on_buttonQuit_clicked" : self.quit,
@@ -120,6 +122,14 @@ class OffSetGui:
 #                self.togglebutton_cam3.set_active(False)
 
             self.camera = int(data)
+            print self
+            if self.offset_y is not None:
+                offset_y = self.DarcAravis.get(self.camera, 'OffsetY')
+                self.offset_y.set_text("%d pixel(s)"% int(offset_y)) 
+            if self.offset_x is not None:
+                offset_x = self.DarcAravis.get(self.camera, 'OffsetX')
+                self.offset_x.set_text("%d pixel(s)"% int(offset_x))
+
 
 #        if widget.get_active() is False:
 #            print "OFF"
@@ -134,18 +144,19 @@ class OffSetGui:
         print "offset: %s" % (data)
         offset_y = self.DarcAravis.get(self.camera, 'OffsetY')
         offset_x = self.DarcAravis.get(self.camera, 'OffsetX')
-        
+        print "step(%d) offset(%d,%d)" % (self.__step, offset_x, offset_y)
+
         if data == 'up':
-            self.DarcAravis.set(self.camera, 'OffsetY', offset_y + self.__step)
+            self.DarcAravis.set(self.camera, 'OffsetY', int(offset_y + self.__step))
             self.offset_y.set_text("%d pixel(s)"% int(offset_y + self.__step))
         if data == 'do':
-            self.DarcAravis.set(self.camera, 'OffsetY', offset_y - self.__step)
+            self.DarcAravis.set(self.camera, 'OffsetY', int(offset_y - self.__step))
             self.offset_y.set_text("%d pixel(s)"% int(offset_y - self.__step))
         if data == 'le':
-            self.DarcAravis.set(self.camera, 'OffsetX', offset_x + self.__step)
+            self.DarcAravis.set(self.camera, 'OffsetX', int(offset_x + self.__step))
             self.offset_x.set_text("%d pixel(s)"% int(offset_x + self.__step))
         if data == 'ri':
-            self.DarcAravis.set(self.camera, 'OffsetX', offset_x - self.__step)
+            self.DarcAravis.set(self.camera, 'OffsetX', int(offset_x - self.__step))
             self.offset_x.set_text("%d pixel(s)"% int(offset_x - self.__step))
 
         
