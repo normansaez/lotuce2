@@ -67,7 +67,17 @@ class OffSetGui:
 
         self.step = self.builder.get_object("step")
         self.current_step = self.builder.get_object("current_step")
-        self.current_step.set_text("current step: 1 pixel(s)")
+        self.current_step.set_text("1 pixel(s)")
+
+        #Offset x,y
+        self.offset_x = self.builder.get_object("offset_x")
+        offset_x = self.DarcAravis.get(self.camera, 'OffsetX')
+        self.offset_x.set_text("%s pixel(s)"% offset_x)
+
+        self.offset_y = self.builder.get_object("offset_y")
+        offset_y = self.DarcAravis.get(self.camera, 'OffsetY')
+        self.offset_y.set_text("%s pixel(s)"% offset_y)
+
         dic = { 
             "on_buttonQuit_clicked" : self.quit,
         }
@@ -118,7 +128,7 @@ class OffSetGui:
         '''
         offset callback
 
-        The offset is taking as reference darcplot gui.  therefore the offset
+        The offset is taking as reference darcplot gui.  Therefore the offset
         cross follows that darcplot axis references.
         '''
         print "%s" % (data)
@@ -127,12 +137,16 @@ class OffSetGui:
         
         if data == 'up':
             self.DarcAravis.set(self.camera, 'OffsetY', offset_Y + self.__step)
+            self.offset_y.set_text("%s pixel(s)"% offset_y + self.__step)
         if data == 'do':
             self.DarcAravis.set(self.camera, 'OffsetY', offset_Y - self.__step)
+            self.offset_y.set_text("%s pixel(s)"% offset_y - self.__step)
         if data == 'le':
             self.DarcAravis.set(self.camera, 'OffsetX', offset_X + self.__step)
+            self.offset_x.set_text("%s pixel(s)"% offset_x + self.__step)
         if data == 'ri':
             self.DarcAravis.set(self.camera, 'OffsetX', offset_X - self.__step)
+            self.offset_x.set_text("%s pixel(s)"% offset_x - self.__step)
 
 
     def step_callback(self, widget, data=None):
@@ -143,7 +157,7 @@ class OffSetGui:
         if step == "":
             step = "1"
         self.__step = int(step)
-        self.current_step.set_text("current step: %s pixel(s)"% step)
+        self.current_step.set_text("%s pixel(s)"% step)
         self.step.set_text("")
 
     def quit(self, widget):
