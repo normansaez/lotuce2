@@ -144,21 +144,24 @@ class OffSetGui:
         print "offset: %s" % (data)
         offset_y = self.DarcAravis.get(self.camera, 'OffsetY')
         offset_x = self.DarcAravis.get(self.camera, 'OffsetX')
-        print "step(%d) offset(%d,%d)" % (self.__step, offset_x, offset_y)
+        print "before apply step(%d)\n,offset(%d,%d)" % (self.__step, offset_x, offset_y)
 
         if data == 'up':
             self.DarcAravis.set(self.camera, 'OffsetY', int(offset_y + self.__step))
-            self.offset_y.set_text("%d pixel(s)"% int(offset_y + self.__step))
         if data == 'do':
             self.DarcAravis.set(self.camera, 'OffsetY', int(offset_y - self.__step))
-            self.offset_y.set_text("%d pixel(s)"% int(offset_y - self.__step))
         if data == 'le':
             self.DarcAravis.set(self.camera, 'OffsetX', int(offset_x + self.__step))
-            self.offset_x.set_text("%d pixel(s)"% int(offset_x + self.__step))
         if data == 'ri':
             self.DarcAravis.set(self.camera, 'OffsetX', int(offset_x - self.__step))
-            self.offset_x.set_text("%d pixel(s)"% int(offset_x - self.__step))
 
+        offset_y = self.DarcAravis.get(self.camera, 'OffsetY')
+        offset_x = self.DarcAravis.get(self.camera, 'OffsetX')
+        if data =='up' or data =='do':
+            self.offset_y.set_text("%d pixel(s)"% int(offset_y))
+        if data =='le' or data =='ri':
+            self.offset_x.set_text("%d pixel(s)"% int(offset_x))
+        print "after apply: offset(%d,%d)" % (offset_x, offset_y)
         
 
 
