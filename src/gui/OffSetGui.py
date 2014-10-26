@@ -16,6 +16,12 @@ class OffSetGui:
         self.builder.add_from_file(path+"/offset.glade")
         self.window = self.builder.get_object ("window1")
         self.window.set_events(self.window.get_events())
+        
+        #XXX: The prefix should be read from a centralized place
+        self.DarcAravis = DarcAravis("both")
+
+        #step
+        self.__step = 1
 
         if self.window:
             self.window.connect("destroy", Gtk.main_quit)
@@ -37,8 +43,9 @@ class OffSetGui:
         self.togglebutton_cam3.connect("toggled", self.callback, "3")
         
         #Default cam0:
-#        self.togglebutton_cam0.set_active(True)
-        
+        self.togglebutton_cam0.set_active(True)
+        self.camera = 0
+
         #cross to put available offset
         # up = up
         # do = down
@@ -102,14 +109,31 @@ class OffSetGui:
                 self.togglebutton_cam2.set_active(False)
 #                self.togglebutton_cam3.set_active(False)
 
+            self.camera = int(data)
+
         if widget.get_active() is False:
             print "OFF"
 
     def offset_callback(self, widget, data=None):
         '''
         offset callback
+
+        The offset is taking as reference darcplot gui.  therefore the offset
+        cross follows that darcplot axis references.
         '''
         print "%s" % (data)
+        offset_Y = self.DarcAravis.get(self.camera, 'OffsetY')
+        offset_X = self.DarcAravis.get(self.camera, 'OffsetX')
+        
+        if data == 'up':
+            self.DarcAravis.set(self.camera, 'OffsetY', offset_Y + self.__step)
+        if data == 'do':
+            self.DarcAravis.set(self.camera, 'OffsetY', offset_Y - self.__step)
+        if data == 'le':
+            self.DarcAravis.set(self.camera, 'OffsetX', offset_X + self.__step)
+        if data == 'ri':
+            self.DarcAravis.set(self.camera, 'OffsetX', offset_X - self.__step)
+
 
     def step_callback(self, widget, data=None):
         '''
@@ -118,6 +142,7 @@ class OffSetGui:
         step = self.step.get_text()
         if step == "":
             step = "1"
+        self.__step = int(step)
         self.current_step.set_text("current step: %s pixel(s)"% step)
         self.step.set_text("")
 

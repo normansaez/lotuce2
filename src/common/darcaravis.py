@@ -29,8 +29,8 @@ class DarcAravis:
         except ValueError, e:
             result = self.darc_instance.Get("aravisGet")
             print sys._getframe().f_code.co_name,
-            print "Cam%d => %s: %s" % (cam, parameter, result)
+            print "Cam%d => %s: %s" % (camera, parameter, result)
             return result
         print sys._getframe().f_code.co_name,
-        print "Cam%d => %s: %d" % (cam, parameter, result)
+        print "Cam%d => %s: %d" % (camera, parameter, result)
         return result
