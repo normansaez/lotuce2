@@ -20,10 +20,8 @@ class DarcAravis:
             
     def get_darc_prefix(self):
         darc_lists = glob.glob('/dev/shm/*rtcParam1')
-        print darc_lists
         for ins in darc_lists:
             if ins.split('rtcParam1')[0] != "":
-                print ins.split('rtcParam1')[0].split('/')[3]
                 return ins.split('rtcParam1')[0].split('/')[3]
         return None
             
