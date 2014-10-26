@@ -29,12 +29,10 @@ class OffSetGui:
         self.camera = 0
         #Offset x,y
         self.offset_x = self.builder.get_object("offset_x")
-        print self.offset_x
         offset_x = self.DarcAravis.get(self.camera, 'OffsetX')
         self.offset_x.set_text("%s pixel(s)"% offset_x)
 
         self.offset_y = self.builder.get_object("offset_y")
-        print self.offset_y
         offset_y = self.DarcAravis.get(self.camera, 'OffsetY')
         self.offset_y.set_text("%s pixel(s)"% offset_y)
 
@@ -170,9 +168,11 @@ class OffSetGui:
         step_callback
         '''
         step = self.step.get_text()
+        print "step %s" % step
         if step == "":
             step = "1"
         self.__step = int(step)
+        print "self.__step %d" % self.__step
         self.current_step.set_text("%s pixel(s)"% step)
         self.step.set_text("")
 
