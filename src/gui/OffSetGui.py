@@ -4,6 +4,7 @@ import sys
 from gi.repository import Gtk
 from gi.repository import GObject
 
+from darcaravis import DarcAravis
 
 class OffSetGui:
 
@@ -21,20 +22,23 @@ class OffSetGui:
 
         #Toggle button to connect to cam0
         self.togglebutton_cam0 = self.builder.get_object ("togglebutton0")
-        self.togglebutton_cam0.connect("toggled", self.callback, "cam0")
+        self.togglebutton_cam0.connect("toggled", self.callback, "0")
 
         #Toggle button to connect to cam1
         self.togglebutton_cam1 = self.builder.get_object ("togglebutton1")
-        self.togglebutton_cam1.connect("toggled", self.callback, "cam1")
+        self.togglebutton_cam1.connect("toggled", self.callback, "1")
 
         #Toggle button to connect to cam2
         self.togglebutton_cam2 = self.builder.get_object ("togglebutton2")
-        self.togglebutton_cam2.connect("toggled", self.callback, "cam2")
+        self.togglebutton_cam2.connect("toggled", self.callback, "2")
 
         #Toggle button to connect to cam3
         self.togglebutton_cam3 = self.builder.get_object ("togglebutton3")
-        self.togglebutton_cam3.connect("toggled", self.callback, "cam3")
-
+        self.togglebutton_cam3.connect("toggled", self.callback, "3")
+        
+        #Default cam0:
+#        self.togglebutton_cam0.set_active(True)
+        
         #cross to put available offset
         # up = up
         # do = down
@@ -74,25 +78,25 @@ class OffSetGui:
             print "cam1: %s" % self.togglebutton_cam1.get_active()
             print "cam2: %s" % self.togglebutton_cam2.get_active()
             print "cam3: %s" % self.togglebutton_cam3.get_active()
-            if data == "cam0":
+            if data == "0":
 #                self.togglebutton_cam0.set_active(False)
                 self.togglebutton_cam1.set_active(False)
                 self.togglebutton_cam2.set_active(False)
                 self.togglebutton_cam3.set_active(False)
 
-            if data == "cam1":
+            if data == "1":
                 self.togglebutton_cam0.set_active(False)
 #                self.togglebutton_cam1.set_active(False)
                 self.togglebutton_cam2.set_active(False)
                 self.togglebutton_cam3.set_active(False)
 
-            if data == "cam2":
+            if data == "2":
                 self.togglebutton_cam0.set_active(False)
                 self.togglebutton_cam1.set_active(False)
 #                self.togglebutton_cam2.set_active(False)
                 self.togglebutton_cam3.set_active(False)
 
-            if data == "cam3":
+            if data == "3":
                 self.togglebutton_cam0.set_active(False)
                 self.togglebutton_cam1.set_active(False)
                 self.togglebutton_cam2.set_active(False)
@@ -117,14 +121,13 @@ class OffSetGui:
         self.current_step.set_text("current step: %s pixel(s)"% step)
         self.step.set_text("")
 
-    def cmd_cam(self, cam):
-        selector  = {"aravisCmd0":"cam0", "aravisCmd1":"cam1", "aravisCmd2":"cam2", "aravisCmd3":"cam3"}
     def quit(self, widget):
+        '''
+        quit
+        '''
         sys.exit(0)
 
 if __name__ == '__main__':
-    import darc
-#    d = darc.Control("both")
 
     OffSetGui = OffSetGui()
     OffSetGui.window.show()

@@ -5,10 +5,10 @@ import time
 
 class DarcAravis:
     def __init__(self, prefix):
-        pass
+#        pass
 #        signal.signal(signal.SIGALRM, self.handler)
 #        signal.alarm(5)
-#        self.darc_instance = darc.Control(prefix)
+        self.darc_instance = darc.Control(prefix)
 #        time.sleep(10)               
 
 #    def handler(self, signum, frame):
