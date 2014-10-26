@@ -2,18 +2,30 @@ import darc
 import sys
 import signal
 import time
+import glob
 
 class DarcAravis:
     def __init__(self, prefix):
-#        pass
-#        signal.signal(signal.SIGALRM, self.handler)
-#        signal.alarm(5)
-        self.darc_instance = darc.Control(prefix)
-#        time.sleep(10)               
 
-#    def handler(self, signum, frame):
-#        raise Exception("timeout getting darc!")
+        if self.is_darc_running(prefix):
+            self.darc_instance = darc.Control(prefix)
+        else:
+            raise Exception("DARC instance is not running with prefix: %s" % prefix)
 
+    def is_darc_running(self, prefix):
+        darc_lists = glob.glob('/dev/shm/*rtcParam1')
+        for ins in darc_lists:
+            if ins.split('rtcParam1')[0] != "":
+                return True
+        return False
+            
+    def get_darc_prefix(self, prefix):
+        darc_lists = glob.glob('/dev/shm/*rtcParam1')
+        for ins in darc_lists:
+            if ins.split('rtcParam1')[0] != "":
+                return ins.split('rtcParam1')[0]
+        return None
+            
     def set(self, camera, parameter, value):
         cam = "aravisCmd%d" % camera
         cmd = '%s=%s;' % (parameter, str(value))
