@@ -120,13 +120,10 @@ class OffSetGui:
 #                self.togglebutton_cam3.set_active(False)
 
             self.camera = int(data)
-            print self
-            if self.offset_y is not None:
-                offset_y = self.DarcAravis.get(self.camera, 'OffsetY')
-                self.offset_y.set_text("%d pixel(s)"% int(offset_y)) 
-            if self.offset_x is not None:
-                offset_x = self.DarcAravis.get(self.camera, 'OffsetX')
-                self.offset_x.set_text("%d pixel(s)"% int(offset_x))
+            offset_y = self.DarcAravis.get(self.camera, 'OffsetY')
+            self.offset_y.set_text("%d pixel(s)"% int(offset_y)) 
+            offset_x = self.DarcAravis.get(self.camera, 'OffsetX')
+            self.offset_x.set_text("%d pixel(s)"% int(offset_x))
 
 
 #        if widget.get_active() is False:
@@ -142,16 +139,24 @@ class OffSetGui:
         print "offset: %s" % (data)
         offset_y = self.DarcAravis.get(self.camera, 'OffsetY')
         offset_x = self.DarcAravis.get(self.camera, 'OffsetX')
-        print "before apply step(%d)\n,offset(%d,%d)" % (self.__step, offset_x, offset_y)
+        print "before apply step(%d)\noffset(%d,%d)" % (self.__step, offset_x, offset_y)
 
         if data == 'up':
-            self.DarcAravis.set(self.camera, 'OffsetY', int(offset_y + self.__step))
+            val = offset_y + self.__step
+            print "to be applied: %d" % val
+            self.DarcAravis.set(self.camera, 'OffsetY', val)
         if data == 'do':
-            self.DarcAravis.set(self.camera, 'OffsetY', int(offset_y - self.__step))
+            val = offset_y - self.__step
+            print "to be applied: %d" % val
+            self.DarcAravis.set(self.camera, 'OffsetY', val)
         if data == 'le':
-            self.DarcAravis.set(self.camera, 'OffsetX', int(offset_x + self.__step))
+            val = offset_x + self.__step
+            print "to be applied: %d" % val
+            self.DarcAravis.set(self.camera, 'OffsetX', val)
         if data == 'ri':
-            self.DarcAravis.set(self.camera, 'OffsetX', int(offset_x - self.__step))
+            val = offset_x - self.__step
+            print "to be applied: %d" % val
+            self.DarcAravis.set(self.camera, 'OffsetX', val)
 
         offset_y = self.DarcAravis.get(self.camera, 'OffsetY')
         offset_x = self.DarcAravis.get(self.camera, 'OffsetX')
