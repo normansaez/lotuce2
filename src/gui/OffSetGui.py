@@ -50,6 +50,13 @@ class OffSetGui:
         self.button_le.connect("clicked", self.offset_callback, "le")
         self.button_ri.connect("clicked", self.offset_callback, "ri")
 
+        #apply_step
+        self.button_apply_step = self.builder.get_object("apply_step")
+        self.button_apply_step.connect("clicked", self.step_callback, "step")
+
+        self.step = self.builder.get_object("step")
+        self.current_step = self.builder.get_object("current_step")
+        self.current_step.set_text("current step: 1 pixel(s)")
         dic = { 
             "on_buttonQuit_clicked" : self.quit,
         }
@@ -99,6 +106,16 @@ class OffSetGui:
         offset callback
         '''
         print "%s" % (data)
+
+    def step_callback(self, widget, data=None):
+        '''
+        step_callback
+        '''
+        step = self.step.get_text()
+        if step == "":
+            step = "1"
+        self.current_step.set_text("current step: %s pixel(s)"% step)
+        self.step.set_text("")
 
     def cmd_cam(self, cam):
         selector  = {"aravisCmd0":"cam0", "aravisCmd1":"cam1", "aravisCmd2":"cam2", "aravisCmd3":"cam3"}
