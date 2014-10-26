@@ -6,23 +6,24 @@ import glob
 
 class DarcAravis:
     def __init__(self, prefix=None):
-        shm =self.get_darc_prefix()
-        if shm == prefix and not shm is None:
-            if prefix is None:
-                prefix = shm
-            self.darc_instance = darc.Control(prefix)
-        else:
-            if shm is None:
-                raise Exception("DARC instance is not running !!!")
-            else:
-                raise Exception("DARC instance is not running with prefix: %s" % prefix)
+        shm = self.get_darc_prefix()
+        if prefix is None:
+            prefix = shm
+        if shm is None:
+            raise Exception("DARC instance is not running !!!")
+        elif prefix != shm:
+            raise Exception("DARC instance is not running with prefix: %s" % prefix)
+          
+        self.darc_instance = darc.Control(prefix)
+        
 
             
     def get_darc_prefix(self):
         darc_lists = glob.glob('/dev/shm/*rtcParam1')
+        print darc_lists
         for ins in darc_lists:
             if ins.split('rtcParam1')[0] != "":
-                print  ins.split('rtcParam1')[0].split('/')[3]
+                print ins.split('rtcParam1')[0].split('/')[3]
                 return ins.split('rtcParam1')[0].split('/')[3]
         return None
             
