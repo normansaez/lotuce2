@@ -5,25 +5,19 @@ import time
 import glob
 
 class DarcAravis:
-    def __init__(self, prefix):
-
-        if self.is_darc_running(prefix):
+    def __init__(self, prefix=None):
+        
+        if self.get_darc_prefix() == prefix:
             self.darc_instance = darc.Control(prefix)
         else:
             raise Exception("DARC instance is not running with prefix: %s" % prefix)
 
-    def is_darc_running(self, prefix):
-        darc_lists = glob.glob('/dev/shm/*rtcParam1')
-        for ins in darc_lists:
-            if ins.split('rtcParam1')[0] != "":
-                return True
-        return False
             
-    def get_darc_prefix(self, prefix):
+    def get_darc_prefix(self):
         darc_lists = glob.glob('/dev/shm/*rtcParam1')
         for ins in darc_lists:
             if ins.split('rtcParam1')[0] != "":
-                return ins.split('rtcParam1')[0]
+                return ins.split('rtcParam1')[0].split('/')[3]
         return None
             
     def set(self, camera, parameter, value):
