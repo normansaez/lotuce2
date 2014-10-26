@@ -1,2 +1,4 @@
 lib/
 *.fits
+*.png
+*.txt

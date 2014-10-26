@@ -121,8 +121,8 @@ class OffSetGui:
 
             self.camera = int(data)
 
-        if widget.get_active() is False:
-            print "OFF"
+#        if widget.get_active() is False:
+#            print "OFF"
 
     def offset_callback(self, widget, data=None):
         '''
@@ -131,22 +131,24 @@ class OffSetGui:
         The offset is taking as reference darcplot gui.  Therefore the offset
         cross follows that darcplot axis references.
         '''
-        print "%s" % (data)
-        offset_Y = self.DarcAravis.get(self.camera, 'OffsetY')
-        offset_X = self.DarcAravis.get(self.camera, 'OffsetX')
+        print "offset: %s" % (data)
+        offset_y = self.DarcAravis.get(self.camera, 'OffsetY')
+        offset_x = self.DarcAravis.get(self.camera, 'OffsetX')
         
         if data == 'up':
-            self.DarcAravis.set(self.camera, 'OffsetY', offset_Y + self.__step)
-            self.offset_y.set_text("%s pixel(s)"% offset_y + self.__step)
+            self.DarcAravis.set(self.camera, 'OffsetY', offset_y + self.__step)
+            self.offset_y.set_text("%d pixel(s)"% int(offset_y + self.__step))
         if data == 'do':
-            self.DarcAravis.set(self.camera, 'OffsetY', offset_Y - self.__step)
-            self.offset_y.set_text("%s pixel(s)"% offset_y - self.__step)
+            self.DarcAravis.set(self.camera, 'OffsetY', offset_y - self.__step)
+            self.offset_y.set_text("%d pixel(s)"% int(offset_y - self.__step))
         if data == 'le':
-            self.DarcAravis.set(self.camera, 'OffsetX', offset_X + self.__step)
-            self.offset_x.set_text("%s pixel(s)"% offset_x + self.__step)
+            self.DarcAravis.set(self.camera, 'OffsetX', offset_x + self.__step)
+            self.offset_x.set_text("%d pixel(s)"% int(offset_x + self.__step))
         if data == 'ri':
-            self.DarcAravis.set(self.camera, 'OffsetX', offset_X - self.__step)
-            self.offset_x.set_text("%s pixel(s)"% offset_x - self.__step)
+            self.DarcAravis.set(self.camera, 'OffsetX', offset_x - self.__step)
+            self.offset_x.set_text("%d pixel(s)"% int(offset_x - self.__step))
+
+        
 
 
     def step_callback(self, widget, data=None):
