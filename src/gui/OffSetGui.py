@@ -78,6 +78,10 @@ class OffSetGui:
         self.current_step.set_text("-- pixel(s)")
         self.step.set_text("10")
 
+        #button brute force offset
+        self.button_brute_offset = self.builder.get_object("brute_offset")
+        self.button_brute_offset.connect("clicked", self.offset_callback, "first try")
+
         dic = { 
             "on_buttonQuit_clicked" : self.quit,
         }
@@ -157,6 +161,14 @@ class OffSetGui:
             val = offset_x - self.__step
             print "to be applied: %d" % val
             self.DarcAravis.set(self.camera, 'OffsetX', val)
+
+        if data == 'first try':
+            x = self.DarcAravis.get(self.camera, 'Width')
+            y = self.DarcAravis.get(self.camera, 'Height')
+            offsetX = int((656 - x )/2.0)
+            offsetY = int((492 - y)/2.0)
+            self.DarcAravis.set(self.camera, 'OffsetX', offsetX)
+            self.DarcAravis.set(self.camera, 'OffsetY', offsetY)
 
         offset_y = self.DarcAravis.get(self.camera, 'OffsetY')
         offset_x = self.DarcAravis.get(self.camera, 'OffsetX')
