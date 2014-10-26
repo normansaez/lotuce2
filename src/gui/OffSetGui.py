@@ -17,8 +17,7 @@ class OffSetGui:
         self.window = self.builder.get_object ("window1")
         self.window.set_events(self.window.get_events())
         
-        #XXX: The prefix should be read from a centralized place
-        self.DarcAravis = DarcAravis("both")
+        self.DarcAravis = DarcAravis()
 
         #step
         self.__step = 10
