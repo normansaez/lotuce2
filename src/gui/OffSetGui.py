@@ -95,10 +95,6 @@ class OffSetGui:
         print "%s: %s" % (data, ("disconnecting", "connecting")[widget.get_active()])
         #CONN
         if widget.get_active() is True:
-            print "cam0: %s" % self.togglebutton_cam0.get_active()
-            print "cam1: %s" % self.togglebutton_cam1.get_active()
-            print "cam2: %s" % self.togglebutton_cam2.get_active()
-            print "cam3: %s" % self.togglebutton_cam3.get_active()
             if data == "0":
 #                self.togglebutton_cam0.set_active(False)
                 self.togglebutton_cam1.set_active(False)
@@ -172,9 +168,9 @@ class OffSetGui:
 
         offset_y = self.DarcAravis.get(self.camera, 'OffsetY')
         offset_x = self.DarcAravis.get(self.camera, 'OffsetX')
-        if data =='up' or data =='do':
+        if data =='up' or data =='do' or data == 'first try':
             self.offset_y.set_text("%d pixel(s)"% int(offset_y))
-        if data =='le' or data =='ri':
+        if data =='le' or data =='ri' or data == 'first try':
             self.offset_x.set_text("%d pixel(s)"% int(offset_x))
         print "after apply: offset(%d,%d)" % (offset_x, offset_y)
         
