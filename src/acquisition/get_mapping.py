@@ -7,9 +7,9 @@ import numpy as np
 
 parse = OptionParser()
 #parse.add_option('-c', '--camera', dest='camera', type='str', help='Camera num: 0,1,2,3 etc', default="0")
-parse.add_option('-p', '--prefix', dest='prefix', type='str', help='Camera prefix: default all', default="all")
+parse.add_option('-p', '--prefix', dest='prefix', type='str', help='Camera prefix: default all', default="both")
 parse.add_option('-e', '--exptime', dest='exptime', type=int, help='Value for ExposureTimeAbs', default=1000)
-parse.add_option('-i', '--nimg', dest='nimg', type=int, help='Number of images', default=40)
+parse.add_option('-i', '--nimg', dest='nimg', type=int, help='Number of images', default=1)
 (options , argv) = parse.parse_args()
 #Takes camera instance
 d=darc.Control(options.prefix)
@@ -23,8 +23,9 @@ d.Set("aravisCmdAll",'ExposureTimeAbs=%d;'% exptime)
 d.Set("aravisGet","?0:ExposureTimeAbs")
 exptime=int(d.Get("aravisGet"))
 t0 = time.clock()
-streamBlock = d.GetStreamBlock('%srtcPxlBuf'%options.prefix,img_to_take)
+streamBlock = d.GetStreamBlock('%srtcPxlBuf'%options.prefix,img_to_take,block=1,flysave='something.fits')
 t1 = time.clock()
+print "%f" % (t1-t0)
 streams = streamBlock['%srtcPxlBuf'%options.prefix]
 count = 0
 for stream in streams:
