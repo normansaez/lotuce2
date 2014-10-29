@@ -86,12 +86,15 @@ diff = []
 axis_x = []
 sync_on = 0
 sync_off = 0
+fnos = []
 filename = os.path.normpath(options.filename)
 print filename
 f = open(filename,'r')
 filehandler = f.readlines()
 i = 0
 f.close()
+f1 = 0
+f2 = 0
 for line in filehandler:
     line = line.rstrip('\n').split(' ')
     ts = float(line[0])
@@ -103,12 +106,27 @@ for line in filehandler:
         sync_on += 1
     else:
         sync_off += 1
+#        print "not sync! :%f" % fno
 #    print "-------------------------------------------------------------"
     pattern_cam0.append(num_cam0)
     pattern_cam1.append(num_cam1)
     diff.append(dif)
+    fnos.append(fno)
+
     axis_x.append(i)
     i += 1
+#    if i == 6000:
+#        nnn = np.array(fnos)
+#        print (nnn[1:]-nnn[:-1]).max()
+#        print (nnn[1:]-nnn[:-1]).min()
+#        break
+nnn = np.array(fnos)
+print (nnn[1:]-nnn[:-1]).max()
+print (nnn[1:]-nnn[:-1]).min()
+#xxx = nnn[1:]-nnn[:-1]
+#a = xxx[0]
+#for i in range(0,len(xxx)):
+#    xxx[:
 #Prepare graph
 on  = 100.*(sync_on*1./len(axis_x))
 off = 100.*(sync_off*1./len(axis_x)) 
@@ -117,8 +135,9 @@ title = 'img v.s pat: %s\nsynchronized: YES: %.1f%% , NO: %.1f%%' % (basename, o
 fig = plt.figure()
 ax = plt.subplot(111)
 
-ax.plot(axis_x, pattern_cam0, 'r-x',label='cam0')
-ax.plot(axis_x, pattern_cam1, 'b-x', label='cam1')
+ax.plot(axis_x, fnos, 'r-',label='fno')
+#ax.plot(axis_x, pattern_cam0, 'r-x',label='cam0')
+#ax.plot(axis_x, pattern_cam1, 'b-x', label='cam1')
 
 box = ax.get_position()
 ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
