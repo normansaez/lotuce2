@@ -28,7 +28,7 @@ try:
     hz = float(HZ_str.split('(')[1].split('Hz)')[0])
 except:
     pass
-print "number of images for %f [Hz] and %d time: %d [seconds]" % (hz, options.time,int(hz*options.time))
+print "number of images for %f [Hz] and %d time[seconds]: %d images to take" % (hz, options.time,int(hz*options.time))
 img_to_take =  int(hz*options.time)#options.nimg
 exptime = options.exptime
 d.Set("aravisCmdAll",'ExposureTimeAbs=%d;'% exptime)
