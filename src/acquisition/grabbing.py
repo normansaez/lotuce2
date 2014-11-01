@@ -1,5 +1,5 @@
 import FITS
-import darc
+#import darc
 import time
 import argparse 
 from pprint import pprint
@@ -19,8 +19,8 @@ parse.add_argument('-t', '--time', dest='time', type=int, help='Image time in se
 if options.directory is None:
     path, fil = os.path.split(os.path.abspath(__file__))
     current =  str(time.strftime("%Y_%m_%d", time.gmtime()))
-    current_dir = glob.glob(path+'/*[0-9].*')
-    current_dir = sorted(current_dir)
+    current_dir = glob.glob(path+'/201*[0-90-9].*')
+    current_dir.sort(key=os.path.getmtime)
     try:
         last = current_dir[-1]
         adquisition_number = int(last.split('/')[-1].split('.')[1]) + 1
