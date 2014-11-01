@@ -1,18 +1,37 @@
 import FITS
-import darc
+#import darc
 import time
-from optparse import OptionParser
+import argparse 
 from pprint import pprint
 import numpy as np
 import re
+import os
+import glob
 
-parse = OptionParser()
-#parse.add_option('-c', '--camera', dest='camera', type='str', help='Camera num: 0,1,2,3 etc', default="0")
-parse.add_option('-p', '--prefix', dest='prefix', type='str', help='Camera prefix: default all', default="both")
-parse.add_option('-e', '--exptime', dest='exptime', type=int, help='Value for ExposureTimeAbs', default=1000)
-#parse.add_option('-i', '--nimg', dest='nimg', type=int, help='Number of images', default=1)
-parse.add_option('-t', '--time', dest='time', type=int, help='Image time in seconds', default=60)
-(options , argv) = parse.parse_args()
+parse = argparse.ArgumentParser()
+#parse.add_argument('-c', '--camera', dest='camera', type='str', help='Camera num: 0,1,2,3 etc', default="0")
+parse.add_argument('-p', '--prefix', dest='prefix', type=str, help='Camera prefix: default all', default="both")
+parse.add_argument('-e', '--exptime', dest='exptime', type=int, help='Value for ExposureTimeAbs', default=1000)
+parse.add_argument('-d', '--directory', dest='directory', type=str, help='directory to be store the images', default=None)
+parse.add_argument('-t', '--time', dest='time', type=int, help='Image time in seconds', default=60)
+(options, unknown) = parse.parse_known_args()
+
+if options.directory is None:
+    path, fil = os.path.split(os.path.abspath(__file__))
+    current =  str(time.strftime("%Y_%m_%d", time.gmtime()))
+    current_dir = glob.glob(path+'/*[0-9].*')
+    current_dir = sorted(current_dir)
+    try:
+        last = current_dir[-1]
+        adquisition_number = int(last.split('/')[-1].split('.')[1]) + 1
+        dir_name = current+'.'+ str(adquisition_number)
+    except IndexError, e:
+        dir_name = current+'.0'
+    options.directory = path+'/'+dir_name
+    if not os.path.exists(options.directory):
+        print "Creating dir :%s" % options.directory
+        os.makedirs(options.directory)
+
 #Takes camera instance
 d=darc.Control(options.prefix)
 #takes camera pixels (x,y)
@@ -35,13 +54,14 @@ d.Set("aravisCmdAll",'ExposureTimeAbs=%d;'% exptime)
 d.Set("aravisGet","?0:ExposureTimeAbs")
 exptime=int(d.Get("aravisGet"))
 t0 = time.clock()
-streamBlock = d.GetStreamBlock('%srtcPxlBuf'%options.prefix,img_to_take,block=1,flysave='img.fits')
+streamBlock = d.GetStreamBlock('%srtcPxlBuf'%options.prefix,img_to_take,block=1,flysave=options.dir_name+'/img.fits')
 t1 = time.clock()
-print "%f" % (t1-t0)
-streams = streamBlock['%srtcPxlBuf'%options.prefix]
-count = 0
-for stream in streams:
-    data = stream[0].reshape((2*pxly,pxlx))
-    fitsname = "img_%s.fits" % (str(count).zfill(3))
-    FITS.Write(data, fitsname, writeMode='w')
-    count += 1
+print "%f Hz" % (1./(t1-t0))
+print "Images stored in : %s" % options.directory
+#streams = streamBlock['%srtcPxlBuf'%options.prefix]
+#count = 0
+#for stream in streams:
+#    data = stream[0].reshape((2*pxly,pxlx))
+#    fitsname = "img_%s.fits" % (str(count).zfill(3))
+#    FITS.Write(data, fitsname, writeMode='w')
+#    count += 1

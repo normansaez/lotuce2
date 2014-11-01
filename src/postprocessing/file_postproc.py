@@ -130,7 +130,7 @@ print (nnn[1:]-nnn[:-1]).min()
 #Prepare graph
 on  = 100.*(sync_on*1./len(axis_x))
 off = 100.*(sync_off*1./len(axis_x)) 
-title = 'img v.s pat: %s\nsynchronized: YES: %.1f%% , NO: %.1f%%' % (basename, on, off)
+title = 'img v.s id: %s' % (basename)#, on, off)
 #plot it
 fig = plt.figure()
 ax = plt.subplot(111)
@@ -142,12 +142,12 @@ ax.plot(axis_x, fnos, 'r-',label='fno')
 box = ax.get_position()
 ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
 plt.title(title)
-plt.ylabel('pattern number')
+plt.ylabel('id number')
 plt.xlabel('image number')
 ax.xaxis.grid(True)
 grid()
 ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-plt.savefig(basename+'-pattern.png')
+plt.savefig(basename+'-id.png')
 print "%.2f%% synchronized" % on
 print "%.2f%% NOT synchronized" % off
 print "%d total"% (len(axis_x))
