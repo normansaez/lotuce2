@@ -1,5 +1,5 @@
 import FITS
-#import darc
+import darc
 import time
 import argparse 
 from pprint import pprint
@@ -11,7 +11,7 @@ import glob
 parse = argparse.ArgumentParser()
 #parse.add_argument('-c', '--camera', dest='camera', type='str', help='Camera num: 0,1,2,3 etc', default="0")
 parse.add_argument('-p', '--prefix', dest='prefix', type=str, help='Camera prefix: default all', default="both")
-parse.add_argument('-e', '--exptime', dest='exptime', type=int, help='Value for ExposureTimeAbs', default=1000)
+#parse.add_argument('-e', '--exptime', dest='exptime', type=int, help='Value for ExposureTimeAbs', default=1000)
 parse.add_argument('-d', '--directory', dest='directory', type=str, help='directory to be store the images', default=None)
 parse.add_argument('-t', '--time', dest='time', type=int, help='Image time in seconds', default=60)
 (options, unknown) = parse.parse_known_args()
@@ -35,8 +35,8 @@ if options.directory is None:
 #Takes camera instance
 d=darc.Control(options.prefix)
 #takes camera pixels (x,y)
-pxlx =d.Get("npxlx")[0]
-pxly =d.Get("npxly")[0]
+#pxlx =d.Get("npxlx")[0]
+#pxly =d.Get("npxly")[0]
 
 info,ftime,fno=d.GetStream(options.prefix+"rtcStatusBuf")
 line = info.tostring()
@@ -49,10 +49,10 @@ except:
     pass
 print "number of images for %f [Hz] and %d time[seconds]: %d images to take" % (hz, options.time,int(hz*options.time))
 img_to_take =  int(hz*options.time)#options.nimg
-exptime = options.exptime
-d.Set("aravisCmdAll",'ExposureTimeAbs=%d;'% exptime)
-d.Set("aravisGet","?0:ExposureTimeAbs")
-exptime=int(d.Get("aravisGet"))
+#exptime = options.exptime
+#d.Set("aravisCmdAll",'ExposureTimeAbs=%d;'% exptime)
+#d.Set("aravisGet","?0:ExposureTimeAbs")
+#exptime=int(d.Get("aravisGet"))
 t0 = time.clock()
 streamBlock = d.GetStreamBlock('%srtcPxlBuf'%options.prefix,img_to_take,block=1,flysave=options.dir_name+'/img.fits')
 t1 = time.clock()
