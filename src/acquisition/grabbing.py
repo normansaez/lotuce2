@@ -1,5 +1,5 @@
 import FITS
-#import darc
+import darc
 import time
 import argparse 
 from pprint import pprint
