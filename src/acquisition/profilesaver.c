@@ -24,9 +24,9 @@ saver (PyObject *dummy, PyObject *args)
     //for (int i=0; i < nn; i++){
     //    printf("%f\n",da[i]);
     //}
-    printf("%s\n",filename);
+    //printf("%s\n",filename);
 
-    f = fopen("profile.dat", "wb"); // wb -write binary
+    f = fopen(filename, "wb"); // wb -write binary
     if (f != NULL) 
     {
         fwrite(arr1, sizeof(arr1), 1, f);
