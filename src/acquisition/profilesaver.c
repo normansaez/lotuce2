@@ -10,10 +10,9 @@ hydrate (PyObject *dummy, PyObject *args)
     int ret;
 //    int counter;
     PyObject *arr2=NULL;
-
     if (!PyArg_ParseTuple(args, "s", &filename))
         return NULL;
-    printf("filename--->%s\n",filename);
+//    printf("filename--->%s\n",filename);
 
     ptr_myfile=fopen(filename,"r");
     if (!ptr_myfile)
@@ -24,19 +23,20 @@ hydrate (PyObject *dummy, PyObject *args)
 
 
     ret = fread(&header,sizeof(header),1, ptr_myfile);
-    printf("%lu \n", sizeof(arr2));
+    //printf("%lu \n", sizeof(arr2));
+//    printf("1)header: %d, ret: %d\n", header,ret);
+    arr2 = (PyObject *)malloc(header+1);
     ret = fread(arr2, sizeof(arr2), 1, ptr_myfile);
-    printf("header: %d\n, ret: %d", header,ret);
     fclose(ptr_myfile);
-    printf("header: %d\n, ret: %d", header,ret);
+//    printf("2)header: %d, ret: %d\n", header,ret);
 
-    npy_intp dim[2] = {10,10};
-    PyArrayObject *array = (PyArrayObject *) PyArray_SimpleNew(2, dim, PyArray_INT);
+    npy_intp dim[1] = {10};
+    PyArrayObject *array = (PyArrayObject *) PyArray_SimpleNew(1, dim, PyArray_INT);
 
     // fill the data
     int    *buffer = (int*)array->data;
     int    i;
-    for (i =0; i<10*10; i++){
+    for (i =0; i<10; i++){
         buffer[i] = i;
     }
     return PyArray_Return(array);
