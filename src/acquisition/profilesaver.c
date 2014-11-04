@@ -6,10 +6,12 @@ saver (PyObject *dummy, PyObject *args)
 {
     PyObject *arg1=NULL;
     PyObject *arr1=NULL;
+    //PyObject *arr2=NULL;
     int nd;
     FILE * f;
+    char *filename;
 
-    if (!PyArg_ParseTuple(args, "O", &arg1))
+    if (!PyArg_ParseTuple(args, "Os", &arg1, &filename))
         return NULL;
 
     arr1 = PyArray_FROM_OTF(arg1, NPY_DOUBLE, NPY_IN_ARRAY);
@@ -22,6 +24,7 @@ saver (PyObject *dummy, PyObject *args)
     //for (int i=0; i < nn; i++){
     //    printf("%f\n",da[i]);
     //}
+    printf("%s\n",filename);
 
     f = fopen("profile.dat", "wb"); // wb -write binary
     if (f != NULL) 
@@ -34,9 +37,22 @@ saver (PyObject *dummy, PyObject *args)
         //failed to create the file
         printf("failed!\n");
     }
+     
+//    f = fopen("profile.dat","rb");
+//    while (!feof(f)) {
+//        printf("1:ok here!");
+//        fread(arr2, sizeof(arr2), 1, f);
+//        printf("2:ok here!");
+//        double *da = (double *)PyArray_DATA(arr2);
+//        int nn = PyArray_SIZE(arr2);
+//        for (int i=0; i < nn; i++){
+//            printf("%f\n",da[i]);
+//        }
+//    }
+
 
     Py_DECREF(arr1);
-    return PyInt_FromLong(nd);
+    return Py_None;//PyInt_FromLong(nd);
 }
 
 static struct PyMethodDef methods[] = {
