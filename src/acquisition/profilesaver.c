@@ -45,8 +45,8 @@ static struct PyMethodDef methods[] = {
 };
 
     PyMODINIT_FUNC
-initopee (void)
+initprofilesaver (void)
 {
-    (void)Py_InitModule("opee", methods);
+    (void)Py_InitModule("profilesaver", methods);
     import_array();
 }
