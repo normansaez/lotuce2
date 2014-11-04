@@ -61,7 +61,9 @@ class Saver:
         #XXX: We don't want save the data, instead we want just procese it.
         # camera coordinates according windows size
         #XXX commented for 200x200
-        text_file = open('lotuce2-run-results.txt','a')
+        res = self.name.split('.fits')[0]+'_'+'lotuce2-run-results.txt'
+        resname = 'lotuce2-run-results-'+res.split('/')[-2]+'.txt'
+        text_file = open(resname,'a')
 #        reference = '/home/lotuce2/lotuce2/src/acquisition/ref200x200_225Hz/'
 #        cam0_b0 = reference+'/img_028.fits'#'/img_000.fits'
 #        cam0_b1 = reference+'/img_030.fits'#'/img_001.fits'
@@ -155,6 +157,8 @@ class Saver:
         pxly = 200
         pxlx = 200
         fitsname = self.name.split('.fits')[0]+'_'+str(fno)+'.fits'
+        fitsname_c0 = self.name.split('.fits')[0]+'_cent_cam0_'+str(fno)+'.fits'
+        fitsname_c1 = self.name.split('.fits')[0]+'_cent_cam1_'+str(fno)+'.fits'
         mydata = data.reshape((2*pxly,pxlx))
 #        FITS.Write(mydata, fitsname, writeMode='w'
         threshold = 3000
@@ -186,7 +190,21 @@ class Saver:
         col_cam1 = numpy.array([numpy.append(c1_x,c1_y)])
         myprofile = numpy.append(col_cam0,col_cam1,0)
 
-        FITS.Write(myprofile, fitsname, writeMode='w')
+#        FITS.Write(myprofile, fitsname, writeMode='w')
+        #Classic
+        cent = numpy.zeros(2)
+        totalmass = float(cam_cam0.sum())
+        Xgrid,Ygrid = numpy.meshgrid(numpy.arange(cam_cam0.shape[1]),numpy.arange(cam_cam0.shape[0]))
+        cent[1] = numpy.sum(Ygrid*cam_cam0)/totalmass
+        cent[0] = numpy.sum(Xgrid*cam_cam0)/totalmass
+#        FITS.Write(cent, fitsname_c0, writeMode='w')
+        #Classic
+        cent = numpy.zeros(2)
+        totalmass = float(cam_cam1.sum())
+        Xgrid,Ygrid = numpy.meshgrid(numpy.arange(cam_cam1.shape[1]),numpy.arange(cam_cam1.shape[0]))
+        cent[1] = numpy.sum(Ygrid*cam_cam1)/totalmass
+        cent[0] = numpy.sum(Xgrid*cam_cam1)/totalmass
+#        FITS.Write(cent, fitsname_c1, writeMode='w')
 #        if num_cam1 != num_cam0:
 #            FITS.Write(mydata, fitsname, writeMode='w')
 #        FITS.Write(mydata, fitsname, writeMode='w')
