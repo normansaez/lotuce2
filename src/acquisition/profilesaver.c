@@ -2,12 +2,27 @@
 #include "numpy/arrayobject.h"
 
     static PyObject*
+hydrate (PyObject *dummy, PyObject *args)
+{
+    char *filename;
+    npy_intp dim[2] = {10,10};
+    PyArrayObject *array = (PyArrayObject *) PyArray_SimpleNew(2, dim, PyArray_INT);
+    if (!PyArg_ParseTuple(args, "s", &filename))
+        return NULL;
+    // fill the data
+    int    *buffer = (int*)array->data;
+    int    i;
+    for (i =0; i<10*10; i++){
+        buffer[i] = i;
+    }
+    return PyArray_Return(array);
+}
+
+    static PyObject*
 saver (PyObject *dummy, PyObject *args)
 {
     PyObject *arg1=NULL;
     PyObject *arr1=NULL;
-    //PyObject *arr2=NULL;
-    //int nd;
     FILE * f;
     char *filename;
 
@@ -30,7 +45,7 @@ saver (PyObject *dummy, PyObject *args)
     f = fopen(filename, "wb"); // wb -write binary
     if (f != NULL) 
     {
-    //   printf("size: %lu\n",sizeof(arr1));
+        //   printf("size: %lu\n",sizeof(arr1));
         fwrite(arr1, sizeof(arr1), nn, f);
         fclose(f);
     }
@@ -39,18 +54,18 @@ saver (PyObject *dummy, PyObject *args)
         //failed to create the file
         printf("failed!\n");
     }
-     
-//    f = fopen("profile.dat","rb");
-//    while (!feof(f)) {
-//        printf("1:ok here!");
-//        fread(arr2, sizeof(arr2), 1, f);
-//        printf("2:ok here!");
-//        double *da = (double *)PyArray_DATA(arr2);
-//        int nn = PyArray_SIZE(arr2);
-//        for (int i=0; i < nn; i++){
-//            printf("%f\n",da[i]);
-//        }
-//    }
+
+    //    f = fopen("profile.dat","rb");
+    //    while (!feof(f)) {
+    //        printf("1:ok here!");
+    //        fread(arr2, sizeof(arr2), 1, f);
+    //        printf("2:ok here!");
+    //        double *da = (double *)PyArray_DATA(arr2);
+    //        int nn = PyArray_SIZE(arr2);
+    //        for (int i=0; i < nn; i++){
+    //            printf("%f\n",da[i]);
+    //        }
+    //    }
 
 
     Py_DECREF(arr1);
@@ -58,7 +73,8 @@ saver (PyObject *dummy, PyObject *args)
 }
 
 static struct PyMethodDef methods[] = {
-    {"saver", saver, METH_VARARGS, "descript of saver"},
+    {"saver", saver, METH_VARARGS, "saver(numpy.array,string)\nsaves numpy.array into a file, give its filename"},
+    {"hydrate", hydrate, METH_VARARGS, "hydrate(string)\nreturns a numpy.array from a file, the file should be created with profilesaver.saver\nhydrate receive as parameter a filename"},
     {NULL, NULL, 0, NULL}
 };
 
