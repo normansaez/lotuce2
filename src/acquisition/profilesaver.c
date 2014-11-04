@@ -20,7 +20,8 @@ saver (PyObject *dummy, PyObject *args)
 
     //nd = PyArray_NDIM(arr1);   //number of dimensions
     //double *da = (double *)PyArray_DATA(arr1);
-    //int nn = PyArray_SIZE(arr1);
+    int nn = PyArray_SIZE(arr1);
+    //printf("elem: %d\n", nn);
     //for (int i=0; i < nn; i++){
     //    printf("%f\n",da[i]);
     //}
@@ -29,7 +30,8 @@ saver (PyObject *dummy, PyObject *args)
     f = fopen(filename, "wb"); // wb -write binary
     if (f != NULL) 
     {
-        fwrite(arr1, sizeof(arr1), 1, f);
+    //   printf("size: %lu\n",sizeof(arr1));
+        fwrite(arr1, sizeof(arr1), nn, f);
         fclose(f);
     }
     else
