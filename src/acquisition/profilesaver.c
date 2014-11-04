@@ -7,7 +7,7 @@ saver (PyObject *dummy, PyObject *args)
     PyObject *arg1=NULL;
     PyObject *arr1=NULL;
     //PyObject *arr2=NULL;
-    int nd;
+    //int nd;
     FILE * f;
     char *filename;
 
@@ -18,7 +18,7 @@ saver (PyObject *dummy, PyObject *args)
     if (arr1 == NULL)
         return NULL;
 
-    nd = PyArray_NDIM(arr1);   //number of dimensions
+    //nd = PyArray_NDIM(arr1);   //number of dimensions
     //double *da = (double *)PyArray_DATA(arr1);
     //int nn = PyArray_SIZE(arr1);
     //for (int i=0; i < nn; i++){
