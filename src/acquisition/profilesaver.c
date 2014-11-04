@@ -5,10 +5,34 @@
 hydrate (PyObject *dummy, PyObject *args)
 {
     char *filename;
-    npy_intp dim[2] = {10,10};
-    PyArrayObject *array = (PyArrayObject *) PyArray_SimpleNew(2, dim, PyArray_INT);
+    FILE *ptr_myfile;
+    int header;
+    int ret;
+//    int counter;
+    PyObject *arr2=NULL;
+
     if (!PyArg_ParseTuple(args, "s", &filename))
         return NULL;
+    printf("filename--->%s\n",filename);
+
+    ptr_myfile=fopen(filename,"r");
+    if (!ptr_myfile)
+    {
+        printf("Unable to open file!");
+        return Py_None;
+    }
+
+
+    ret = fread(&header,sizeof(header),1, ptr_myfile);
+    printf("%lu \n", sizeof(arr2));
+    ret = fread(arr2, sizeof(arr2), 1, ptr_myfile);
+    printf("header: %d\n, ret: %d", header,ret);
+    fclose(ptr_myfile);
+    printf("header: %d\n, ret: %d", header,ret);
+
+    npy_intp dim[2] = {10,10};
+    PyArrayObject *array = (PyArrayObject *) PyArray_SimpleNew(2, dim, PyArray_INT);
+
     // fill the data
     int    *buffer = (int*)array->data;
     int    i;
@@ -34,11 +58,13 @@ saver (PyObject *dummy, PyObject *args)
         return NULL;
 
     int nn = PyArray_SIZE(arr1);
-
-    f = fopen(filename, "wb"); // wb -write binary
+    int *nnn;
+    nnn = &nn;
+    f = fopen(filename, "w"); // wb -write binary
     if (f != NULL) 
     {
-        fwrite(arr1, sizeof(arr1), nn, f);
+        fwrite(nnn, sizeof(nnn), 1, f);
+        fwrite(arr1, sizeof(arr1), 1, f);
         fclose(f);
     }
     else
