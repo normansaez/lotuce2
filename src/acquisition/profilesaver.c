@@ -1,76 +1,76 @@
 #include "Python.h"
 #include "numpy/arrayobject.h"
 
-    static PyObject*
-hydrate (PyObject *dummy, PyObject *args)
+static PyObject* hydrate (PyObject *dummy, PyObject *args)
 {
     char *filename;
-    FILE *ptr_myfile;
-    int header;
+    FILE *file_ptr;
+    int header=15;
     int ret;
-//    int counter;
-    PyObject *arr2=NULL;
+    double *c_array = NULL;
+
     if (!PyArg_ParseTuple(args, "s", &filename))
         return NULL;
-//    printf("filename--->%s\n",filename);
 
-    ptr_myfile=fopen(filename,"r");
-    if (!ptr_myfile)
+    file_ptr=fopen(filename,"rb");
+    if (!file_ptr)
     {
         printf("Unable to open file!");
         return Py_None;
     }
+    
+    c_array = (double *)malloc(sizeof(double *)*header+1);
+    ret = fread(c_array, sizeof(double *), header, file_ptr);
+    fclose(file_ptr);
+    if (ret == 0)
+        return NULL;
+//    int j=0;
+//    for (j=0;j<header;j++){
+//        printf("c_array[%d] = %f\n",j,c_array[j]);
+//    }
 
-
-    ret = fread(&header,sizeof(header),1, ptr_myfile);
-    //printf("%lu \n", sizeof(arr2));
-//    printf("1)header: %d, ret: %d\n", header,ret);
-    arr2 = (PyObject *)malloc(header+1);
-    ret = fread(arr2, sizeof(arr2), 1, ptr_myfile);
-    fclose(ptr_myfile);
-//    printf("2)header: %d, ret: %d\n", header,ret);
-
-    npy_intp dim[1] = {10};
+    npy_intp dim[1] = {header};
     PyArrayObject *array = (PyArrayObject *) PyArray_SimpleNew(1, dim, PyArray_INT);
 
     // fill the data
     int    *buffer = (int*)array->data;
     int    i;
-    for (i =0; i<10; i++){
-        buffer[i] = i;
+    for (i =0; i<header; i++){
+        buffer[i] = c_array[i];
     }
     return PyArray_Return(array);
 }
 
-    static PyObject*
-saver (PyObject *dummy, PyObject *args)
+static PyObject* saver (PyObject *dummy, PyObject *args)
 {
     PyObject *arg1=NULL;
-    PyObject *arr1=NULL;
-    FILE * f;
+    PyObject *array=NULL;
+    FILE * file_ptr;
     char *filename;
 
     if (!PyArg_ParseTuple(args, "Os", &arg1, &filename))
         return NULL;
 
-    arr1 = PyArray_FROM_OTF(arg1, NPY_DOUBLE, NPY_IN_ARRAY);
-    if (arr1 == NULL)
+    array = PyArray_FROM_OTF(arg1, NPY_DOUBLE, NPY_IN_ARRAY);
+    if (array == NULL)
         return NULL;
 
-    int nn = PyArray_SIZE(arr1);
-    int *nnn;
-    nnn = &nn;
-    f = fopen(filename, "w"); // wb -write binary
-    if (f != NULL) 
+    int size = PyArray_SIZE(array);
+    double *c_array = (double*)PyArray_DATA(array);
+//    int i =0;    
+//    for (i=0; i < 15; i++){
+//        printf("c_array[%d] =  %f\n",i,c_array[i]);
+//    }
+    file_ptr = fopen(filename, "wb"); 
+    if (file_ptr != NULL) 
     {
-        fwrite(nnn, sizeof(nnn), 1, f);
-        fwrite(arr1, sizeof(arr1), 1, f);
-        fclose(f);
+        fwrite(c_array, sizeof(double *), size, file_ptr);
+        fclose(file_ptr);
     }
     else
         printf("failed to create the file!\n");
 
-    Py_DECREF(arr1);
+    Py_DECREF(array);
     return Py_None;
 }
 
