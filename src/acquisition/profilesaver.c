@@ -73,6 +73,7 @@ static PyObject* saver (PyObject *dummy, PyObject *args)
         printf("failed to create the file!\n");
 
     Py_DECREF(array);
+    Py_INCREF(Py_None);
     return Py_None;
 }
 
