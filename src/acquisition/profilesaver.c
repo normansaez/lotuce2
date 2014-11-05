@@ -5,7 +5,7 @@ static PyObject* hydrate (PyObject *dummy, PyObject *args)
 {
     char *filename;
     FILE *file_ptr;
-    int header=15;
+    int size;
     int ret;
     double *c_array = NULL;
 
@@ -18,24 +18,26 @@ static PyObject* hydrate (PyObject *dummy, PyObject *args)
         printf("Unable to open file!");
         return Py_None;
     }
-    
-    c_array = (double *)malloc(sizeof(double *)*header+1);
-    ret = fread(c_array, sizeof(double *), header, file_ptr);
+    fseek(file_ptr, 0L, SEEK_END);
+    size = ftell(file_ptr)/sizeof(double *);
+    fseek(file_ptr, 0L, SEEK_SET);
+    c_array = (double *)malloc(sizeof(double *)*size+1);
+    ret = fread(c_array, sizeof(double *), size, file_ptr);
     fclose(file_ptr);
     if (ret == 0)
         return NULL;
 //    int j=0;
-//    for (j=0;j<header;j++){
+//    for (j=0;j<size;j++){
 //        printf("c_array[%d] = %f\n",j,c_array[j]);
 //    }
 
-    npy_intp dim[1] = {header};
+    npy_intp dim[1] = {size};
     PyArrayObject *array = (PyArrayObject *) PyArray_SimpleNew(1, dim, PyArray_INT);
 
     // fill the data
     int    *buffer = (int*)array->data;
     int    i;
-    for (i =0; i<header; i++){
+    for (i =0; i<size; i++){
         buffer[i] = c_array[i];
     }
     return PyArray_Return(array);
