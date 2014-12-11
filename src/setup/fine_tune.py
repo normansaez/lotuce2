@@ -5,7 +5,7 @@ import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-o', '--on', dest='on', action='store_false' , help='Enable trigger')
-parser.add_argument('-p', '--prefix', dest='prefix', type=str, help='Camera prefix: default both', default="both")
+parser.add_argument('-p', '--prefix', dest='prefix', type=str, help='Camera prefix: default all', default="all")
 (options, unknown) = parser.parse_known_args()
 ncam_selector = { "cam0": 1, "cam1": 1, "cam2":1, "cam3":1, "both":2, "cam1cam2":2, "cam2cam3":2, "cam3cam0":2, "cam013":3,"all": 4}
 
@@ -66,4 +66,30 @@ for cam in range(0,ncam):
     print "---------------"
     get(cam, 'TriggerSource')
     
+
+#Fine tune ....
+OffsetX = 250
+OffsetY = 182
+cam = 0
+set(cam, 'OffsetX', offsetX)
+set(cam, 'OffsetY', offsetY)
+
+cam = 1
+OffsetX = 252
+OffsetY = 96
+set(cam, 'OffsetX', offsetX)
+set(cam, 'OffsetY', offsetY)
+
+cam = 2
+OffsetX = 102
+OffsetY = 146
+set(cam, 'OffsetX', offsetX)
+set(cam, 'OffsetY', offsetY)
+
+cam = 3
+OffsetX = 170
+OffsetY = 146
+set(cam, 'OffsetX', offsetX)
+set(cam, 'OffsetY', offsetY)
+
 
