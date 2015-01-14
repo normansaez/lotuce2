@@ -68,27 +68,27 @@ for cam in range(0,ncam):
     
 
 #Fine tune ....
-OffsetX = 250
-OffsetY = 182
+OffsetX = 254
+OffsetY = 200
 cam = 0
 set(cam, 'OffsetX', offsetX)
 set(cam, 'OffsetY', offsetY)
 
 cam = 1
 OffsetX = 252
-OffsetY = 96
+OffsetY = 100
 set(cam, 'OffsetX', offsetX)
 set(cam, 'OffsetY', offsetY)
 
 cam = 2
-OffsetX = 102
-OffsetY = 146
+OffsetX = 100
+OffsetY = 154
 set(cam, 'OffsetX', offsetX)
 set(cam, 'OffsetY', offsetY)
 
 cam = 3
-OffsetX = 170
-OffsetY = 146
+OffsetX = 172
+OffsetY = 130
 set(cam, 'OffsetX', offsetX)
 set(cam, 'OffsetY', offsetY)
 

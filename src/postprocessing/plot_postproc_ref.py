@@ -31,26 +31,26 @@ if __name__=="__main__":
     # vars
     if options.camera == 0:
         xi_cam = 200#492#200
-        xf_cam = 400#984#400
         yi_cam = 0#0
+        xf_cam = 400#984#400
         yf_cam = 200#656#200
 
     if options.camera == 1:
         xi_cam = 0#0
-        xf_cam = 200#492#200 
         yi_cam = 0#0
+        xf_cam = 200#492#200 
         yf_cam = 200#656#200 
 
     if options.camera == 2:
-        xi_cam = 0#0
-        xf_cam = 200#492#200 
+        xi_cam = 400#0
         yi_cam = 0#0
+        xf_cam = 600#492#200 
         yf_cam = 200#656#200 
 
     if options.camera == 3:
-        xi_cam = 0#0
-        xf_cam = 200#492#200 
+        xi_cam = 600#0
         yi_cam = 0#0
+        xf_cam = 800#492#200 
         yf_cam = 200#656#200 
 
     if options.reference is None:
@@ -81,7 +81,7 @@ if __name__=="__main__":
     else:
         padding = 5
 
-        b0 = options.reference+'/img_028.fits'
+        b0 = options.reference+'/img_008.fits'
         f = FITS.Read(b0)[1][xi_cam:xf_cam,yi_cam:yf_cam]
         print f.shape
         fig = plt.figure()
