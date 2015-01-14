@@ -259,10 +259,53 @@ for i in range(options.init, options.end+1):
         num_cam0 = eval(num_cam0)
         print num_cam0
         #################################
-        if options.check*0 is True:
+        #check bits for cam1 
+        cam_cam1 = f[xi_cam1:xf_cam1,yi_cam1:yf_cam1]
+        print "-------------"
+        print "cam1"
+        b0_cam1 = bit_check(x0_cam1, y0_cam1, cam_cam1, options.threshold, width)
+        b1_cam1 = bit_check(x1_cam1, y1_cam1, cam_cam1, options.threshold, width)
+        b2_cam1 = bit_check(x2_cam1, y2_cam1, cam_cam1, options.threshold, width)
+        b3_cam1 = bit_check(x3_cam1, y3_cam1, cam_cam1, options.threshold, width)
+        num_cam1 = '0b'+str(b3_cam1)+str(b2_cam1)+str(b1_cam1)+str(b0_cam1)
+        print num_cam1
+        num_cam1 = eval(num_cam1)
+        print num_cam1
+        #################################
+        #check bits for cam2 
+        cam_cam2 = f[xi_cam2:xf_cam2,yi_cam2:yf_cam2]
+        print "-------------"
+        print "cam2"
+        b0_cam2 = bit_check(x0_cam2, y0_cam2, cam_cam2, options.threshold, width)
+        b1_cam2 = bit_check(x1_cam2, y1_cam2, cam_cam2, options.threshold, width)
+        b2_cam2 = bit_check(x2_cam2, y2_cam2, cam_cam2, options.threshold, width)
+        b3_cam2 = bit_check(x3_cam2, y3_cam2, cam_cam2, options.threshold, width)
+        num_cam2 = '0b'+str(b3_cam2)+str(b2_cam2)+str(b1_cam2)+str(b0_cam2)
+        print num_cam2
+        num_cam2 = eval(num_cam2)
+        print num_cam2
+        #################################
+        #check bits for cam3 
+        cam_cam3 = f[xi_cam3:xf_cam3,yi_cam3:yf_cam3]
+        print "-------------"
+        print "cam3"
+        b0_cam3 = bit_check(x0_cam3, y0_cam3, cam_cam3, options.threshold, width)
+        b1_cam3 = bit_check(x1_cam3, y1_cam3, cam_cam3, options.threshold, width)
+        b2_cam3 = bit_check(x2_cam3, y2_cam3, cam_cam3, options.threshold, width)
+        b3_cam3 = bit_check(x3_cam3, y3_cam3, cam_cam3, options.threshold, width)
+        num_cam3 = '0b'+str(b3_cam3)+str(b2_cam3)+str(b1_cam3)+str(b0_cam3)
+        print num_cam3
+        num_cam3 = eval(num_cam3)
+        print num_cam3
+        #################################
+        if options.check is True:
+            cam_cam0 = f[xi_cam0:xf_cam0,yi_cam0:yf_cam0]
+            cam_cam1 = f[xi_cam1:xf_cam1,yi_cam1:yf_cam1]
+            cam_cam2 = f[xi_cam2:xf_cam2,yi_cam2:yf_cam2]
+            cam_cam3 = f[xi_cam3:xf_cam3,yi_cam3:yf_cam3]
             fig = plt.figure()
             #234 =     "2x3 grid, 4th subplot".
-            ax = plt.subplot(111)
+            ax = plt.subplot(411)
             ax.set_xlim(0,xf_cam0-xi_cam0)
             ax.set_ylim(0,yf_cam0-yi_cam0)
             ax.autoscale(False)
@@ -281,26 +324,48 @@ for i in range(options.init, options.end+1):
             plt.gca().add_patch(patch)
             title = 'cam0'
             plt.title(title)
-            plt.show()
-        #-------------------------------------------------------------------
-        #check bits for cam1 
-        cam_cam1 = f[xi_cam1:xf_cam1,yi_cam1:yf_cam1]
-        print "-------------"
-        print "cam1"
-        b0_cam1 = bit_check(x0_cam1, y0_cam1, cam_cam1, options.threshold, width)
-        b1_cam1 = bit_check(x1_cam1, y1_cam1, cam_cam1, options.threshold, width)
-        b2_cam1 = bit_check(x2_cam1, y2_cam1, cam_cam1, options.threshold, width)
-        b3_cam1 = bit_check(x3_cam1, y3_cam1, cam_cam1, options.threshold, width)
-        num_cam1 = '0b'+str(b3_cam1)+str(b2_cam1)+str(b1_cam1)+str(b0_cam1)
-        print num_cam1
-        num_cam1 = eval(num_cam1)
-        print num_cam1
-        #################################
-        if options.check is True:
-            cam_cam3 = f[xi_cam3:xf_cam3,yi_cam3:yf_cam3]
-            fig = plt.figure()
-            #234 =     "2x3 grid, 4th subplot".
-            ax = plt.subplot(111)
+            #-----
+            ax = plt.subplot(412)
+            ax.set_xlim(0,xf_cam1-xi_cam1)
+            ax.set_ylim(0,yf_cam1-yi_cam1)
+            ax.autoscale(False)
+            ax.imshow(cam_cam1, cmap =cm.Greys_r)
+            ax.plot(x0_cam1, y0_cam1, 'x',label='b0')
+            ax.plot(x1_cam1, y1_cam1, 'x',label='b1')
+            ax.plot(x2_cam1, y2_cam1, 'x',label='b2')
+            ax.plot(x3_cam1, y3_cam1, 'x',label='b3')
+            patch = get_square(x0_cam1, y0_cam1, width)
+            plt.gca().add_patch(patch)
+            patch = get_square(x1_cam1, y1_cam1, width)
+            plt.gca().add_patch(patch)
+            patch = get_square(x2_cam1, y2_cam1, width)
+            plt.gca().add_patch(patch)
+            patch = get_square(x3_cam1, y3_cam1, width)
+            plt.gca().add_patch(patch)
+            title = 'cam1'
+            plt.title(title)
+            #-----
+            ax = plt.subplot(413)
+            ax.set_xlim(0,xf_cam2-xi_cam2)
+            ax.set_ylim(0,yf_cam2-yi_cam2)
+            ax.autoscale(False)
+            ax.imshow(cam_cam2, cmap =cm.Greys_r)
+            ax.plot(x0_cam2, y0_cam2, 'x',label='b0')
+            ax.plot(x1_cam2, y1_cam2, 'x',label='b1')
+            ax.plot(x2_cam2, y2_cam2, 'x',label='b2')
+            ax.plot(x3_cam2, y3_cam2, 'x',label='b3')
+            patch = get_square(x0_cam2, y0_cam2, width)
+            plt.gca().add_patch(patch)
+            patch = get_square(x1_cam2, y1_cam2, width)
+            plt.gca().add_patch(patch)
+            patch = get_square(x2_cam2, y2_cam2, width)
+            plt.gca().add_patch(patch)
+            patch = get_square(x3_cam2, y3_cam2, width)
+            plt.gca().add_patch(patch)
+            title = 'cam2'
+            plt.title(title)
+            #-----
+            ax = plt.subplot(414)
             ax.set_xlim(0,xf_cam3-xi_cam3)
             ax.set_ylim(0,yf_cam3-yi_cam3)
             ax.autoscale(False)
