@@ -71,25 +71,25 @@ for cam in range(0,ncam):
 OffsetX = 254
 OffsetY = 200
 cam = 0
-set(cam, 'OffsetX', offsetX)
-set(cam, 'OffsetY', offsetY)
+set(cam, 'OffsetX', OffsetX)
+set(cam, 'OffsetY', OffsetY)
 
 cam = 1
 OffsetX = 252
 OffsetY = 100
-set(cam, 'OffsetX', offsetX)
-set(cam, 'OffsetY', offsetY)
+set(cam, 'OffsetX', OffsetX)
+set(cam, 'OffsetY', OffsetY)
 
 cam = 2
 OffsetX = 100
 OffsetY = 154
-set(cam, 'OffsetX', offsetX)
-set(cam, 'OffsetY', offsetY)
+set(cam, 'OffsetX', OffsetX)
+set(cam, 'OffsetY', OffsetY)
 
 cam = 3
 OffsetX = 172
 OffsetY = 130
-set(cam, 'OffsetX', offsetX)
-set(cam, 'OffsetY', offsetY)
+set(cam, 'OffsetX', OffsetX)
+set(cam, 'OffsetY', OffsetY)
 
 
