@@ -69,7 +69,7 @@ if __name__=="__main__":
     parser = argparse.ArgumentParser(usage=usage)
     parser.add_argument('-r', '--reference', dest='reference', type=str, help='Path to get reference images', default=None)
     parser.add_argument('-d', '--dirname', dest='dirname', type=str, help='Path to get images', default=None)
-    parser.add_argument('-t', '--threshold', dest='threshold', type=int, help='Threshold to filter image', default=4000)
+    parser.add_argument('-t', '--threshold', dest='threshold', type=int, help='Threshold to filter image', default=2000)
     parser.add_argument('-i', '--init', dest='init', type=int, help='inital image to proces', default=0)
     parser.add_argument('-e', '--end', dest='end', type=int, help='final image to proces', default=29)
     parser.add_argument('-s', '--show', dest='show', action='store_true' , help='Enable show plots')
@@ -103,6 +103,15 @@ if __name__=="__main__":
     yi_cam1 = 0#0
     yf_cam1 = 200#656#200 
     
+    xi_cam2 = 400#0
+    yi_cam2 = 0#0
+    xf_cam2 = 600#492#200 
+    yf_cam2 = 200#656#200 
+
+    xi_cam3 = 600#0
+    yi_cam3 = 0#0
+    xf_cam3 = 800#492#200 
+    yf_cam3 = 200#656#200 
     #Padding in pixels to make closed shapes and get a correct centroid
     padding = 5#7
     #area to search intensity (mean) taking account centroid
@@ -110,15 +119,25 @@ if __name__=="__main__":
 
     #XXX: image reference: this is according each windows size
     #XXX commented for 200x200
-    cam0_b0 = options.reference+'/img_028.fits'#'/img_000.fits'
-    cam0_b1 = options.reference+'/img_030.fits'#'/img_001.fits'
-    cam0_b2 = options.reference+'/img_034.fits'#'/img_003.fits'
-    cam0_b3 = options.reference+'/img_010.fits'#'/img_007.fits'
+    cam0_b0 = options.reference+'/img_001.fits'
+    cam0_b1 = options.reference+'/img_002.fits'
+    cam0_b2 = options.reference+'/img_004.fits'
+    cam0_b3 = options.reference+'/img_008.fits'
 
-    cam1_b0 = options.reference+'/img_028.fits'#'/img_001.fits'
-    cam1_b1 = options.reference+'/img_030.fits'#'/img_002.fits'
-    cam1_b2 = options.reference+'/img_034.fits'#'/img_004.fits'
-    cam1_b3 = options.reference+'/img_010.fits'#'/img_008.fits'
+    cam1_b0 = options.reference+'/img_001.fits'
+    cam1_b1 = options.reference+'/img_002.fits'
+    cam1_b2 = options.reference+'/img_004.fits'
+    cam1_b3 = options.reference+'/img_008.fits'
+
+    cam2_b0 = options.reference+'/img_001.fits'
+    cam2_b1 = options.reference+'/img_002.fits'
+    cam2_b2 = options.reference+'/img_004.fits'
+    cam2_b3 = options.reference+'/img_008.fits'
+
+    cam3_b0 = options.reference+'/img_001.fits'
+    cam3_b1 = options.reference+'/img_002.fits'
+    cam3_b2 = options.reference+'/img_004.fits'
+    cam3_b3 = options.reference+'/img_008.fits'
 
     #Getting central coordinates
     b0_0 = FITS.Read(cam0_b0)[1][xi_cam0:xf_cam0,yi_cam0:yf_cam0]
@@ -131,6 +150,16 @@ if __name__=="__main__":
     b2_1 = FITS.Read(cam1_b2)[1][xi_cam1:xf_cam1,yi_cam1:yf_cam1]
     b3_1 = FITS.Read(cam1_b3)[1][xi_cam1:xf_cam1,yi_cam1:yf_cam1]
 
+    b0_2 = FITS.Read(cam2_b0)[1][xi_cam2:xf_cam2,yi_cam2:yf_cam2]
+    b1_2 = FITS.Read(cam2_b1)[1][xi_cam2:xf_cam2,yi_cam2:yf_cam2]
+    b2_2 = FITS.Read(cam2_b2)[1][xi_cam2:xf_cam2,yi_cam2:yf_cam2]
+    b3_2 = FITS.Read(cam2_b3)[1][xi_cam2:xf_cam2,yi_cam2:yf_cam2]
+
+    b0_3 = FITS.Read(cam3_b0)[1][xi_cam3:xf_cam3,yi_cam3:yf_cam3]
+    b1_3 = FITS.Read(cam3_b1)[1][xi_cam3:xf_cam3,yi_cam3:yf_cam3]
+    b2_3 = FITS.Read(cam3_b2)[1][xi_cam3:xf_cam3,yi_cam3:yf_cam3]
+    b3_3 = FITS.Read(cam3_b3)[1][xi_cam3:xf_cam3,yi_cam3:yf_cam3]
+
     #Fixed limit to not convert a binary image
     mask_b0_0 = np.where(b0_0 > 4000,1,0)
     mask_b1_0 = np.where(b1_0 > 4000,1,0)
@@ -141,6 +170,16 @@ if __name__=="__main__":
     mask_b1_1 = np.where(b1_1 > 4000,1,0)
     mask_b2_1 = np.where(b2_1 > 4000,1,0)
     mask_b3_1 = np.where(b3_1 > 4000,1,0)
+    
+    mask_b0_2 = np.where(b0_2 > 4000,1,0)
+    mask_b1_2 = np.where(b1_2 > 4000,1,0)
+    mask_b2_2 = np.where(b2_2 > 4000,1,0)
+    mask_b3_2 = np.where(b3_2 > 4000,1,0)
+    
+    mask_b0_3 = np.where(b0_3 > 4000,1,0)
+    mask_b1_3 = np.where(b1_3 > 4000,1,0)
+    mask_b2_3 = np.where(b2_3 > 4000,1,0)
+    mask_b3_3 = np.where(b3_3 > 4000,1,0)
     
     #Apply border (padding)
     border = np.ones(b0_0.shape)
@@ -160,6 +199,16 @@ if __name__=="__main__":
     mask_b2_cam1 = mask_b2_1 * b2_1 * border
     mask_b3_cam1 = mask_b3_1 * b3_1 * border
 
+    mask_b0_cam2 = mask_b0_2 * b0_2 * border
+    mask_b1_cam2 = mask_b1_2 * b1_2 * border
+    mask_b2_cam2 = mask_b2_2 * b2_2 * border
+    mask_b3_cam2 = mask_b3_2 * b3_2 * border
+
+    mask_b0_cam3 = mask_b0_3 * b0_3 * border
+    mask_b1_cam3 = mask_b1_3 * b1_3 * border
+    mask_b2_cam3 = mask_b2_3 * b2_3 * border
+    mask_b3_cam3 = mask_b3_3 * b3_3 * border
+
     #Getting centroid
     y0_cam0, x0_cam0 = get_centroid(mask_b0_cam0)
     y1_cam0, x1_cam0 = get_centroid(mask_b1_cam0)
@@ -170,6 +219,16 @@ if __name__=="__main__":
     y1_cam1, x1_cam1 = get_centroid(mask_b1_cam1)
     y2_cam1, x2_cam1 = get_centroid(mask_b2_cam1)
     y3_cam1, x3_cam1 = get_centroid(mask_b3_cam1)
+
+    y0_cam2, x0_cam2 = get_centroid(mask_b0_cam2)
+    y1_cam2, x1_cam2 = get_centroid(mask_b1_cam2)
+    y2_cam2, x2_cam2 = get_centroid(mask_b2_cam2)
+    y3_cam2, x3_cam2 = get_centroid(mask_b3_cam2)
+
+    y0_cam3, x0_cam3 = get_centroid(mask_b0_cam3)
+    y1_cam3, x1_cam3 = get_centroid(mask_b1_cam3)
+    y2_cam3, x2_cam3 = get_centroid(mask_b2_cam3)
+    y3_cam3, x3_cam3 = get_centroid(mask_b3_cam3)
 
 print "GO !!"
 pattern_cam0 = []
@@ -238,26 +297,27 @@ for i in range(options.init, options.end+1):
         print num_cam1
         #################################
         if options.check is True:
+            cam_cam3 = f[xi_cam3:xf_cam3,yi_cam3:yf_cam3]
             fig = plt.figure()
             #234 =     "2x3 grid, 4th subplot".
             ax = plt.subplot(111)
-            ax.set_xlim(0,xf_cam1-xi_cam1)
-            ax.set_ylim(0,yf_cam1-yi_cam1)
+            ax.set_xlim(0,xf_cam3-xi_cam3)
+            ax.set_ylim(0,yf_cam3-yi_cam3)
             ax.autoscale(False)
-            ax.imshow(cam_cam1, cmap =cm.Greys_r)
-            ax.plot(x0_cam1, y0_cam1, 'x',label='b0')
-            ax.plot(x1_cam1, y1_cam1, 'x',label='b1')
-            ax.plot(x2_cam1, y2_cam1, 'x',label='b2')
-            ax.plot(x3_cam1, y3_cam1, 'x',label='b3')
-            patch = get_square(x0_cam1, y0_cam1, width)
+            ax.imshow(cam_cam3, cmap =cm.Greys_r)
+            ax.plot(x0_cam3, y0_cam3, 'x',label='b0')
+            ax.plot(x1_cam3, y1_cam3, 'x',label='b1')
+            ax.plot(x2_cam3, y2_cam3, 'x',label='b2')
+            ax.plot(x3_cam3, y3_cam3, 'x',label='b3')
+            patch = get_square(x0_cam3, y0_cam3, width)
             plt.gca().add_patch(patch)
-            patch = get_square(x1_cam1, y1_cam1, width)
+            patch = get_square(x1_cam3, y1_cam3, width)
             plt.gca().add_patch(patch)
-            patch = get_square(x2_cam1, y2_cam1, width)
+            patch = get_square(x2_cam3, y2_cam3, width)
             plt.gca().add_patch(patch)
-            patch = get_square(x3_cam1, y3_cam1, width)
+            patch = get_square(x3_cam3, y3_cam3, width)
             plt.gca().add_patch(patch)
-            title = 'cam1'
+            title = 'cam3'
             plt.title(title)
             plt.show()
         #-------------------------------------------------------------------
