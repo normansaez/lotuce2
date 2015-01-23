@@ -82,6 +82,8 @@ if __name__=="__main__":
 print "GO !!"
 pattern_cam0 = []
 pattern_cam1 = []
+pattern_cam2 = []
+pattern_cam3 = []
 diff = []
 axis_x = []
 sync_on = 0
@@ -101,35 +103,24 @@ for line in filehandler:
     fno= float(line[1])
     num_cam0 = float(line[2])
     num_cam1 = float(line[3])
+    num_cam2 = float(line[4])
+    num_cam3 = float(line[5])
     dif = num_cam0 - num_cam1
-    if num_cam1 == num_cam0:
-        sync_on += 1
-    else:
-        sync_off += 1
-#        print "not sync! :%f" % fno
-#    print "-------------------------------------------------------------"
     pattern_cam0.append(num_cam0)
     pattern_cam1.append(num_cam1)
+    pattern_cam2.append(num_cam2)
+    pattern_cam3.append(num_cam3)
     diff.append(dif)
     fnos.append(fno)
 
     axis_x.append(i)
     i += 1
-#    if i == 6000:
-#        nnn = np.array(fnos)
-#        print (nnn[1:]-nnn[:-1]).max()
-#        print (nnn[1:]-nnn[:-1]).min()
-#        break
 nnn = np.array(fnos)
 print (nnn[1:]-nnn[:-1]).max()
 print (nnn[1:]-nnn[:-1]).min()
-#xxx = nnn[1:]-nnn[:-1]
-#a = xxx[0]
-#for i in range(0,len(xxx)):
-#    xxx[:
 #Prepare graph
-on  = 100.*(sync_on*1./len(axis_x))
-off = 100.*(sync_off*1./len(axis_x)) 
+#on  = 100.*(sync_on*1./len(axis_x))
+#off = 100.*(sync_off*1./len(axis_x)) 
 title = 'img v.s id: %s' % (basename)#, on, off)
 #plot it
 fig = plt.figure()
@@ -148,22 +139,22 @@ ax.xaxis.grid(True)
 grid()
 ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
 plt.savefig(basename+'-id.png')
-print "%.2f%% synchronized" % on
-print "%.2f%% NOT synchronized" % off
+#print "%.2f%% synchronized" % on
+#print "%.2f%% NOT synchronized" % off
 print "%d total"% (len(axis_x))
 plt.show()
-############### line plot #######################
-plt.clf()
-ax2 = plt.subplot(111)
-ax2.plot(axis_x, diff, 'r-x',label='cam0 - cam1')
-box = ax2.get_position()
-ax2.set_position([box.x0, box.y0, box.width * 0.8, box.height])
-plt.ylabel('pattern diff')
-plt.xlabel('image number')
-title = 'img v.s pat diff: %s\nsynchronized: YES: %d , NO: %d' % (basename, sync_on, sync_off)
-plt.title(title)
-ax2.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-plt.savefig(basename+'.png')
-
-plt.show()
+################ line plot #######################
+#plt.clf()
+#ax2 = plt.subplot(111)
+#ax2.plot(axis_x, diff, 'r-x',label='cam0 - cam1')
+#box = ax2.get_position()
+#ax2.set_position([box.x0, box.y0, box.width * 0.8, box.height])
+#plt.ylabel('pattern diff')
+#plt.xlabel('image number')
+#title = 'img v.s pat diff: %s\nsynchronized: YES: %d , NO: %d' % (basename, sync_on, sync_off)
+#plt.title(title)
+#ax2.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+#plt.savefig(basename+'.png')
+#
+#plt.show()
 
