@@ -54,10 +54,18 @@ img_to_take =  int(hz*options.time)#options.nimg
 #d.Set("aravisGet","?0:ExposureTimeAbs")
 #exptime=int(d.Get("aravisGet"))
 
+filelog = open('run.log','w')
+filelog.write("number of images for %f [Hz] and %d time[seconds]: %d images to take\n" % (hz, options.time,int(hz*options.time)))
+filelog.write("Images stored in : %s\n" % options.directory)
 t0 = time.clock()
+filelog.write("%s"%str(t0))
+filelog.write('\n')
 streamBlock = d.GetStreamBlock('%srtcPxlBuf'%options.prefix,img_to_take,block=1,flysave=options.directory+'/img.fits')
 t1 = time.clock()
+filelog.write("%s"%str(t1))
+filelog.write('\n')
 print "%f time taken, time commanded %d" % ((t1-t0), options.time)
+filelog.write("%f time taken, time commanded %d" % ((t1-t0), options.time))
 print "number of images for %f [Hz] and %d time[seconds]: %d images to take" % (hz, options.time,int(hz*options.time))
 print "Images stored in : %s" % options.directory
 
