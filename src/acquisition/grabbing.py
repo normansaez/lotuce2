@@ -13,9 +13,16 @@ parse = argparse.ArgumentParser()
 parse.add_argument('-p', '--prefix', dest='prefix', type=str, help='Camera prefix: default all', default="all")
 #parse.add_argument('-e', '--exptime', dest='exptime', type=int, help='Value for ExposureTimeAbs', default=1000)
 parse.add_argument('-d', '--directory', dest='directory', type=str, help='directory to be store the images', default=None)
-parse.add_argument('-t', '--time', dest='time', type=int, help='Image time in seconds', default=1)
+parse.add_argument('-t', '--adquisition_time', dest='adquisition_time', nargs='*', type=int, help='Image adquisition_time in seconds', default=[1])
 (options, unknown) = parse.parse_known_args()
 
+if len(options.adquisition_time) == 1:
+    adquisition_time = options.adquisition_time[0]
+else:
+    adquisition_time = eval(str(options.adquisition_time).strip('[').rstrip(']').replace(',','*'))
+
+print options.adquisition_time
+print adquisition_time
 if options.directory is None:
     path, fil = os.path.split(os.path.abspath(__file__))
     current =  str(time.strftime("%Y_%m_%d", time.gmtime()))
@@ -47,26 +54,28 @@ try:
     hz = float(HZ_str.split('(')[1].split('Hz)')[0])
 except:
     pass
-print "number of images for %f [Hz] and %d time[seconds]: %d images to take" % (hz, options.time,int(hz*options.time))
-img_to_take =  int(hz*options.time)#options.nimg
+print "number of images for %f [Hz] and %d time[seconds]: %d images to take" % (hz, adquisition_time,int(hz*adquisition_time))
+img_to_take =  int(hz*adquisition_time)#options.nimg
 #exptime = options.exptime
 #d.Set("aravisCmdAll",'ExposureTimeAbs=%d;'% exptime)
 #d.Set("aravisGet","?0:ExposureTimeAbs")
 #exptime=int(d.Get("aravisGet"))
 
 filelog = open('run.log','w')
-filelog.write("number of images for %f [Hz] and %d time[seconds]: %d images to take\n" % (hz, options.time,int(hz*options.time)))
+filelog.write("number of images for %f [Hz] and %d time[seconds]: %d images to take\n" % (hz, adquisition_time,int(hz*adquisition_time)))
 filelog.write("Images stored in : %s\n" % options.directory)
 t0 = time.clock()
 filelog.write("%s"%str(t0))
 filelog.write('\n')
-streamBlock = d.GetStreamBlock('%srtcPxlBuf'%options.prefix,img_to_take,block=1,flysave=options.directory+'/img.fits')
+###################### XXX: Tobe fixed !!!!!!!!!!!!!!!!!!! #########################
+streamBlock = d.GetStreamBlock('%srtcPxlBuf'%options.prefix,img_to_take)#,block=1,flysave=options.directory+'/img.fits')
+###################### XXX: Tobe fixed !!!!!!!!!!!!!!!!!!! #########################
 t1 = time.clock()
 filelog.write("%s"%str(t1))
 filelog.write('\n')
-print "%f time taken, time commanded %d" % ((t1-t0), options.time)
-filelog.write("%f time taken, time commanded %d" % ((t1-t0), options.time))
-print "number of images for %f [Hz] and %d time[seconds]: %d images to take" % (hz, options.time,int(hz*options.time))
+print "%f time taken, time commanded %d" % ((t1-t0), adquisition_time)
+filelog.write("%f time taken, time commanded %d" % ((t1-t0), adquisition_time))
+print "number of images for %f [Hz] and %d time[seconds]: %d images to take" % (hz, adquisition_time,int(hz*adquisition_time))
 print "Images stored in : %s" % options.directory
 
 #streams = streamBlock['%srtcPxlBuf'%options.prefix]
