@@ -35,8 +35,8 @@ cam2s = []
 cam3s = []
 count = 0
 
-limit = 500
-
+limit = 50
+fni = None
 deg2rad = 22.5*(pi/180.)
 for line in filehandler:
     line = line.rstrip('\n').split(' ')
@@ -46,21 +46,25 @@ for line in filehandler:
     cam1= float(line[3])
     cam2= float(line[4])
     cam3= float(line[5])
-
+    if fni is None:
+        fni = fno
+        fno = 0
+    else:
+        fno = fno - fni
     c0_thetas.append(cam0*deg2rad)
-    c0_rhos.append(count)
+    c0_rhos.append(fno)
     cam0s.append(cam0)
 
     c1_thetas.append(cam1*deg2rad)
-    c1_rhos.append(count)
+    c1_rhos.append(fno)
     cam1s.append(cam1)
 
     c2_thetas.append(cam2*deg2rad)
-    c2_rhos.append(count)
+    c2_rhos.append(fno)
     cam2s.append(cam2)
 
     c3_thetas.append(cam3*deg2rad)
-    c3_rhos.append(count)
+    c3_rhos.append(fno)
     cam3s.append(cam3)
 
     if count == limit:
@@ -71,7 +75,8 @@ for i in range(0, limit):
     print "c1: t(%.1f) r(%.1f) c(%d)" % (c1_thetas[i],c1_rhos[i],cam1s[i])
     print "c2: t(%.1f) r(%.1f) c(%d)" % (c2_thetas[i],c2_rhos[i],cam2s[i])
     print "c3: t(%.1f) r(%.1f) c(%d)" % (c3_thetas[i],c3_rhos[i],cam3s[i])
-    print 
+    print
+
 axe.plot(c0_thetas, c0_rhos,'r')
 axe.plot(c1_thetas, c1_rhos,'b')
 axe.plot(c2_thetas, c2_rhos,'y')
