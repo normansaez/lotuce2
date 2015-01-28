@@ -5,9 +5,11 @@ from pylab import grid#imshow,show
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import argparse 
+import datetime
 import numpy as np
 from math import floor
 from matplotlib import ticker
+from matplotlib.dates import date2num
 #from matplotlib import rcParams
 
 #rcParams.update({'font.size': 18, 'text.usetex': True})
@@ -19,7 +21,7 @@ if __name__=="__main__":
     '''
     parser = argparse.ArgumentParser(usage=usage)
     parser.add_argument('-d', '--filename', dest='filename', type=str, help='Path to get images', default=None)
-    parser.add_argument('-l', '--limit', dest='limit', type=int, help='Default limit to plot', default=393300)#786600)#None)
+    parser.add_argument('-l', '--limit', dest='limit', type=int, help='Default limit to plot', default=None)#131100)#393300)#786600)#None)
 
     (options, unknown) = parser.parse_known_args()
 
@@ -47,11 +49,13 @@ for line in filehandler:
     ts = float(line[0])
     fno= float(line[1])
     fnos.append(fno)
-#    axis_x.append(i)
+    d = datetime.datetime.fromtimestamp(ts)
+    axis_x.append(d)
     i += 1
-if options.limit is not None:
-    i = options.limit
-axis_x = [j for j in range(0,i-1)]
+    if i == options.limit:
+        break
+#axis_x = [j for j in range(0,i-1)]
+del axis_x[-1]
 np_fnos = np.array(fnos)
 print (np_fnos[1:]-np_fnos[:-1]).max()
 print (np_fnos[1:]-np_fnos[:-1]).min()
@@ -59,19 +63,24 @@ print (np_fnos[1:]-np_fnos[:-1]).min()
 for j in range(0,i-1):
     fno_id = np_fnos[j+1] - np_fnos[j]
     fns.append(fno_id)
+print len(axis_x)
+print len(fns)
+#axis_x = date2num(axis_x)
 fig = plt.figure()
 ax = plt.subplot(111)
+#ax.plot(axis_x, fns,'r.', label=r'$\Delta id(n)$')
 ax.plot(axis_x, fns,'r.', label=r'$\Delta id(n)$')
 box = ax.get_position()
 ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
-plt.title(r'img v.s $\Delta id(n)$ %s' % (basename))
+plt.title(r'timestamp v.s $\Delta id(n)$ %s' % (basename))
 plt.ylabel(r'$\Delta id(n) = id(n+1) - id(n)$')
-plt.xlabel(r'image number')
+plt.xlabel(r'timestamp')
 #xticks(rotation='vertical')
-formatter = ticker.ScalarFormatter(useMathText=True)
-formatter.set_scientific(True) 
-formatter.set_powerlimits((-1,1)) 
-ax.xaxis.set_major_formatter(formatter) 
+#formatter = ticker.ScalarFormatter(useMathText=True)
+#formatter.set_scientific(True) 
+#formatter.set_powerlimits((-1,1)) 
+#ax.xaxis.set_major_formatter(formatter) 
+plt.gcf().autofmt_xdate()
 ax.xaxis.grid(True)
 grid()
 ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
