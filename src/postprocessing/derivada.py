@@ -9,7 +9,7 @@ import matplotlib.cm as cm
 import argparse 
 import numpy as np
 from math import floor
-
+from matplotlib import ticker
 #COLOR CONST
 BLUE     = '\033[34m'
 RED      = '\033[31m'
@@ -68,10 +68,14 @@ ax = plt.subplot(111)
 ax.plot(axis_x, fns, 'r.',label='fno')
 box = ax.get_position()
 ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
-plt.title(r'$img v.s d(n) = id(n+1) - id(n)$ %s' % (basename))
+plt.title(r'img v.s $d(n) = id(n+1) - id(n)$ %s' % (basename))
 plt.ylabel(r'$\Delta id(n) = id(n+1) - id(n)$')
-plt.xlabel(r'$image number$')
-xticks(rotation='vertical')
+plt.xlabel(r'image number')
+#xticks(rotation='vertical')
+formatter = ticker.ScalarFormatter(useMathText=True)
+formatter.set_scientific(True) 
+formatter.set_powerlimits((-1,1)) 
+ax.xaxis.set_major_formatter(formatter) 
 ax.xaxis.grid(True)
 grid()
 ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
