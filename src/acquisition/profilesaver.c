@@ -1,9 +1,5 @@
 #include "Python.h"
 #include "numpy/arrayobject.h"
-#include <aio.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
 
 static PyObject* hydrate (PyObject *dummy, PyObject *args)
 {
@@ -51,7 +47,7 @@ static PyObject* saver (PyObject *dummy, PyObject *args)
 {
     PyObject *arg1=NULL;
     PyObject *array=NULL;
-    int file_ptr;
+    FILE * file_ptr;
     char *filename;
 
     if (!PyArg_ParseTuple(args, "Os", &arg1, &filename))
@@ -67,21 +63,12 @@ static PyObject* saver (PyObject *dummy, PyObject *args)
 //    for (i=0; i < 15; i++){
 //        printf("c_array[%d] =  %f\n",i,c_array[i]);
 //    }
-    file_ptr = open(filename, O_CREAT,S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH); 
-    if (file_ptr != -1) 
+    file_ptr = fopen(filename, "wb"); 
+    if (file_ptr != NULL) 
     {
-        struct aiocb asyncwr;
-            asyncwr.aio_fildes = file_ptr;     /* File descriptor */
-            asyncwr.aio_offset = 0;     /* File offset */
-            asyncwr.aio_buf = c_array;        /* Location of buffer */
-            asyncwr.aio_nbytes = size*sizeof(double);     /* Length of transfer */
-            asyncwr.aio_reqprio = 0;    /* Request priority */
-            asyncwr.aio_sigevent.sigev_notify = SIGEV_NONE;   /* Notification method */
-            asyncwr.aio_lio_opcode = LIO_NOP; /* Operation to be performed; */
-
-//        fwrite(c_array, sizeof(double *), size, file_ptr);
-        aio_write(&asyncwr);
-        close(file_ptr);
+        fwrite(c_array, sizeof(double *), size, file_ptr);
+        fflush(file_ptr);
+        fclose(file_ptr);
     }
     else
         printf("failed to create the file!\n");
