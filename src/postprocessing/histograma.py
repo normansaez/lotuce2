@@ -41,7 +41,6 @@ fnos = []
 fns = []
 filename = os.path.normpath(options.filename)
 print filename
-print "mmap ok"
 i = 0
 with open(filename, "r+b") as f:
     map = mmap.mmap(f.fileno(), 0, prot=mmap.PROT_READ)
@@ -55,11 +54,10 @@ with open(filename, "r+b") as f:
         i += 1
         if i == options.limit:
             break
-    #axis_x = [j for j in range(0,i-1)]
 del axis_x[-1]
 np_fnos = np.array(fnos)
-#print (np_fnos[1:]-np_fnos[:-1]).max()
-#print (np_fnos[1:]-np_fnos[:-1]).min()
+print (np_fnos[1:]-np_fnos[:-1]).max()
+print (np_fnos[1:]-np_fnos[:-1]).min()
 
 for j in range(0,i-1):
     fno_id = np_fnos[j+1] - np_fnos[j]
