@@ -18,6 +18,7 @@ if __name__=="__main__":
     '''
     parser = argparse.ArgumentParser(usage=usage)
     parser.add_argument('-d', '--filename', dest='filename', type=str, help='Path to get images', default=None)
+    parser.add_argument('-l', '--limit', dest='limit', type=int, help='Default limit to plot', default=300)
     (options, unknown) = parser.parse_known_args()
     if options.filename is None:
         print "No directory with images to analisis is given, you need give a path with a directory with images"
@@ -48,7 +49,6 @@ if __name__=="__main__":
     cam3s = []
     count = 0
     
-    limit = 100
     fni = None
     deg2rad = 22.5*(pi/180.)
     for line in filehandler:
@@ -80,10 +80,10 @@ if __name__=="__main__":
         c3_rhos.append(fno)
         cam3s.append(cam3)
     
-        if count == limit:
+        if count == options.limit:
             break
         count += 1
-    for i in range(0, limit):
+    for i in range(0, options.limit):
         print "c0: t(%.1f) r(%.1f) c(%d)" % (c0_thetas[i],c0_rhos[i],cam0s[i])
         print "c1: t(%.1f) r(%.1f) c(%d)" % (c1_thetas[i],c1_rhos[i],cam1s[i])
         print "c2: t(%.1f) r(%.1f) c(%d)" % (c2_thetas[i],c2_rhos[i],cam2s[i])

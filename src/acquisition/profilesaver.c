@@ -67,6 +67,7 @@ static PyObject* saver (PyObject *dummy, PyObject *args)
     if (file_ptr != NULL) 
     {
         fwrite(c_array, sizeof(double *), size, file_ptr);
+        fflush(file_ptr);
         fclose(file_ptr);
     }
     else
