@@ -11,6 +11,7 @@ from math import floor
 from matplotlib import ticker
 from matplotlib.dates import date2num
 #from matplotlib import rcParams
+import mmap
 
 #rcParams.update({'font.size': 18, 'text.usetex': True})
 #rcParams.update({'font.size': 18, 'font.family': 'STIXGeneral', 'mathtext.fontset': 'stix'})
@@ -39,22 +40,20 @@ fnos = []
 fns = []
 filename = os.path.normpath(options.filename)
 print filename
-f = open(filename,'r')
-filehandler = f.readlines()
-f.close()
-
 i = 0
-for line in filehandler:
-    line = line.rstrip('\n').split(' ')
-    ts = float(line[0])
-    fno= float(line[1])
-    fnos.append(fno)
-    d = datetime.datetime.fromtimestamp(ts)
-    axis_x.append(d)
-    i += 1
-    if i == options.limit:
-        break
-#axis_x = [j for j in range(0,i-1)]
+with open(filename, "r+b") as f:
+    map = mmap.mmap(f.fileno(), 0, prot=mmap.PROT_READ)
+    for line in iter(map.readline, ""):
+        line = line.rstrip('\n').split(' ')
+        ts = float(line[0])
+        fno= float(line[1])
+        fnos.append(fno)
+        d = datetime.datetime.fromtimestamp(ts)
+        axis_x.append(d)
+        i += 1
+        if i == options.limit:
+            break
+map.close()
 del axis_x[-1]
 np_fnos = np.array(fnos)
 print (np_fnos[1:]-np_fnos[:-1]).max()
