@@ -24,25 +24,16 @@ import string
 #from skimage.measure import regionprops
 #from skimage.measure import label
 from math import floor
-#import numpy as np
+#import profilesaver
+import pyaio
+import time
+pyaio.aio_init(1000, 1000, 1000)
 
 def bit_check(x, y, img, threshold, width):
     intensity = img[y-width:y+width,x-width:x+width].mean()
-#    print "(%.0f >= %.0f)" % (intensity, threshold),
     if intensity >= threshold:
-#        print " ON" 
         return 1
-#    print 
     return 0
-
-#def get_centroid(img):
-#    label_img = label(img)
-#    regions = regionprops(label_img)
-#    
-#    for props in regions:
-#        y0, x0 = props.centroid
-#        return floor(y0), floor(x0)
-#    return -1, -1
 
 class Saver:
     """Class to implement saving of RTC streams"""
@@ -55,25 +46,20 @@ class Saver:
             self.asfits=0
         self.initialised=0
         self.finalise=0
-#        self.fd=open(name,mode)
         self.info=numpy.zeros((8,),numpy.int32)
+
     def write(self,data,ftime,fno):
-        #XXX: We don't want save the data, instead we want just procese it.
+        def aio_callback(rt, errno):
+            if rt > 0:
+                pass
+#                print "Wrote %d bytes" % rt
+            else:
+                print "Got error: %d" % errno
         # camera coordinates according windows size
-        #XXX commented for 200x200
         res = self.name.split('.fits')[0]+'_'+'lotuce2-run-results.txt'
         resname = 'lotuce2-run-results-'+res.split('/')[-2]+'.txt'
-        text_file = open(resname,'a')
-#        reference = '/home/lotuce2/lotuce2/src/acquisition/ref200x200_225Hz/'
-#        cam0_b0 = reference+'/img_028.fits'#'/img_000.fits'
-#        cam0_b1 = reference+'/img_030.fits'#'/img_001.fits'
-#        cam0_b2 = reference+'/img_034.fits'#'/img_003.fits'
-#        cam0_b3 = reference+'/img_010.fits'#'/img_007.fits'
-#
-#        cam1_b0 = reference+'/img_028.fits'#'/img_001.fits'
-#        cam1_b1 = reference+'/img_030.fits'#'/img_002.fits'
-#        cam1_b2 = reference+'/img_034.fits'#'/img_004.fits'
-#        cam1_b3 = reference+'/img_010.fits'#'/img_008.fits'
+#        text_file = open(resname,'a')
+        fd = os.open(resname, os.O_WRONLY| os.O_CREAT | os.O_TRUNC | os.O_NONBLOCK)
         xi_cam0 = 200#492#200
         xf_cam0 = 400#984#400
         yi_cam0 = 0#0
@@ -84,84 +70,68 @@ class Saver:
         yi_cam1 = 0#0
         yf_cam1 = 200#656#200 
         
+        xi_cam2 = 400#0
+        yi_cam2 = 0#0
+        xf_cam2 = 600#492#200 
+        yf_cam2 = 200#656#200 
+
+        xi_cam3 = 600#0
+        yi_cam3 = 0#0
+        xf_cam3 = 800#492#200 
+        yf_cam3 = 200#656#200 
+        
         #Padding in pixels to make closed shapes and get a correct centroid
 #        padding = 5#7
         #area to search intensity (mean) taking account centroid
         width = 3#5
-        #Getting central coordinates
-#        b0_0 = FITS.Read(cam0_b0)[1][xi_cam0:xf_cam0,yi_cam0:yf_cam0]
-#        b1_0 = FITS.Read(cam0_b1)[1][xi_cam0:xf_cam0,yi_cam0:yf_cam0]
-#        b2_0 = FITS.Read(cam0_b2)[1][xi_cam0:xf_cam0,yi_cam0:yf_cam0]
-#        b3_0 = FITS.Read(cam0_b3)[1][xi_cam0:xf_cam0,yi_cam0:yf_cam0]
-#
-#        b0_1 = FITS.Read(cam1_b0)[1][xi_cam1:xf_cam1,yi_cam1:yf_cam1]
-#        b1_1 = FITS.Read(cam1_b1)[1][xi_cam1:xf_cam1,yi_cam1:yf_cam1]
-#        b2_1 = FITS.Read(cam1_b2)[1][xi_cam1:xf_cam1,yi_cam1:yf_cam1]
-#        b3_1 = FITS.Read(cam1_b3)[1][xi_cam1:xf_cam1,yi_cam1:yf_cam1]
-
-        #Fixed limit to not convert a binary image
-#        mask_b0_0 = np.where(b0_0 > 4000,1,0)
-#        mask_b1_0 = np.where(b1_0 > 4000,1,0)
-#        mask_b2_0 = np.where(b2_0 > 4000,1,0)
-#        mask_b3_0 = np.where(b3_0 > 4000,1,0)
-#
-#        mask_b0_1 = np.where(b0_1 > 4000,1,0)
-#        mask_b1_1 = np.where(b1_1 > 4000,1,0)
-#        mask_b2_1 = np.where(b2_1 > 4000,1,0)
-#        mask_b3_1 = np.where(b3_1 > 4000,1,0)
-        
-        #Apply border (padding)
-#        border = np.ones(b0_0.shape)
-#        border[:padding,:] = 0
-#        border[:,:padding] = 0
-#        border[xf_cam0 - xi_cam0 - padding:,:] = 0
-#        border[:, xf_cam0 - xi_cam0 - padding:] = 0
-        
-        #(binary image )*(original image)*(border) = acurate centroid (in theory)  
-#        mask_b0_cam0 = mask_b0_0 * b0_0 * border
-#        mask_b1_cam0 = mask_b1_0 * b1_0 * border
-#        mask_b2_cam0 = mask_b2_0 * b2_0 * border
-#        mask_b3_cam0 = mask_b3_0 * b3_0 * border
-#
-#        mask_b0_cam1 = mask_b0_1 * b0_1 * border
-#        mask_b1_cam1 = mask_b1_1 * b1_1 * border
-#        mask_b2_cam1 = mask_b2_1 * b2_1 * border
-#        mask_b3_cam1 = mask_b3_1 * b3_1 * border
-
         #Getting centroid
         #y0_cam0, x0_cam0 = get_centroid(mask_b0_cam0)
-        y0_cam0 = 140
-        x0_cam0 = 190
-        #y1_cam0, x1_cam0 = get_centroid(mask_b1_cam0)
-        y1_cam0 = 132
-        x1_cam0 = 143
-#        y2_cam0, x2_cam0 = get_centroid(mask_b2_cam0)
-        y2_cam0 =127
-        x2_cam0 = 71
-#y3_cam0, x3_cam0 = get_centroid(mask_b3_cam0)
-        y3_cam0 =147
-        x3_cam0 = 5
+        x0_cam0 = 191
+        y0_cam0 = 109
+        x1_cam0 = 144
+        y1_cam0 = 93
+        x2_cam0 = 73
+        y2_cam0 = 89
+        x3_cam0 = 6
+        y3_cam0 = 116
 #        y0_cam1, x0_cam1 = get_centroid(mask_b0_cam1)
-        y0_cam1 = 115
         x0_cam1 = 8
-#y1_cam1, x1_cam1 = get_centroid(mask_b1_cam1)
-        y1_cam1 = 108
-        x1_cam1 = 54
-#        y2_cam1, x2_cam1 = get_centroid(mask_b2_cam1)
-        y2_cam1 = 105
-        x2_cam1 = 125
-#        y3_cam1, x3_cam1 = get_centroid(mask_b3_cam1)
-        y3_cam1 = 120 
-        x3_cam1 = 192
+        y0_cam1 = 104
+        x1_cam1 = 52
+        y1_cam1 = 88
+        x2_cam1 = 121
+        y2_cam1 = 85
+        x3_cam1 = 194
+        y3_cam1 = 108 
+#        y0_cam2, x0_cam2 = get_centroid(mask_b0_cam2)
+        x0_cam2 = 192
+        y0_cam2 = 110
+        x1_cam2 = 147
+        y1_cam2 = 101
+        x2_cam2 = 75
+        y2_cam2 = 99
+        x3_cam2 = 6
+        y3_cam2 = 120
+#        y0_cam3, x0_cam3 = get_centroid(mask_b0_cam3)
+        x0_cam3 = 6
+        y0_cam3 = 109
+        x1_cam3 = 52
+        y1_cam3 = 101
+        x2_cam3 = 123
+        y2_cam3 = 98
+        x3_cam3 = 191
+        y3_cam3 = 119 
         #-------------------------------------------------------
         pxly = 200
         pxlx = 200
         fitsname = self.name.split('.fits')[0]+'_'+str(fno)+'.fits'
         fitsname_c0 = self.name.split('.fits')[0]+'_cent_cam0_'+str(fno)+'.fits'
         fitsname_c1 = self.name.split('.fits')[0]+'_cent_cam1_'+str(fno)+'.fits'
-        mydata = data.reshape((2*pxly,pxlx))
+        fitsname_c2 = self.name.split('.fits')[0]+'_cent_cam2_'+str(fno)+'.fits'
+        fitsname_c3 = self.name.split('.fits')[0]+'_cent_cam3_'+str(fno)+'.fits'
+        mydata = data.reshape((4*pxly,pxlx))
 #        FITS.Write(mydata, fitsname, writeMode='w'
-        threshold = 3000
+        threshold = 2000
         cam_cam0 = mydata[xi_cam0:xf_cam0,yi_cam0:yf_cam0]
         b0_cam0 = bit_check(x0_cam0, y0_cam0, cam_cam0, threshold, width)
         b1_cam0 = bit_check(x1_cam0, y1_cam0, cam_cam0, threshold, width)
@@ -169,16 +139,34 @@ class Saver:
         b3_cam0 = bit_check(x3_cam0, y3_cam0, cam_cam0, threshold, width)
         num_cam0 = '0b'+str(b3_cam0)+str(b2_cam0)+str(b1_cam0)+str(b0_cam0)
         num_cam0 = eval(num_cam0)
-        cam_cam1 = mydata[xi_cam1:xf_cam1,yi_cam1:yf_cam1]
 #        print "-------------"
+        cam_cam1 = mydata[xi_cam1:xf_cam1,yi_cam1:yf_cam1]
         b0_cam1 = bit_check(x0_cam1, y0_cam1, cam_cam1, threshold, width)
         b1_cam1 = bit_check(x1_cam1, y1_cam1, cam_cam1, threshold, width)
         b2_cam1 = bit_check(x2_cam1, y2_cam1, cam_cam1, threshold, width)
         b3_cam1 = bit_check(x3_cam1, y3_cam1, cam_cam1, threshold, width)
         num_cam1 = '0b'+str(b3_cam1)+str(b2_cam1)+str(b1_cam1)+str(b0_cam1)
         num_cam1 = eval(num_cam1)
-        text_file.write('%f %d %d %d\n'%(ftime, fno, num_cam0, num_cam1))
-        text_file.close()
+#        print "-------------"
+        cam_cam2 = mydata[xi_cam2:xf_cam2,yi_cam2:yf_cam2]
+        b0_cam2 = bit_check(x0_cam2, y0_cam2, cam_cam2, threshold, width)
+        b1_cam2 = bit_check(x1_cam2, y1_cam2, cam_cam2, threshold, width)
+        b2_cam2 = bit_check(x2_cam2, y2_cam2, cam_cam2, threshold, width)
+        b3_cam2 = bit_check(x3_cam2, y3_cam2, cam_cam2, threshold, width)
+        num_cam2 = '0b'+str(b3_cam2)+str(b2_cam2)+str(b1_cam2)+str(b0_cam2)
+        num_cam2 = eval(num_cam2)
+#        print "-------------"
+        cam_cam3 = mydata[xi_cam3:xf_cam3,yi_cam3:yf_cam3]
+        b0_cam3 = bit_check(x0_cam3, y0_cam3, cam_cam3, threshold, width)
+        b1_cam3 = bit_check(x1_cam3, y1_cam3, cam_cam3, threshold, width)
+        b2_cam3 = bit_check(x2_cam3, y2_cam3, cam_cam3, threshold, width)
+        b3_cam3 = bit_check(x3_cam3, y3_cam3, cam_cam3, threshold, width)
+        num_cam3 = '0b'+str(b3_cam3)+str(b2_cam3)+str(b1_cam3)+str(b0_cam3)
+        num_cam3 = eval(num_cam3)
+#        print "-------------"
+#        text_file.write('%f %d %d %d %d %d\n'%(ftime, fno, num_cam0, num_cam1, num_cam2, num_cam3))
+        pyaio.aio_write(fd,b'%f %d %d %d %d %d\n'%(ftime, fno, num_cam0, num_cam1, num_cam2, num_cam3), 200, aio_callback)
+#        text_file.close()
         c0 = mydata[:200,:]
         c1 = mydata[200:400,:]
     
@@ -189,15 +177,32 @@ class Saver:
         c1_y = c1.sum(1)
         col_cam1 = numpy.array([numpy.append(c1_x,c1_y)])
         myprofile = numpy.append(col_cam0,col_cam1,0)
-
+        #ASYN IO
+        fd1 = os.open(fitsname, os.O_WRONLY| os.O_CREAT | os.O_TRUNC | os.O_NONBLOCK)
+        pyaio.aio_write(fd1, b'%s'%str(myprofile), len(myprofile), aio_callback)
+#        time.sleep(0.0001)
 #        FITS.Write(myprofile, fitsname, writeMode='w')
+#        profilesaver.saver(myprofile, fitsname)
         #Classic
         cent = numpy.zeros(2)
         totalmass = float(cam_cam0.sum())
         Xgrid,Ygrid = numpy.meshgrid(numpy.arange(cam_cam0.shape[1]),numpy.arange(cam_cam0.shape[0]))
         cent[1] = numpy.sum(Ygrid*cam_cam0)/totalmass
         cent[0] = numpy.sum(Xgrid*cam_cam0)/totalmass
+        #ASYN IO
+        def aio_callback(rt, errno):
+            if rt > 0:
+                pass
+#                print "Wrote %d bytes" % rt
+            else:
+                print "Got error: %d" % errno
+#        fd_c0 = os.open(fitsname_c0, os.O_WRONLY| os.O_CREAT | os.O_TRUNC)
+#        pyaio.aio_write(fd_c0, b"%s"%str(cent), len(myprofile), aio_callback)
+#        time.sleep(0.0001)
 #        FITS.Write(cent, fitsname_c0, writeMode='w')
+#        profilesaver.saver(cent, fitsname_c0)
+
+
         #Classic
         cent = numpy.zeros(2)
         totalmass = float(cam_cam1.sum())
@@ -205,11 +210,17 @@ class Saver:
         cent[1] = numpy.sum(Ygrid*cam_cam1)/totalmass
         cent[0] = numpy.sum(Xgrid*cam_cam1)/totalmass
 #        FITS.Write(cent, fitsname_c1, writeMode='w')
-#        if num_cam1 != num_cam0:
-#            FITS.Write(mydata, fitsname, writeMode='w')
-#        FITS.Write(mydata, fitsname, writeMode='w')
-#        if num_cam1 != num_cam0:
-#            FITS.Write(mydata, fitsname, writeMode='w')
+#        profilesaver.saver(cent, fitsname_c1)
+        #ASYN IO
+        def aio_callback(rt, errno):
+            if rt > 0:
+                pass
+#                print "Wrote %d bytes" % rt
+            else:
+                print "Got error: %d" % errno
+#        fd_c1 = os.open(fitsname_c1, os.O_WRONLY| os.O_CREAT | os.O_TRUNC)
+#        pyaio.aio_write(fd_c1, b"%s"%str(cent), len(myprofile), aio_callback)
+#        time.sleep(0.0001)
         return
         #XXX End of the fix
         if self.asfits:
