@@ -24,10 +24,8 @@ import string
 #from skimage.measure import regionprops
 #from skimage.measure import label
 from math import floor
-#import profilesaver
+import profilesaver
 import pyaio
-import time
-pyaio.aio_init(1000, 1000, 1000)
 
 def bit_check(x, y, img, threshold, width):
     intensity = img[y-width:y+width,x-width:x+width].mean()
@@ -50,16 +48,33 @@ class Saver:
 
     def write(self,data,ftime,fno):
         def aio_callback(rt, errno):
+            '''
+            call back for Async write
+            '''
             if rt > 0:
                 pass
-#                print "Wrote %d bytes" % rt
+                #print "Wrote %d bytes" % rt
             else:
                 print "Got error: %d" % errno
-        # camera coordinates according windows size
+
+        # local vars ?
+        pxly = 200
+        pxlx = 200
+
+        threshold = 2000
+
+        # 
+        #Open file wich will save: timestamp fno(id) pattern_cam0 pattern_cam1 pattern_cam2 pattern_cam3
+        #
         res = self.name.split('.fits')[0]+'_'+'lotuce2-run-results.txt'
         resname = 'lotuce2-run-results-'+res.split('/')[-2]+'.txt'
-#        text_file = open(resname,'a')
+        #text_file = open(resname,'a') # normal open file
         fd = os.open(resname, os.O_WRONLY| os.O_CREAT | os.O_TRUNC | os.O_NONBLOCK)
+
+        #
+        # camera coordinates according windows size.
+        #TODO: It seems that cam0 is swapped with cam1, should be checked
+        #
         xi_cam0 = 200#492#200
         xf_cam0 = 400#984#400
         yi_cam0 = 0#0
@@ -79,12 +94,20 @@ class Saver:
         yi_cam3 = 0#0
         xf_cam3 = 800#492#200 
         yf_cam3 = 200#656#200 
-        
-        #Padding in pixels to make closed shapes and get a correct centroid
-#        padding = 5#7
-        #area to search intensity (mean) taking account centroid
+
+        #        
+        # Padding in pixels to make closed shapes and get a correct centroid
+        #
+        #padding = 5#7
+
+        #
+        # area to search intensity (mean) taking account centroid
+        #
         width = 3#5
-        #Getting centroid
+
+        #
+        #Getting centroid: Now is hardcoded to save time
+        #
         #y0_cam0, x0_cam0 = get_centroid(mask_b0_cam0)
         x0_cam0 = 191
         y0_cam0 = 109
@@ -94,7 +117,7 @@ class Saver:
         y2_cam0 = 89
         x3_cam0 = 6
         y3_cam0 = 116
-#        y0_cam1, x0_cam1 = get_centroid(mask_b0_cam1)
+        #y0_cam1, x0_cam1 = get_centroid(mask_b0_cam1)
         x0_cam1 = 8
         y0_cam1 = 104
         x1_cam1 = 52
@@ -103,7 +126,7 @@ class Saver:
         y2_cam1 = 85
         x3_cam1 = 194
         y3_cam1 = 108 
-#        y0_cam2, x0_cam2 = get_centroid(mask_b0_cam2)
+        #y0_cam2, x0_cam2 = get_centroid(mask_b0_cam2)
         x0_cam2 = 192
         y0_cam2 = 110
         x1_cam2 = 147
@@ -112,7 +135,7 @@ class Saver:
         y2_cam2 = 99
         x3_cam2 = 6
         y3_cam2 = 120
-#        y0_cam3, x0_cam3 = get_centroid(mask_b0_cam3)
+        #y0_cam3, x0_cam3 = get_centroid(mask_b0_cam3)
         x0_cam3 = 6
         y0_cam3 = 109
         x1_cam3 = 52
@@ -121,17 +144,24 @@ class Saver:
         y2_cam3 = 98
         x3_cam3 = 191
         y3_cam3 = 119 
-        #-------------------------------------------------------
-        pxly = 200
-        pxlx = 200
+
+        #
+        # Getting string names
+        #
         fitsname = self.name.split('.fits')[0]+'_'+str(fno)+'.fits'
         fitsname_c0 = self.name.split('.fits')[0]+'_cent_cam0_'+str(fno)+'.fits'
         fitsname_c1 = self.name.split('.fits')[0]+'_cent_cam1_'+str(fno)+'.fits'
         fitsname_c2 = self.name.split('.fits')[0]+'_cent_cam2_'+str(fno)+'.fits'
         fitsname_c3 = self.name.split('.fits')[0]+'_cent_cam3_'+str(fno)+'.fits'
+
+        #
+        # Reshape data to be analized
+        #
         mydata = data.reshape((4*pxly,pxlx))
-#        FITS.Write(mydata, fitsname, writeMode='w'
-        threshold = 2000
+        
+        #
+        # Checking bits for cameras, and getting patterns
+        #
         cam_cam0 = mydata[xi_cam0:xf_cam0,yi_cam0:yf_cam0]
         b0_cam0 = bit_check(x0_cam0, y0_cam0, cam_cam0, threshold, width)
         b1_cam0 = bit_check(x1_cam0, y1_cam0, cam_cam0, threshold, width)
@@ -139,7 +169,7 @@ class Saver:
         b3_cam0 = bit_check(x3_cam0, y3_cam0, cam_cam0, threshold, width)
         num_cam0 = '0b'+str(b3_cam0)+str(b2_cam0)+str(b1_cam0)+str(b0_cam0)
         num_cam0 = eval(num_cam0)
-#        print "-------------"
+        #
         cam_cam1 = mydata[xi_cam1:xf_cam1,yi_cam1:yf_cam1]
         b0_cam1 = bit_check(x0_cam1, y0_cam1, cam_cam1, threshold, width)
         b1_cam1 = bit_check(x1_cam1, y1_cam1, cam_cam1, threshold, width)
@@ -147,7 +177,7 @@ class Saver:
         b3_cam1 = bit_check(x3_cam1, y3_cam1, cam_cam1, threshold, width)
         num_cam1 = '0b'+str(b3_cam1)+str(b2_cam1)+str(b1_cam1)+str(b0_cam1)
         num_cam1 = eval(num_cam1)
-#        print "-------------"
+        #
         cam_cam2 = mydata[xi_cam2:xf_cam2,yi_cam2:yf_cam2]
         b0_cam2 = bit_check(x0_cam2, y0_cam2, cam_cam2, threshold, width)
         b1_cam2 = bit_check(x1_cam2, y1_cam2, cam_cam2, threshold, width)
@@ -155,7 +185,7 @@ class Saver:
         b3_cam2 = bit_check(x3_cam2, y3_cam2, cam_cam2, threshold, width)
         num_cam2 = '0b'+str(b3_cam2)+str(b2_cam2)+str(b1_cam2)+str(b0_cam2)
         num_cam2 = eval(num_cam2)
-#        print "-------------"
+        #
         cam_cam3 = mydata[xi_cam3:xf_cam3,yi_cam3:yf_cam3]
         b0_cam3 = bit_check(x0_cam3, y0_cam3, cam_cam3, threshold, width)
         b1_cam3 = bit_check(x1_cam3, y1_cam3, cam_cam3, threshold, width)
@@ -163,66 +193,79 @@ class Saver:
         b3_cam3 = bit_check(x3_cam3, y3_cam3, cam_cam3, threshold, width)
         num_cam3 = '0b'+str(b3_cam3)+str(b2_cam3)+str(b1_cam3)+str(b0_cam3)
         num_cam3 = eval(num_cam3)
-#        print "-------------"
-#        text_file.write('%f %d %d %d %d %d\n'%(ftime, fno, num_cam0, num_cam1, num_cam2, num_cam3))
+
+        #XXX
+        # Writing data: timestamp fno(id) pattern_cam0 pattern_cam1 pattern_cam2 pattern_cam3
+        #
+        #text_file.write('%f %d %d %d %d %d\n'%(ftime, fno, num_cam0, num_cam1, num_cam2, num_cam3))
         pyaio.aio_write(fd,b'%f %d %d %d %d %d\n'%(ftime, fno, num_cam0, num_cam1, num_cam2, num_cam3), 200, aio_callback)
-#        text_file.close()
-        c0 = mydata[:200,:]
-        c1 = mydata[200:400,:]
-    
-        c0_x = c0.sum(0)
-        c0_y = c0.sum(1)
+        #text_file.close()
+
+        #
+        # Profiles: reducing data before store it.
+        # 
+        c0_x = cam_cam0.sum(0)
+        c0_y = cam_cam0.sum(1)
         col_cam0 = numpy.array([numpy.append(c0_x,c0_y)])
-        c1_x = c1.sum(0)
-        c1_y = c1.sum(1)
+
+        c1_x = cam_cam1.sum(0)
+        c1_y = cam_cam1.sum(1)
         col_cam1 = numpy.array([numpy.append(c1_x,c1_y)])
-        myprofile = numpy.append(col_cam0,col_cam1,0)
-        #ASYN IO
+
+        c2_x = cam_cam2.sum(0)
+        c2_y = cam_cam2.sum(1)
+        col_cam2 = numpy.array([numpy.append(c2_x,c2_y)])
+
+        c3_x = cam_cam2.sum(0)
+        c3_y = cam_cam2.sum(1)
+        col_cam3 = numpy.array([numpy.append(c3_x,c3_y)])
+
+        #
+        # Concatenate all profiles in one array
+        #
+        myprofile = numpy.append(col_cam0, col_cam1, col_cam2, col_cam3,0)
+
+        #XXX
+        # Saving profiles using async write
+        #
         fd1 = os.open(fitsname, os.O_WRONLY| os.O_CREAT | os.O_TRUNC | os.O_NONBLOCK)
         pyaio.aio_write(fd1, b'%s'%str(myprofile), len(myprofile), aio_callback)
-#        time.sleep(0.0001)
-#        FITS.Write(myprofile, fitsname, writeMode='w')
-#        profilesaver.saver(myprofile, fitsname)
-        #Classic
-        cent = numpy.zeros(2)
+        #time.sleep(0.0001)
+        #FITS.Write(myprofile, fitsname, writeMode='w')
+        #profilesaver.saver(myprofile, fitsname)
+
+        #XXX
+        # Centroids: Calculating before store them
+        # Classic way to calculate.
+        #
+        cent = numpy.zeros(8)
         totalmass = float(cam_cam0.sum())
         Xgrid,Ygrid = numpy.meshgrid(numpy.arange(cam_cam0.shape[1]),numpy.arange(cam_cam0.shape[0]))
         cent[1] = numpy.sum(Ygrid*cam_cam0)/totalmass
         cent[0] = numpy.sum(Xgrid*cam_cam0)/totalmass
-        #ASYN IO
-        def aio_callback(rt, errno):
-            if rt > 0:
-                pass
-#                print "Wrote %d bytes" % rt
-            else:
-                print "Got error: %d" % errno
-#        fd_c0 = os.open(fitsname_c0, os.O_WRONLY| os.O_CREAT | os.O_TRUNC)
-#        pyaio.aio_write(fd_c0, b"%s"%str(cent), len(myprofile), aio_callback)
-#        time.sleep(0.0001)
-#        FITS.Write(cent, fitsname_c0, writeMode='w')
-#        profilesaver.saver(cent, fitsname_c0)
-
-
-        #Classic
-        cent = numpy.zeros(2)
+        #
         totalmass = float(cam_cam1.sum())
         Xgrid,Ygrid = numpy.meshgrid(numpy.arange(cam_cam1.shape[1]),numpy.arange(cam_cam1.shape[0]))
-        cent[1] = numpy.sum(Ygrid*cam_cam1)/totalmass
-        cent[0] = numpy.sum(Xgrid*cam_cam1)/totalmass
-#        FITS.Write(cent, fitsname_c1, writeMode='w')
-#        profilesaver.saver(cent, fitsname_c1)
-        #ASYN IO
-        def aio_callback(rt, errno):
-            if rt > 0:
-                pass
-#                print "Wrote %d bytes" % rt
-            else:
-                print "Got error: %d" % errno
-#        fd_c1 = os.open(fitsname_c1, os.O_WRONLY| os.O_CREAT | os.O_TRUNC)
-#        pyaio.aio_write(fd_c1, b"%s"%str(cent), len(myprofile), aio_callback)
-#        time.sleep(0.0001)
+        cent[2] = numpy.sum(Ygrid*cam_cam1)/totalmass
+        cent[3] = numpy.sum(Xgrid*cam_cam1)/totalmass
+        #
+        totalmass = float(cam_cam2.sum())
+        Xgrid,Ygrid = numpy.meshgrid(numpy.arange(cam_cam2.shape[1]),numpy.arange(cam_cam2.shape[0]))
+        cent[4] = numpy.sum(Ygrid*cam_cam2)/totalmass
+        cent[5] = numpy.sum(Xgrid*cam_cam2)/totalmass
+        #
+        totalmass = float(cam_cam3.sum())
+        Xgrid,Ygrid = numpy.meshgrid(numpy.arange(cam_cam3.shape[1]),numpy.arange(cam_cam3.shape[0]))
+        cent[6] = numpy.sum(Ygrid*cam_cam3)/totalmass
+        cent[7] = numpy.sum(Xgrid*cam_cam3)/totalmass
+        #fd_c1 = os.open(fitsname_c1, os.O_WRONLY| os.O_CREAT | os.O_TRUNC)
+        #pyaio.aio_write(fd_c1, b"%s"%str(cent), len(myprofile), aio_callback)
+        #time.sleep(0.0001)
+        #FITS.Write(cent, fitsname_c0, writeMode='w')
+        #profilesaver.saver(cent, fitsname_c0)
+
         return
-        #XXX End of the fix
+        #TODO: End of the fix, should be removed
         if self.asfits:
             if self.initialised==0:#Initialise the header
                 self.finalise=1
