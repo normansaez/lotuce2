@@ -1,5 +1,4 @@
 import matplotlib.pyplot as plt
-from pylab import *
 from mpl_toolkits.mplot3d.axes3d import Axes3D
 import argparse 
 import os
@@ -29,7 +28,10 @@ if __name__=="__main__":
     i = 0
     f.close()
     fnos = []
-    
+    num_cam0s = []
+    num_cam1s = []
+    num_cam2s = []
+    num_cam3s = []
     for line in filehandler:
         line = line.rstrip('\n').split(' ')
         ts = float(line[0])
@@ -39,34 +41,46 @@ if __name__=="__main__":
         num_cam2 = float(line[4])
         num_cam3 = float(line[5])
         fnos.append(fno)
+        num_cam0s.append(num_cam0)
+        num_cam1s.append(num_cam1)
+        num_cam2s.append(num_cam2)
+        num_cam3s.append(num_cam3)
         i += 1
-        break
+        if i == 20:
+            break
     #
     #
     #
-    def fun(x, y):
-        return test[x][y]
 
-    x = range(0,4)
-    y = range(0,16)
-    X,Y = np.meshgrid(x, y)
-    print X
-    print Y
-    test = [[a for a in range(0, len(y))] for b in range(0, len(x))]
-    print test
-    zs = np.array([fun(x,y) for x,y in zip(np.ravel(X), np.ravel(Y))])
-    print zs
-#    Z = fnos
-    Z = zs.reshape(X.shape)
-    print Z
-    sys.exit(0)
-    fig = plt.figure(figsize=(8,6))
-    ax = fig.add_subplot(1,1,1, projection='3d')
-    ax.plot_surface(X, Y, Z, rstride=4, cstride=4, alpha=0.25)
-#    cset = ax.contour(X, Y, Z, zdir='z', offset=-pi, cmap=cm.coolwarm)
-#    cset = ax.contour(X, Y, Z, zdir='x', offset=-pi, cmap=cm.coolwarm)
-#    cset = ax.contour(X, Y, Z, zdir='y', offset=3*pi, cmap=cm.coolwarm)
-#    ax.set_xlim3d(-pi, 2*pi);
-#    ax.set_ylim3d(0, 3*pi);
-#    ax.set_zlim3d(-pi, 2*pi);
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    for c, z in zip(['r', 'g', 'b', 'y'], [30, 20, 10, 0]):
+        if z == 0:
+            xs = range(0,i)
+            ys = num_cam0s
+        if z == 10:
+            xs = range(0,i)
+            ys = num_cam1s
+    
+
+        if z == 20:
+            xs = range(0,i)
+            ys = num_cam2s
+    
+
+        if z == 30:
+            xs = range(0,i)
+            ys = num_cam3s
+    
+        print len(xs)
+        print len(ys)
+        cs = [c] * len(xs)
+#        cs[0] = 'c'
+        ax.bar(xs, ys, zs=z, zdir='y', color=cs, alpha=0.8)
+
+    ax.set_xlabel('X')
+    ax.set_ylabel('Y')
+    ax.set_zlabel('Z')
+    
     plt.show()
