@@ -230,7 +230,6 @@ class Saver:
         #
         fd1 = os.open(fitsname, os.O_WRONLY| os.O_CREAT | os.O_TRUNC | os.O_NONBLOCK)
         pyaio.aio_write(fd1, b'%s'%str(myprofile), len(myprofile), aio_callback)
-        #time.sleep(0.0001)
         #FITS.Write(myprofile, fitsname, writeMode='w')
         #profilesaver.saver(myprofile, fitsname)
 
@@ -260,7 +259,6 @@ class Saver:
         cent[7] = numpy.sum(Xgrid*cam_cam3)/totalmass
         #fd_c1 = os.open(fitsname_c1, os.O_WRONLY| os.O_CREAT | os.O_TRUNC)
         #pyaio.aio_write(fd_c1, b"%s"%str(cent), len(myprofile), aio_callback)
-        #time.sleep(0.0001)
         #FITS.Write(cent, fitsname_c0, writeMode='w')
         #profilesaver.saver(cent, fitsname_c0)
 
