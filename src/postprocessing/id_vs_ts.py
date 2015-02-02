@@ -7,7 +7,8 @@ import matplotlib.cm as cm
 #filename = 'lotuce2-run-results-2015_01_27.16.txt'#os.path.normpath(options.filename)
 #filename = 'lotuce2-run-results-2015_01_25.20.txt'
 #filename = 'lotuce2-run-results-2014_11_02.5.txt'
-filename = 'lotuce2-run-results-2015_01_24.13.txt'
+#filename = 'lotuce2-run-results-2015_01_24.13.txt'
+filename = '/Users/nsaez/datasets/A/lotuce2-run-results-2015_01_23.11.txt'#'/home/lotuce2/lotuce2/src/acquisition/lotuce2-run-results-2015_01_22.6.txt'#os.path.normpath(options.filename)
 print filename
 f = open(filename,'r')
 filehandler = f.readlines()
@@ -15,7 +16,7 @@ f.close()
 d0 = None#datetime.datetime.fromtimestamp(1421959082.652726)
 diff = []
 fnos = []
-counter = -500
+counter = 20
 x = []
 y = []
 hz = 0
@@ -24,18 +25,8 @@ for line in filehandler:
     ts = float(line[0])
     fno= float(line[1])
     d = datetime.datetime.fromtimestamp(ts)
-    if d0 == None:
-        hz = fno
-    else:
-        hz =  fno#d + datetime.timedelta(0,0.01)
-#        d0 = d - datetime.timedelta(0,0.01)
-#    sec_diff = (d - d0).total_seconds()
-#    diff.append(sec_diff)
-#    fnos.append(fno)
-    d0 = d
     y.append(d)
-    x.append(hz)
-    
+    x.append(fno)
     if counter == 0:
         break
     counter -= 1

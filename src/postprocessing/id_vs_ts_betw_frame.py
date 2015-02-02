@@ -4,7 +4,7 @@ from pylab import grid#imshow,show
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 
-filename = '/home/lotuce2/lotuce2/src/acquisition/lotuce2-run-results-2015_01_22.6.txt'#os.path.normpath(options.filename)
+filename = '/Users/nsaez/datasets/A/lotuce2-run-results-2015_01_23.11.txt'#'/home/lotuce2/lotuce2/src/acquisition/lotuce2-run-results-2015_01_22.6.txt'#os.path.normpath(options.filename)
 print filename
 f = open(filename,'r')
 filehandler = f.readlines()
@@ -12,7 +12,7 @@ f.close()
 d0 = None#datetime.datetime.fromtimestamp(1421959082.652726)
 diff = []
 fnos = []
-counter = -70
+counter = -5
 for line in filehandler:
     line = line.rstrip('\n').split(' ')
     ts = float(line[0])
@@ -21,7 +21,7 @@ for line in filehandler:
     print d,
     print " ---> %d" % fno
     if d0 == None:
-        d0 = d - datetime.timedelta(0,0.01)
+        d0 = d - datetime.timedelta(0,0.0045)
     sec_diff = (d - d0).total_seconds()
     print sec_diff
     diff.append(sec_diff)
