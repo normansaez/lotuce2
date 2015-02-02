@@ -1,9 +1,0 @@
-python postprocessing.py  -r ~/Pictures/ref_80Hz_fullframe/ -d ~/Pictures/80Hz_fullframe_run1/ -t 3000  -e 3000
-python postprocessing.py  -r ~/Pictures/ref_80Hz_fullframe/ -d ~/Pictures/80Hz_fullframe_run2/ -t 3000  -e 3000
-python postprocessing.py  -r ~/Pictures/ref_80Hz_fullframe/ -d ~/Pictures/80Hz_fullframe_run3/ -t 3000  -e 3000
-python postprocessing.py  -r ~/Pictures/ref_80Hz_fullframe/ -d ~/Pictures/80Hz_fullframe_run4/ -t 3000  -e 3000
-python postprocessing.py  -r ~/Pictures/ref_80Hz_fullframe/ -d ~/Pictures/80Hz_fullframe_run5/ -t 3000  -e 3000
-python postprocessing.py  -r ~/Pictures/ref_80Hz_fullframe/ -d ~/Pictures/80Hz_fullframe_run6/ -t 3000  -e 3000
-python postprocessing.py  -r ~/Pictures/ref_80Hz_fullframe/ -d ~/Pictures/80Hz_fullframe_run7/ -t 3000  -e 3000
-python postprocessing.py  -r ~/Pictures/ref_80Hz_fullframe/ -d ~/Pictures/80Hz_fullframe_run8/ -t 3000  -e 3000
-python postprocessing.py  -r ~/Pictures/ref_80Hz_fullframe/ -d ~/Pictures/80Hz_fullframe_run9/ -t 3000  -e 3000
