@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import sys
 import os
 from pylab import grid#imshow,show
@@ -67,7 +68,6 @@ if __name__=="__main__":
     runexec = basename.split('-')[3].replace('_','-').split('.')
     fig = plt.figure()
     ax = plt.subplot(111)
-    #ax.plot(axis_x, fns,'r.', label=r'$\Delta id(n)$')
     ax.plot(axis_x, fns,'r.', label=r'$\Delta id(n)$')
     box = ax.get_position()
     ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
