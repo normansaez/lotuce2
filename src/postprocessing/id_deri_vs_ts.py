@@ -34,55 +34,56 @@ if __name__=="__main__":
     options.filename = os.path.normpath(options.filename)
     basename = os.path.basename(options.filename)
 
-print "GO !!"
-axis_x = []
-fnos = []
-fns = []
-filename = os.path.normpath(options.filename)
-print filename
-i = 0
-with open(filename, "r+b") as f:
-    map = mmap.mmap(f.fileno(), 0, prot=mmap.PROT_READ)
-    for line in iter(map.readline, ""):
-        line = line.rstrip('\n').split(' ')
-        ts = float(line[0])
-        fno= float(line[1])
-        fnos.append(fno)
-        d = datetime.datetime.fromtimestamp(ts)
-        axis_x.append(d)
-        i += 1
-        if i == options.limit:
-            break
-map.close()
-del axis_x[-1]
-np_fnos = np.array(fnos)
-print (np_fnos[1:]-np_fnos[:-1]).max()
-print (np_fnos[1:]-np_fnos[:-1]).min()
-
-for j in range(0,i-1):
-    fno_id = np_fnos[j+1] - np_fnos[j]
-    fns.append(fno_id)
-print len(axis_x)
-print len(fns)
-#axis_x = date2num(axis_x)
-fig = plt.figure()
-ax = plt.subplot(111)
-#ax.plot(axis_x, fns,'r.', label=r'$\Delta id(n)$')
-ax.plot(axis_x, fns,'r.', label=r'$\Delta id(n)$')
-box = ax.get_position()
-ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
-plt.title(r'timestamp v.s $\Delta id(n)$ %s' % (basename))
-plt.ylabel(r'$\Delta id(n) = id(n+1) - id(n)$')
-plt.xlabel(r'timestamp')
-#xticks(rotation='vertical')
-#formatter = ticker.ScalarFormatter(useMathText=True)
-#formatter.set_scientific(True) 
-#formatter.set_powerlimits((-1,1)) 
-#ax.xaxis.set_major_formatter(formatter) 
-plt.gcf().autofmt_xdate()
-ax.xaxis.grid(True)
-grid()
-ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-plt.savefig(basename+'-id.png')
-print "%d total"% (len(axis_x))
-plt.show()
+    print "GO !!"
+    axis_x = []
+    fnos = []
+    fns = []
+    filename = os.path.normpath(options.filename)
+    print filename
+    i = 0
+    with open(filename, "r+b") as f:
+        map = mmap.mmap(f.fileno(), 0, prot=mmap.PROT_READ)
+        for line in iter(map.readline, ""):
+            line = line.rstrip('\n').split(' ')
+            ts = float(line[0])
+            fno= float(line[1])
+            fnos.append(fno)
+            d = datetime.datetime.fromtimestamp(ts)
+            axis_x.append(d)
+            i += 1
+            if i == options.limit:
+                break
+    map.close()
+    del axis_x[-1]
+    np_fnos = np.array(fnos)
+    print (np_fnos[1:]-np_fnos[:-1]).max()
+    print (np_fnos[1:]-np_fnos[:-1]).min()
+    
+    for j in range(0,i-1):
+        fno_id = np_fnos[j+1] - np_fnos[j]
+        fns.append(fno_id)
+    print len(axis_x)
+    print len(fns)
+    #axis_x = date2num(axis_x)
+    runexec = basename.split('-')[3].replace('_','-').split('.')
+    fig = plt.figure()
+    ax = plt.subplot(111)
+    #ax.plot(axis_x, fns,'r.', label=r'$\Delta id(n)$')
+    ax.plot(axis_x, fns,'r.', label=r'$\Delta id(n)$')
+    box = ax.get_position()
+    ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
+    plt.title(r'timestamp v.s $\Delta id(n)$ %s:%s' % (runexec[0], runexec[1]))
+    plt.ylabel(r'$\Delta id(n) = id(n+1) - id(n)$')
+    plt.xlabel(r'timestamp')
+    #xticks(rotation='vertical')
+    #formatter = ticker.ScalarFormatter(useMathText=True)
+    #formatter.set_scientific(True) 
+    #formatter.set_powerlimits((-1,1)) 
+    #ax.xaxis.set_major_formatter(formatter) 
+    plt.gcf().autofmt_xdate()
+    ax.xaxis.grid(True)
+    grid()
+    ax.legend(loc='center left', bbox_to_anchor=(1, 1.5))
+    plt.savefig(str(__file__).split('.')[0]+'.png')
+    print "%d total"% (len(axis_x))
+    plt.show()
