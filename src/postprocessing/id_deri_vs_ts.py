@@ -17,18 +17,17 @@ import mmap
 #rcParams.update({'font.size': 18, 'font.family': 'STIXGeneral', 'mathtext.fontset': 'stix'})
 
 if __name__=="__main__":
-    print "Calibrating centroid pattern ..."
     usage = '''
     '''
     parser = argparse.ArgumentParser(usage=usage)
-    parser.add_argument('-d', '--filename', dest='filename', type=str, help='Path to get images', default=None)
+    parser.add_argument('-f', '--filename', dest='filename', type=str, help='Path to get txt source', default=None)
     parser.add_argument('-l', '--limit', dest='limit', type=int, help='Default limit to plot', default=None)#131100)#393300)#786600)#None)
 
     (options, unknown) = parser.parse_known_args()
 
     if options.filename is None:
-        print "No directory with images to analisis is given, you need give a path with a directory with images"
-        print "Use -d /path/directory/images/"
+        print "No filename to be to analised, you need give a path for the filename"
+        print "Use -f /path/to/the/filename"
         sys.exit(-1)
 
     options.filename = os.path.normpath(options.filename)
@@ -83,7 +82,7 @@ if __name__=="__main__":
     plt.gcf().autofmt_xdate()
     ax.xaxis.grid(True)
     grid()
-    ax.legend(loc='center left', bbox_to_anchor=(1, 1.5))
+    ax.legend(loc='center left', bbox_to_anchor=(0.75, 0.92))
     plt.savefig(str(__file__).split('.')[0]+'.png')
     print "%d total"% (len(axis_x))
     plt.show()
