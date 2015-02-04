@@ -54,7 +54,7 @@ if __name__=="__main__":
     ax = plt.subplot(111)
     ax.plot(fnos, diff,'r-',label=r'$\Delta timestamp(n)')
     box = ax.get_position()
-    ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
+    ax.set_position([box.x0, box.y0, box.width * 1, box.height])
     plt.title(r'id(n) vs $\Delta timestamp(n)$ %s:%s' % (runexec[0], runexec[1]))
     plt.ylabel(r'$\Delta timestamp(n) = timestamp(n+1) - timestamp(n)$')
     plt.xlabel(r'id')
@@ -65,6 +65,7 @@ if __name__=="__main__":
 #    ax.yaxis.set_major_formatter(formatter) 
     ax.xaxis.grid(True)
     grid()
+#    ax.legend(loc='center left', bbox_to_anchor=(0.75, 0.92))
     plt.savefig(str(__file__).split('.')[0]+'.png')
     plt.show()
     
