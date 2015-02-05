@@ -104,8 +104,11 @@ print (c_500_1000/t)*100.
 print (c_1000_3000/t)*100.
 
 
-from math import ceil
 bins = 20#range(0,3000,10)#[0,10,100,200,500,100,3000]#range(0,200,10)
 print bins
-hist(fns,bins,normed=True,log=True)
+hist(fns,bins,normed=True,log=True, color='b', label='E')
+hist(fnsH, bins, histtype='stepfilled', normed=True,log=True ,color='r', alpha=0.5, label='H')
+plt.title("Histogram")
+plt.xlabel("Value")
+plt.ylabel("log Probability")
 show()
