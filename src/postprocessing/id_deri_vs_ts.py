@@ -88,4 +88,4 @@ if __name__=="__main__":
     ax.legend(loc='center left', bbox_to_anchor=(0.75, 0.92))
     plt.savefig(options.experiment+'-'+str(__file__).split('.')[0]+'.png')
     print "%d total"% (len(axis_x))
-    plt.show()
+#    plt.show()
