@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import sys
 import os
 from pylab import grid#imshow,show
@@ -10,26 +11,22 @@ import numpy as np
 from math import floor
 from matplotlib import ticker
 from matplotlib.dates import date2num
-#from matplotlib import rcParams
-from scipy.interpolate import UnivariateSpline
+from matplotlib.pylab import hist, show
 import mmap
 
-#rcParams.update({'font.size': 18, 'text.usetex': True})
-#rcParams.update({'font.size': 18, 'font.family': 'STIXGeneral', 'mathtext.fontset': 'stix'})
-
 if __name__=="__main__":
-    print "Calibrating centroid pattern ..."
     usage = '''
     '''
     parser = argparse.ArgumentParser(usage=usage)
-    parser.add_argument('-d', '--filename', dest='filename', type=str, help='Path to get images', default=None)
+    parser.add_argument('-f', '--filename', dest='filename', type=str, help='Path to get txt source', default=None)
+    parser.add_argument('-e', '--experiment', dest='experiment', type=str, help='Experiment name', default='A')
     parser.add_argument('-l', '--limit', dest='limit', type=int, help='Default limit to plot', default=None)#131100)#393300)#786600)#None)
 
     (options, unknown) = parser.parse_known_args()
 
     if options.filename is None:
-        print "No directory with images to analisis is given, you need give a path with a directory with images"
-        print "Use -d /path/directory/images/"
+        print "No filename to be to analised, you need give a path for the filename"
+        print "Use -f /path/to/the/filename"
         sys.exit(-1)
 
     options.filename = os.path.normpath(options.filename)
@@ -64,3 +61,15 @@ for j in range(0,i-1):
     fns.append(fno_id)
 print len(axis_x)
 print len(fns)
+#ploy
+print "stats"
+npfns = np.array(fns)
+print npfns.min()
+print npfns.max()
+print npfns.mean()
+print npfns.std()
+from math import ceil
+bins = range(0,150,5)
+print bins
+hist(fns,bins,normed=True)
+show()
