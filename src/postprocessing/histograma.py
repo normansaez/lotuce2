@@ -92,7 +92,8 @@ if __name__=="__main__":
     bins = 20#range(0,3000,10)#[0,10,100,200,500,100,3000]#range(0,200,10)
     print bins
     hist(fns,bins,normed=True,log=True, color='b', label='E')
-    hist(sfns, bins, histtype='stepfilled', normed=True,log=True ,color='r', alpha=0.5, label='H')
+    if options.sfilename is not None:
+        hist(sfns, bins, histtype='stepfilled', normed=True,log=True ,color='r', alpha=0.5, label='H')
     plt.title("Histogram")
     plt.xlabel("Value")
     plt.ylabel("log Probability")
