@@ -40,7 +40,7 @@ if __name__=="__main__":
 #        print d,
 #        print " ---> %d" % fno
         if d0 == None:
-            d0 = d - datetime.timedelta(0,0.0045)
+            d0 = d - datetime.timedelta(0,0.008)
         sec_diff = (d - d0).total_seconds()
 #        print sec_diff
         diff.append(sec_diff)
