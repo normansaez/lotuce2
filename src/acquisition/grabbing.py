@@ -72,10 +72,10 @@ filelog.close()
 streamBlock = d.GetStreamBlock('%srtcPxlBuf'%options.prefix,img_to_take,block=1,flysave=options.directory+'/img.fits')
 ###################### XXX: Tobe fixed !!!!!!!!!!!!!!!!!!! #########################
 t1 = time.clock()
-filelog = open('run.log','a')
+filelog = open(options.directory+'.log','a')
 filelog.write("%s"%str(t1))
 filelog.write('\n')
-print "%f time taken, time commanded %d" % ((t1-t0), adquisition_time)
+print "%f time taken, time commanded %d\n" % ((t1-t0), adquisition_time)
 filelog.write("%f time taken, time commanded %d" % ((t1-t0), adquisition_time))
 print "number of images for %f [Hz] and %d time[seconds]: %d images to take" % (hz, adquisition_time,int(hz*adquisition_time))
 print "Images stored in : %s" % options.directory
