@@ -7,6 +7,7 @@ from matplotlib import ticker
 import argparse 
 import sys
 import os
+import numpy as np
 
 if __name__=="__main__":
     usage = '''
