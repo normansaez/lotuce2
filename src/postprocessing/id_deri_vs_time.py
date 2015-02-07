@@ -24,6 +24,7 @@ if __name__=="__main__":
     parser.add_argument('-f', '--filename', dest='filename', type=str, help='Path to get txt source', default=None)
     parser.add_argument('-e', '--experiment', dest='experiment', type=str, help='Experiment name', default='A')
     parser.add_argument('-l', '--limit', dest='limit', type=int, help='Default limit to plot', default=None)#131100)#393300)#786600)#None)
+    parser.add_argument('--hertz', dest='hertz', type=int, help='Herzt to be plotted', default=220)
 
     (options, unknown) = parser.parse_known_args()
 
@@ -34,6 +35,7 @@ if __name__=="__main__":
 
     options.filename = os.path.normpath(options.filename)
     basename = os.path.basename(options.filename)
+    freq = 1./options.hertz
 
     print "GO !!"
     axis_x = []
@@ -49,7 +51,10 @@ if __name__=="__main__":
             ts = float(line[0])
             fno= float(line[1])
             fnos.append(fno)
-            d = datetime.datetime.fromtimestamp(ts)
+            if i == 0:
+                d = datetime.datetime.fromtimestamp(ts)
+            else:
+                d = d + datetime.timedelta(0,freq)
             axis_x.append(d)
             i += 1
             if i == options.limit:
@@ -74,9 +79,9 @@ if __name__=="__main__":
     ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
     csfont = {'fontname':'Comic Sans MS'}
     hfont = {'fontname':'Helvetica'}
-    plt.title(r'timestamp v.s $\Delta id(n)$'+'\n'+ r'$%s:%s:%s$' % (options.experiment, runexec[0], runexec[1]), **hfont)#**csfont)
+    plt.title(r'time v.s $\Delta id(n)$'+'\n'+ r'$%s:%s:%s$' % (options.experiment, runexec[0], runexec[1]), **hfont)#**csfont)
     plt.ylabel(r'$\Delta id(n) = id(n+1) - id(n)$')
-    plt.xlabel(r'timestamp',**hfont)
+    plt.xlabel(r'time',**hfont)
     #xticks(rotation='vertical')
     #formatter = ticker.ScalarFormatter(useMathText=True)
     #formatter.set_scientific(True) 
@@ -88,4 +93,4 @@ if __name__=="__main__":
     ax.legend(loc='center left', bbox_to_anchor=(0.75, 0.92))
     plt.savefig(options.experiment+'-'+str(__file__).split('.')[0]+'.png')
     print "%d total"% (len(axis_x))
-#    plt.show()
+    plt.show()
