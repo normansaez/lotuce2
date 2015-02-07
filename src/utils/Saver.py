@@ -63,14 +63,6 @@ class Saver:
 
         threshold = 2000
 
-        # 
-        #Open file wich will save: timestamp fno(id) pattern_cam0 pattern_cam1 pattern_cam2 pattern_cam3
-        #
-        res = self.name.split('.fits')[0]+'_'+'lotuce2-run-results.txt'
-        resname = 'lotuce2-run-results-'+res.split('/')[-2]+'.txt'
-        #text_file = open(resname,'a') # normal open file
-        fd = os.open(resname, os.O_WRONLY| os.O_CREAT | os.O_TRUNC | os.O_NONBLOCK)
-
         #
         # camera coordinates according windows size.
         #TODO: It seems that cam0 is swapped with cam1, should be checked
@@ -197,9 +189,16 @@ class Saver:
         #XXX
         # Writing data: timestamp fno(id) pattern_cam0 pattern_cam1 pattern_cam2 pattern_cam3
         #
-        #text_file.write('%f %d %d %d %d %d\n'%(ftime, fno, num_cam0, num_cam1, num_cam2, num_cam3))
-        pyaio.aio_write(fd,b'%f %d %d %d %d %d\n'%(ftime, fno, num_cam0, num_cam1, num_cam2, num_cam3), 200, aio_callback)
-        #text_file.close()
+        #pyaio.aio_write(fd,b'%f %d %d %d %d %d\n'%(ftime, fno, num_cam0, num_cam1, num_cam2, num_cam3), 200, aio_callback)
+        # 
+        #Open file wich will save: timestamp fno(id) pattern_cam0 pattern_cam1 pattern_cam2 pattern_cam3
+        #
+        res = self.name.split('.fits')[0]+'_'+'lotuce2-run-results.txt'
+        resname = 'lotuce2-run-results-'+res.split('/')[-2]+'.txt'
+        text_file = open(resname,'a') # normal open file
+        #fd = os.open(resname, os.O_WRONLY| os.O_CREAT | os.O_TRUNC | os.O_NONBLOCK)
+        text_file.write('%f %d %d %d %d %d\n'%(ftime, fno, num_cam0, num_cam1, num_cam2, num_cam3))
+        text_file.close()
 
         #
         # Profiles: reducing data before store it.
@@ -223,15 +222,15 @@ class Saver:
         #
         # Concatenate all profiles in one array
         #
-        myprofile = numpy.append(col_cam0, col_cam1, col_cam2, col_cam3,0)
+        myprofile = numpy.append(col_cam0, col_cam1,0)# col_cam2, col_cam3,0)
 
         #XXX
         # Saving profiles using async write
         #
-        fd1 = os.open(fitsname, os.O_WRONLY| os.O_CREAT | os.O_TRUNC | os.O_NONBLOCK)
-        pyaio.aio_write(fd1, b'%s'%str(myprofile), len(myprofile), aio_callback)
+        #fd1 = os.open(fitsname, os.O_WRONLY| os.O_CREAT | os.O_TRUNC | os.O_NONBLOCK)
+        #pyaio.aio_write(fd1, b'%s'%str(myprofile), len(myprofile), aio_callback)
         #FITS.Write(myprofile, fitsname, writeMode='w')
-        #profilesaver.saver(myprofile, fitsname)
+        profilesaver.saver(myprofile, fitsname)
 
         #XXX
         # Centroids: Calculating before store them
@@ -260,7 +259,7 @@ class Saver:
         #fd_c1 = os.open(fitsname_c1, os.O_WRONLY| os.O_CREAT | os.O_TRUNC)
         #pyaio.aio_write(fd_c1, b"%s"%str(cent), len(myprofile), aio_callback)
         #FITS.Write(cent, fitsname_c0, writeMode='w')
-        #profilesaver.saver(cent, fitsname_c0)
+        profilesaver.saver(cent, fitsname_c0)
 
         return
         #TODO: End of the fix, should be removed
