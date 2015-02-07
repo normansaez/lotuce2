@@ -6,12 +6,14 @@ from matplotlib import ticker
 import matplotlib.cm as cm
 import argparse 
 import os
+import numpy as np
 
 if __name__=="__main__":
     usage = '''
     '''
     parser = argparse.ArgumentParser(usage=usage)
     parser.add_argument('-f', '--filename', dest='filename', type=str, help='Path to get txt source', default=None)
+    parser.add_argument('-e', '--experiment', dest='experiment', type=str, help='Experiment name', default='A')
     parser.add_argument('-l', '--limit', dest='limit', type=int, help='Default limit to plot', default=None)#131100)#393300)#786600)#None)
 
     (options, unknown) = parser.parse_known_args()
@@ -29,30 +31,43 @@ if __name__=="__main__":
     filehandler = f.readlines()
     f.close()
     d0 = None#datetime.datetime.fromtimestamp(1421959082.652726)
-    diff = []
+    y = []
     fnos = []
+    delta_ts = []
     counter = 0
     for line in filehandler:
         line = line.rstrip('\n').split(' ')
         ts = float(line[0])
         fno= float(line[1])
         d = datetime.datetime.fromtimestamp(ts)
-#        print d,
-#        print " ---> %d" % fno
-        if d0 == None:
-            d0 = d - datetime.timedelta(0,0.008)
-        sec_diff = (d - d0).total_seconds()
-#        print sec_diff
-        diff.append(sec_diff)
+        y.append(d)
         fnos.append(fno)
-        d0 = d
         if counter == options.limit:
             break
         counter += 1
+    np_y = np.array(y)
+    for j in range(0,counter-1):
+        d_ts = (np_y[j+1] - np_y[j]).total_seconds()
+#        print d_ts
+        delta_ts.append(d_ts)
+    del fnos[-1]
+    print len(fnos)
+    print len(delta_ts)
+    np_delta_ts = np.array(delta_ts)
+    print "min  %f" % np_delta_ts.min()
+    print "max  %f" % np_delta_ts.max()
+    print "mean %f" % np_delta_ts.mean()
+    print "std  %f" % np_delta_ts.std()
+    print "median: %f" % np.median(np_delta_ts)
+    print "1/min  %f" % (1./np_delta_ts.min())
+    print "1/max  %f" % (1./np_delta_ts.max())
+    print "1/mean %f" % (1./np_delta_ts.mean())
+    print "1/std  %f" % (1./np_delta_ts.std())
+    print "1/median: %f" % (1./np.median(np_delta_ts))
     runexec = basename.split('-')[3].replace('_','-').split('.')
     fig = plt.figure()
     ax = plt.subplot(111)
-    ax.plot(fnos, diff,'r-',label=r'$\Delta timestamp(n)')
+    ax.plot(fnos, delta_ts,'r-',label=r'$\Delta timestamp(n)')
     box = ax.get_position()
     ax.set_position([box.x0, box.y0, box.width * 1, box.height])
     plt.title(r'id(n) vs $\Delta timestamp(n)$ %s:%s' % (runexec[0], runexec[1]))
@@ -65,7 +80,6 @@ if __name__=="__main__":
 #    ax.yaxis.set_major_formatter(formatter) 
     ax.xaxis.grid(True)
     grid()
-#    ax.legend(loc='center left', bbox_to_anchor=(0.75, 0.92))
-    plt.savefig(str(__file__).split('.')[0]+'.png')
+    ax.legend(loc='center left', bbox_to_anchor=(0.75, 0.92))
+    plt.savefig(options.experiment+'-'+str(__file__).split('.')[0]+'.png')
     plt.show()
-    
