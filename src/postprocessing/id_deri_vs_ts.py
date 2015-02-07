@@ -22,6 +22,7 @@ if __name__=="__main__":
     '''
     parser = argparse.ArgumentParser(usage=usage)
     parser.add_argument('-f', '--filename', dest='filename', type=str, help='Path to get txt source', default=None)
+    parser.add_argument('-e', '--experiment', dest='experiment', type=str, help='Experiment name', default='A')
     parser.add_argument('-l', '--limit', dest='limit', type=int, help='Default limit to plot', default=None)#131100)#393300)#786600)#None)
 
     (options, unknown) = parser.parse_known_args()
@@ -71,9 +72,11 @@ if __name__=="__main__":
     ax.plot(axis_x, fns,'r.', label=r'$\Delta id(n)$')
     box = ax.get_position()
     ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
-    plt.title(r'timestamp v.s $\Delta id(n)$ %s:%s' % (runexec[0], runexec[1]))
+    csfont = {'fontname':'Comic Sans MS'}
+    hfont = {'fontname':'Helvetica'}
+    plt.title(r'timestamp v.s $\Delta id(n)$'+'\n'+ r'$%s:%s:%s$' % (options.experiment, runexec[0], runexec[1]), **hfont)#**csfont)
     plt.ylabel(r'$\Delta id(n) = id(n+1) - id(n)$')
-    plt.xlabel(r'timestamp')
+    plt.xlabel(r'timestamp',**hfont)
     #xticks(rotation='vertical')
     #formatter = ticker.ScalarFormatter(useMathText=True)
     #formatter.set_scientific(True) 
@@ -83,6 +86,6 @@ if __name__=="__main__":
     ax.xaxis.grid(True)
     grid()
     ax.legend(loc='center left', bbox_to_anchor=(0.75, 0.92))
-    plt.savefig(str(__file__).split('.')[0]+'.png')
+    plt.savefig(options.experiment+'-'+str(__file__).split('.')[0]+'.png')
     print "%d total"% (len(axis_x))
-    plt.show()
+#    plt.show()

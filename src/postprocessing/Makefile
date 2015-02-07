@@ -4,3 +4,4 @@ all:
 	mv *.png img/
 clean:
 	rm -fr *.png
+	rm -fr img/
