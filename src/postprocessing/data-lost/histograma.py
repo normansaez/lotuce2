@@ -94,7 +94,7 @@ if __name__=="__main__":
     hist(fns,bins,normed=True,log=True, color='b', label='E')
     if options.sfilename is not None:
         hist(sfns, bins, histtype='stepfilled', normed=True,log=True ,color='r', alpha=0.5, label='H')
-    plt.title("Histogram")
-    plt.xlabel("Value")
-    plt.ylabel("log Probability")
+    plt.title("Histograma")
+    plt.xlabel("valor")
+    plt.ylabel("log(cuentas)")
     show()
