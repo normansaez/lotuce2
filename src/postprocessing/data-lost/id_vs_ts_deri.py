@@ -7,6 +7,28 @@ import matplotlib.cm as cm
 import argparse 
 import os
 import numpy as np
+from subprocess import Popen, PIPE
+from threading import Thread
+from Queue import Queue
+
+def wrapper(func, args, res):
+        res.append(func(*args))
+ 
+def mode(a, axis=0):
+    scores = np.unique(np.ravel(a))       # get ALL unique values
+    testshape = list(a.shape)
+    testshape[axis] = 1
+    oldmostfreq = np.zeros(testshape)
+    oldcounts = np.zeros(testshape)
+
+    for score in scores:
+        template = (a == score)
+        counts = np.expand_dims(np.sum(template, axis),axis)
+        mostfrequent = np.where(counts > oldcounts, score, oldmostfreq)
+        oldcounts = np.maximum(counts, oldcounts)
+        oldmostfreq = mostfrequent
+
+    return mostfrequent, oldcounts
 
 if __name__=="__main__":
     usage = '''
@@ -59,6 +81,9 @@ if __name__=="__main__":
     print "mean %f" % np_delta_ts.mean()
     print "std  %f" % np_delta_ts.std()
     print "median: %f" % np.median(np_delta_ts)
+    res = []
+    thread1 = Thread(target=wrapper,args=(mode, (np_delta_ts,), res))
+    thread1.start()
     print "1/min  %f" % (1./np_delta_ts.min())
     print "1/max  %f" % (1./np_delta_ts.max())
     print "1/mean %f" % (1./np_delta_ts.mean())
@@ -82,4 +107,9 @@ if __name__=="__main__":
     grid()
     ax.legend(loc='center left', bbox_to_anchor=(0.75, 0.92))
     plt.savefig(options.experiment+'-'+str(__file__).split('.')[0]+'.png')
+    thread1.join()
+    mostfrequent = res[0][0]
+    print "--------------------------------------"
+    print "mode: %f" % mostfrequent[0]
+    print "1/mode: %f" % (1./mostfrequent[0])
     plt.show()
