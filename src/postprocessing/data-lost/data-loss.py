@@ -28,9 +28,10 @@ if __name__=="__main__":
     id_i = data['id'][0]
     id_f = data['id'][total]
     id_t = (id_i + total)
-    print options.filename
-    print "id_i %d" % id_i
-    print "id_f %d" % id_f
-    print "id_t %d" % id_t
-    print "f - t: %d" % (id_f - id_t)
-    print "(f - t)/f: %f" % (((id_f - id_t)/(id_f*1.))*100.)
+#    print options.filename
+#    print "id_i %d" % id_i
+#    print "id_f %d" % id_f
+#    print "id_t %d" % id_t
+#    print "f - t: %d" % (id_f - id_t)
+#    print "(f - t)/f: %f" % (((id_f - id_t)/(id_f*1.))*100.)
+    print "%s: %f" % (options.experiment, ((id_f - id_t)/(id_f*1.))*100.)
