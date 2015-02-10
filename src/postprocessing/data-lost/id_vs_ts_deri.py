@@ -92,7 +92,7 @@ if __name__=="__main__":
     runexec = basename.split('-')[3].replace('_','-').split('.')
     fig = plt.figure()
     ax = plt.subplot(111)
-    ax.plot(fnos, delta_ts,'r-',label=r'$\Delta timestamp(n)')
+    ax.plot(fnos, delta_ts,'r-',label=r'$\Delta timestamp(n)$')
     box = ax.get_position()
     ax.set_position([box.x0, box.y0, box.width * 1, box.height])
     plt.title(r'id(n) vs $\Delta timestamp(n)$ %s:%s' % (runexec[0], runexec[1]))
