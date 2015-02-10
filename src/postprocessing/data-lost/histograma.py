@@ -88,13 +88,20 @@ if __name__=="__main__":
         for j in range(0,i-1):
             sfno_id = np_sfnos[j+1] - np_sfnos[j]
             sfns.append(sfno_id)
-
-    bins = 20#range(0,3000,10)#[0,10,100,200,500,100,3000]#range(0,200,10)
+    cmax = 0
+    if (np_sfnos[1:]-np_sfnos[:-1]).max() > (np_fnos[1:]-np_fnos[:-1]).max():
+        cmax = (np_sfnos[1:]-np_sfnos[:-1]).max()
+    else:
+        cmax = (np_fnos[1:]-np_fnos[:-1]).max()
+    bins = np.linspace(0,int(cmax+1),20)#20#range(0,3000,10)#[0,10,100,200,500,100,3000]#range(0,200,10)
     print bins
-    hist(fns,bins,normed=True,log=True, color='b', label='E')
+    hist(fns,bins,normed=True,log=True, color='b', label='C', alpha=0.5)
     if options.sfilename is not None:
-        hist(sfns, bins, histtype='stepfilled', normed=True,log=True ,color='r', alpha=0.5, label='H')
-    plt.title("Histograma")
+        hist(sfns, bins, histtype='stepfilled', normed=True, log=True ,color='r', alpha=0.5, label='F')
+    runexec = basename.split('-')[3].replace('_','-').split('.')
+    plt.title("Histograma: %s:%s:%s"%(options.experiment,runexec[0], runexec[1]))
     plt.xlabel("valor")
     plt.ylabel("log(cuentas)")
+    plt.legend(loc='upper right')
+    plt.savefig(options.experiment+'-'+str(__file__).split('.')[0]+'.png')
     show()
