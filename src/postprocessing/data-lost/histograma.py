@@ -93,11 +93,12 @@ if __name__=="__main__":
         cmax = (np_sfnos[1:]-np_sfnos[:-1]).max()
     else:
         cmax = (np_fnos[1:]-np_fnos[:-1]).max()
-    bins = np.linspace(0,int(cmax+1),20)#20#range(0,3000,10)#[0,10,100,200,500,100,3000]#range(0,200,10)
+    bins = np.linspace(0,int(cmax+1),100)#20#range(0,3000,10)#[0,10,100,200,500,100,3000]#range(0,200,10)
     print bins
-    hist(fns,bins,normed=True,log=True, color='b', label='C', alpha=0.5)
+    exp = options.experiment.split('-')
+    hist(fns,bins,normed=True,log=True, color='b', label=exp[0], alpha=0.3)
     if options.sfilename is not None:
-        hist(sfns, bins, histtype='stepfilled', normed=True, log=True ,color='r', alpha=0.5, label='F')
+        hist(sfns, bins, histtype='stepfilled', normed=True, log=True ,color='r', alpha=0.3, label=exp[1])
     runexec = basename.split('-')[3].replace('_','-').split('.')
     plt.title("Histograma: %s:%s:%s"%(options.experiment,runexec[0], runexec[1]))
     plt.xlabel("valor")
