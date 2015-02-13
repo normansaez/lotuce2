@@ -1,16 +1,11 @@
 #!/usr/bin/python
 import sys
 import os
-from pylab import grid#imshow,show
-#from pylab import xticks
+from pylab import grid
 import matplotlib.pyplot as plt
-import matplotlib.cm as cm
 import argparse 
 import datetime
 import numpy as np
-from math import floor
-from matplotlib import ticker
-from matplotlib.dates import date2num
 import pandas as pd
 
 
@@ -118,9 +113,8 @@ if __name__=="__main__":
     plt.gcf().autofmt_xdate()
     ax.xaxis.grid(True)
     grid()
-#    ax.legend(loc='center left', bbox_to_anchor=(0.75, 0.92))
-    ax.legend(loc='upper right', bbox_to_anchor=(0.75, 0.92))
-#    ax.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3, ncol=2, mode="expand", borderaxespad=0.)
+#    ax.legend(loc='center left', bbox_to_anchor=(0.75, 0.92), fancybox=False, framealpha=0.2)
+    ax.legend(loc='best', bbox_to_anchor=(0.75, 0.92), fancybox=True)#, framealpha=0.8)
     plt.savefig(exp[0]+'-'+exp[1]+'-'+str(__file__).split('.')[0]+'.png',dpi=300) # format='eps'
 #    plt.show()
     print "Done"

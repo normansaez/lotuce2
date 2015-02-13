@@ -77,11 +77,11 @@ if __name__=="__main__":
     ax.plot(axis_x, fns,'r.', label=r'$\Delta id(n)$')
     box = ax.get_position()
     ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
-    csfont = {'fontname':'Comic Sans MS'}
-    hfont = {'fontname':'Helvetica'}
-    plt.title(r'time v.s $\Delta id(n)$'+'\n'+ r'$%s:%s:%s$' % (options.experiment, runexec[0], runexec[1]), **hfont)#**csfont)
+#    csfont = {'fontname':'Comic Sans MS'}
+#    hfont = {'fontname':'Helvetica'}
+    plt.title(r'time v.s $\Delta id(n)$'+'\n'+ r'$%s:%s:%s$' % (options.experiment, runexec[0], runexec[1]))#, **hfont)#**csfont)
     plt.ylabel(r'$\Delta id(n) = id(n+1) - id(n)$')
-    plt.xlabel(r'time',**hfont)
+    plt.xlabel(r'time')#,**hfont)
     #xticks(rotation='vertical')
     #formatter = ticker.ScalarFormatter(useMathText=True)
     #formatter.set_scientific(True) 
@@ -90,9 +90,9 @@ if __name__=="__main__":
     plt.gcf().autofmt_xdate()
     ax.xaxis.grid(True)
     grid()
-    ax.legend(loc='center left', bbox_to_anchor=(0.75, 0.92))
+#    ax.legend(loc='center left', bbox_to_anchor=(0.75, 0.92))
+    ax.legend(loc='best', bbox_to_anchor=(0.75, 0.92), fancybox=True)#, framealpha=0.8)
 #    plt.annotate(fontsize='xx-small')
     #plt.figure(figsize=(70,70)
     plt.savefig(options.experiment+'-'+str(__file__).split('.')[0]+'.png',dpi=300) # format='eps'
-    print "%d total"% (len(axis_x))
     plt.show()
