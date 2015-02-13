@@ -103,20 +103,11 @@ if __name__=="__main__":
     for i in range(1,axis_len):
         d = d + datetime.timedelta(0,freq)
         axis_x.append(d)
-    #axis_x = date2num(axis_x)
     #print "delta_ids1 len: %d" % len(delta_ids1)
     #print "delta_ids2 len: %d" % len(delta_ids2)
     #print "axis_len      : %d" % axis_len
     #print "axis_x len    : %d" % len(axis_x)
     print "---------stats----------"
-    #\begin{tabular}{lllllll}
-    #\toprule
-    #Muestra & min & max & std & mean & mediam & mode \\
-    #\midrule
-    #A & \%.2f & \%.2f & \%.2f & \%.2f & \%.2f & \%.2f \\
-    #B & \%.2f & \%.2f & \%.2f & \%.2f & \%.2f & \%.2f \\
-    #\bottomrule
-    #\end{tabular}
     print """Muestra & min & max & std & mean & mediam & mode \\"""
     print "%s & %.2f & %.2f & %.2f & %.2f & %.2f & %.2f \\" % (exp[0], delta_ids1.min(), delta_ids1.max(), delta_ids1.std(), delta_ids1.mean(), np.median(delta_ids1),0)
     print "%s & %.2f & %.2f & %.2f & %.2f & %.2f & %.2f \\" % (exp[1], delta_ids2.min(), delta_ids2.max(), delta_ids2.std(), delta_ids2.mean(), np.median(delta_ids2),0)
@@ -125,8 +116,8 @@ if __name__=="__main__":
     #
     fig = plt.figure()
     ax = plt.subplot(111)
-    ax.plot(axis_x, delta_ids1,'r.', label='%s '%(exp[0])+r'$\Delta id(n)$', alpha= 0.3)
-    ax.plot(axis_x, delta_ids2,'b.', label='%s '%(exp[1])+r'$\Delta id(n)$', alpha= 0.3)
+    ax.plot(axis_x, delta_ids1,'r.', label='%s '%(exp[0])+r'$\Delta id(n)$', alpha= 0.5)
+    ax.plot(axis_x, delta_ids2,'b.', label='%s '%(exp[1])+r'$\Delta id(n)$', alpha= 0.5)
     box = ax.get_position()
     ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
 #    csfont = {'fontname':'Comic Sans MS'}
@@ -137,6 +128,8 @@ if __name__=="__main__":
     plt.gcf().autofmt_xdate()
     ax.xaxis.grid(True)
     grid()
-    ax.legend(loc='center left', bbox_to_anchor=(0.75, 0.92))
+#    ax.legend(loc='center left', bbox_to_anchor=(0.75, 0.92))
+    ax.legend(loc='upper right', bbox_to_anchor=(0.75, 0.92))
+#    ax.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3, ncol=2, mode="expand", borderaxespad=0.)
     plt.savefig(exp[0]+'-'+exp[1]+'-'+str(__file__).split('.')[0]+'.png',dpi=300) # format='eps'
 #    plt.show()
