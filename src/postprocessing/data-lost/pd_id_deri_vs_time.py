@@ -44,8 +44,8 @@ if __name__=="__main__":
     print filename
     print sfilename
     exp = []
-    exp.append(filename.split('/')[4])
-    exp.append(sfilename.split('/')[4])
+    exp.append(filename.split('/')[-2])
+    exp.append(sfilename.split('/')[-2])
     #
     # Hz
     #
@@ -73,15 +73,6 @@ if __name__=="__main__":
     np_ids2 = np.array(ids2)
     delta_ids1 = np_ids1[1:]-np_ids1[:-1]
     delta_ids2 = np_ids2[1:]-np_ids2[:-1]
-    print "dataset ---- %s:%s:%s ----" % (exp[0], runexec[0], runexec[1])
-    print delta_ids1.max()
-    print delta_ids1.min()
-    print len(delta_ids1)
-    print "dataset ---- %s:%s:%s ----" % (exp[1], srunexec[0], srunexec[1])
-    print delta_ids2.max()
-    print delta_ids2.min()
-    print len(delta_ids2)
-    print "-----------------------"
     #
     #
     #
@@ -99,15 +90,14 @@ if __name__=="__main__":
         drops = len(delta_ids2) - len(delta_ids1)
         delta_ids2 = delta_ids2[:axis_len]
         print "using ids1 , dropping : %d from ids2" % (drops)
-
-    for i in range(1,axis_len):
-        d = d + datetime.timedelta(0,freq)
-        axis_x.append(d)
-    #print "delta_ids1 len: %d" % len(delta_ids1)
-    #print "delta_ids2 len: %d" % len(delta_ids2)
-    #print "axis_len      : %d" % axis_len
-    #print "axis_x len    : %d" % len(axis_x)
+    #
+    #
+    #
+    axis_x = [d + datetime.timedelta(0, freq*x) for x in range(0, axis_len)]
     print "---------stats----------"
+    print "dataset ---- %s:%s:%s ----" % (exp[0], runexec[0], runexec[1])
+    print "dataset ---- %s:%s:%s ----" % (exp[1], srunexec[0], srunexec[1])
+    print "-----------------------"
     print """Muestra & min & max & std & mean & mediam & mode \\"""
     print "%s & %.2f & %.2f & %.2f & %.2f & %.2f & %.2f \\" % (exp[0], delta_ids1.min(), delta_ids1.max(), delta_ids1.std(), delta_ids1.mean(), np.median(delta_ids1),0)
     print "%s & %.2f & %.2f & %.2f & %.2f & %.2f & %.2f \\" % (exp[1], delta_ids2.min(), delta_ids2.max(), delta_ids2.std(), delta_ids2.mean(), np.median(delta_ids2),0)
@@ -133,3 +123,4 @@ if __name__=="__main__":
 #    ax.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3, ncol=2, mode="expand", borderaxespad=0.)
     plt.savefig(exp[0]+'-'+exp[1]+'-'+str(__file__).split('.')[0]+'.png',dpi=300) # format='eps'
 #    plt.show()
+    print "Done"
