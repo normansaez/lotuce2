@@ -20,7 +20,6 @@ if __name__=="__main__":
     parser = argparse.ArgumentParser(usage=usage)
     parser.add_argument('-f', '--filename', dest='filename', type=str, help='Path to get txt source', default=None)
     parser.add_argument('-s', '--sfilename', dest='sfilename', type=str, help='Path to get txt source', default=None)
-    parser.add_argument('-e', '--experiment', dest='experiment', type=str, help='Experiment name', default='A')
     parser.add_argument('-l', '--limit', dest='limit', type=int, help='Default limit to plot', default=None)#131100)#393300)#786600)#None)
     parser.add_argument('--hertz', dest='hertz', type=int, help='Herzt to be plotted', default=220)
 
@@ -44,6 +43,9 @@ if __name__=="__main__":
     sfilename = os.path.normpath(options.sfilename)
     print filename
     print sfilename
+    exp = []
+    exp.append(filename.split('/')[4])
+    exp.append(sfilename.split('/')[4])
     #
     # Hz
     #
@@ -71,11 +73,11 @@ if __name__=="__main__":
     np_ids2 = np.array(ids2)
     delta_ids1 = np_ids1[1:]-np_ids1[:-1]
     delta_ids2 = np_ids2[1:]-np_ids2[:-1]
-    print "dataset ---- %s:%s ----" % (runexec[0], runexec[1])
+    print "dataset ---- %s:%s:%s ----" % (exp[0], runexec[0], runexec[1])
     print delta_ids1.max()
     print delta_ids1.min()
     print len(delta_ids1)
-    print "dataset ---- %s:%s ----" % (srunexec[0], srunexec[1])
+    print "dataset ---- %s:%s:%s ----" % (exp[1], srunexec[0], srunexec[1])
     print delta_ids2.max()
     print delta_ids2.min()
     print len(delta_ids2)
@@ -98,38 +100,43 @@ if __name__=="__main__":
         delta_ids2 = delta_ids2[:axis_len]
         print "using ids1 , dropping : %d from ids2" % (drops)
 
-    for i in range(0,axis_len):
+    for i in range(1,axis_len):
         d = d + datetime.timedelta(0,freq)
         axis_x.append(d)
-    axis_x = date2num(axis_x)
-    print "delta_ids1 len: %d" % len(delta_ids1)
-    print "delta_ids2 len: %d" % len(delta_ids2)
-    print "axis_len      : %d" % axis_len
-    delta_ids1 = delta_ids1.tolist()
-    delta_ids2 = delta_ids2.tolist()
+    #axis_x = date2num(axis_x)
+    #print "delta_ids1 len: %d" % len(delta_ids1)
+    #print "delta_ids2 len: %d" % len(delta_ids2)
+    #print "axis_len      : %d" % axis_len
+    #print "axis_x len    : %d" % len(axis_x)
+    print "---------stats----------"
+    #\begin{tabular}{lllllll}
+    #\toprule
+    #Muestra & min & max & std & mean & mediam & mode \\
+    #\midrule
+    #A & \%.2f & \%.2f & \%.2f & \%.2f & \%.2f & \%.2f \\
+    #B & \%.2f & \%.2f & \%.2f & \%.2f & \%.2f & \%.2f \\
+    #\bottomrule
+    #\end{tabular}
+    print """Muestra & min & max & std & mean & mediam & mode \\"""
+    print "%s & %.2f & %.2f & %.2f & %.2f & %.2f & %.2f \\" % (exp[0], delta_ids1.min(), delta_ids1.max(), delta_ids1.std(), delta_ids1.mean(), np.median(delta_ids1),0)
+    print "%s & %.2f & %.2f & %.2f & %.2f & %.2f & %.2f \\" % (exp[1], delta_ids2.min(), delta_ids2.max(), delta_ids2.std(), delta_ids2.mean(), np.median(delta_ids2),0)
     #
     #
     #
-    print 
-    #
-    #
-    #
-
     fig = plt.figure()
     ax = plt.subplot(111)
-    ax.plot(axis_x, delta_ids1,'r.', label=r'$\Delta id(n)$')
-    ax.plot(axis_x, delta_ids2,'b.', label=r'$\Delta id(n)$')
+    ax.plot(axis_x, delta_ids1,'r.', label='%s '%(exp[0])+r'$\Delta id(n)$', alpha= 0.3)
+    ax.plot(axis_x, delta_ids2,'b.', label='%s '%(exp[1])+r'$\Delta id(n)$', alpha= 0.3)
     box = ax.get_position()
     ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
-    csfont = {'fontname':'Comic Sans MS'}
-    hfont = {'fontname':'Helvetica'}
-    plt.title(r'time v.s $\Delta id(n)$'+'\n'+ r'$%s:%s:%s$' % (options.experiment, runexec[0], runexec[1]), **hfont)#**csfont)
+#    csfont = {'fontname':'Comic Sans MS'}
+#    hfont = {'fontname':'Helvetica'}
+    plt.title(r'time v.s $\Delta id(n)$')#, **hfont)#**csfont)
     plt.ylabel(r'$\Delta id(n) = id(n+1) - id(n)$')
-    plt.xlabel(r'time',**hfont)
+    plt.xlabel(r'time')#,**hfont)
     plt.gcf().autofmt_xdate()
     ax.xaxis.grid(True)
     grid()
     ax.legend(loc='center left', bbox_to_anchor=(0.75, 0.92))
-    plt.savefig(options.experiment+'-'+str(__file__).split('.')[0]+'.png',dpi=300) # format='eps'
-    print "%d total"% (len(axis_x))
-    plt.show()
+    plt.savefig(exp[0]+'-'+exp[1]+'-'+str(__file__).split('.')[0]+'.png',dpi=300) # format='eps'
+#    plt.show()
