@@ -91,6 +91,8 @@ if __name__=="__main__":
     ax.xaxis.grid(True)
     grid()
     ax.legend(loc='center left', bbox_to_anchor=(0.75, 0.92))
-    plt.savefig(options.experiment+'-'+str(__file__).split('.')[0]+'.png')
+#    plt.annotate(fontsize='xx-small')
+    #plt.figure(figsize=(70,70)
+    plt.savefig(options.experiment+'-'+str(__file__).split('.')[0]+'.png',dpi=300) # format='eps'
     print "%d total"% (len(axis_x))
     plt.show()
