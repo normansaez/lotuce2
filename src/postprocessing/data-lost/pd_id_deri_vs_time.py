@@ -114,7 +114,7 @@ if __name__=="__main__":
     ax.xaxis.grid(True)
     grid()
 #    ax.legend(loc='center left', bbox_to_anchor=(0.75, 0.92), fancybox=False, framealpha=0.2)
-    ax.legend(loc='best', bbox_to_anchor=(0.75, 0.92), fancybox=True)#, framealpha=0.8)
+    ax.legend(loc='best', fancybox=True)#, bbox_to_anchor=(0.75, 0.92), fancybox=True)#, framealpha=0.8)
     plt.savefig(exp[0]+'-'+exp[1]+'-'+str(__file__).split('.')[0]+'.png',dpi=300) # format='eps'
 #    plt.show()
     print "Done"
