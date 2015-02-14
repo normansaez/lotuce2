@@ -7,6 +7,7 @@ from matplotlib import ticker
 import argparse 
 import sys
 import os
+import numpy as np
 
 if __name__=="__main__":
     usage = '''
@@ -49,11 +50,12 @@ if __name__=="__main__":
         counter += 1
         if counter == options.limit:
             break
+    np_x = np.array(x)
+    np_x = np_x/np_x.max()
+    x = np_x.tolist()
     runexec = basename.split('-')[3].replace('_','-').split('.')
     fig = plt.figure()
     ax = plt.subplot(111)
-    print len(x)
-    print len(y)
     #print len(diff)
     ax.plot(y,x,'r-',label=r'$id(n)$')
     box = ax.get_position()
