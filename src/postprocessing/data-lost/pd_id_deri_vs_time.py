@@ -25,84 +25,95 @@ if __name__=="__main__":
         print "Use -f /path/to/the/filename"
         sys.exit(-1)
 
-    if options.sfilename is None:
-        print "No sfilename to be to analised, you need give a path for the sfilename"
-        print "Use -f /path/to/the/sfilename"
-        sys.exit(-1)
+    exp = []
+    freq = 1./options.hertz
+    m_cols = ['ts', 'id', 'cam0', 'cam1', 'cam2', 'cam3']
+
 
     options.filename = os.path.normpath(options.filename)
     basename = os.path.basename(options.filename)
-    options.sfilename = os.path.normpath(options.sfilename)
-    sbasename = os.path.basename(options.sfilename)
     filename = os.path.normpath(options.filename)
-    sfilename = os.path.normpath(options.sfilename)
     print filename
-    print sfilename
-    exp = []
+    color = 'g.'
     exp.append(filename.split('/')[-2])
-    exp.append(sfilename.split('/')[-2])
-    #
-    # Hz
-    #
-    freq = 1./options.hertz
-    #
-    #
-    #
-    m_cols = ['ts', 'id', 'cam0', 'cam1', 'cam2', 'cam3']
+    experiment = exp[0]
     filedata = pd.read_csv(options.filename, sep=' ', names=m_cols)
-    sfiledata = pd.read_csv(options.sfilename, sep=' ', names=m_cols)
-    #
-    #
-    #
     runexec = basename.split('-')[3].replace('_','-').split('.')
-    srunexec = sbasename.split('-')[3].replace('_','-').split('.')
-    #
-    #
-    #
     ids1 = filedata['id']
-    ids2 = sfiledata['id']
     #
     #Calculating deriv
     #
     np_ids1 = np.array(ids1)
-    np_ids2 = np.array(ids2)
     delta_ids1 = np_ids1[1:]-np_ids1[:-1]
-    delta_ids2 = np_ids2[1:]-np_ids2[:-1]
+    #
+    #Calculating deriv
+    #
+    np_ids1 = np.array(ids1)
+    delta_ids1 = np_ids1[1:]-np_ids1[:-1]
     #
     #
     #
+    if options.sfilename is not None:
+        options.sfilename = os.path.normpath(options.sfilename)
+        sbasename = os.path.basename(options.sfilename)
+        sfilename = os.path.normpath(options.sfilename)
+        print sfilename
+        exp.append(sfilename.split('/')[-2])
+        sfiledata = pd.read_csv(options.sfilename, sep=' ', names=m_cols)
+        srunexec = sbasename.split('-')[3].replace('_','-').split('.')
+        ids2 = sfiledata['id']
+        color = 'b.'
+        experiment= exp[0]+'-'+exp[1]
+        #
+        #Calculating deriv
+        #
+        np_ids2 = np.array(ids2)
+        delta_ids2 = np_ids2[1:]-np_ids2[:-1]
+        #
+        #Calculating deriv
+        #
+        np_ids2 = np.array(ids2)
+        delta_ids2 = np_ids2[1:]-np_ids2[:-1]
+        #
+        #
+        #
     axis_x = []
     ts1 = filedata['ts']
     d = datetime.datetime.fromtimestamp(ts1[0])
     axis_x.append(d)
-    if len(delta_ids1) > len(delta_ids2):
-        axis_len = len(delta_ids2)
-        drops = len(delta_ids1) - len(delta_ids2)
-        delta_ids1 = delta_ids1[:axis_len]
-        print "using ids2 , dropping : %d from ids1" % (drops)
+    if options.sfilename is not None:
+        if len(delta_ids1) > len(delta_ids2):
+            axis_len = len(delta_ids2)
+            drops = len(delta_ids1) - len(delta_ids2)
+            delta_ids1 = delta_ids1[:axis_len]
+            print "using ids2 , dropping : %d from ids1" % (drops)
+        else:
+            axis_len = len(delta_ids1)
+            drops = len(delta_ids2) - len(delta_ids1)
+            delta_ids2 = delta_ids2[:axis_len]
+            print "using ids1 , dropping : %d from ids2" % (drops)
     else:
         axis_len = len(delta_ids1)
-        drops = len(delta_ids2) - len(delta_ids1)
-        delta_ids2 = delta_ids2[:axis_len]
-        print "using ids1 , dropping : %d from ids2" % (drops)
+
     #
     #
     #
     axis_x = [d + datetime.timedelta(0, freq*x) for x in range(0, axis_len)]
-    print "---------stats----------"
-    print "dataset ---- %s:%s:%s ----" % (exp[0], runexec[0], runexec[1])
-    print "dataset ---- %s:%s:%s ----" % (exp[1], srunexec[0], srunexec[1])
-    print "-----------------------"
-    print """Muestra & min & max & std & mean & mediam & mode \\"""
-    print "%s & %.2f & %.2f & %.2f & %.2f & %.2f & %.2f \\" % (exp[0], delta_ids1.min(), delta_ids1.max(), delta_ids1.std(), delta_ids1.mean(), np.median(delta_ids1),0)
-    print "%s & %.2f & %.2f & %.2f & %.2f & %.2f & %.2f \\" % (exp[1], delta_ids2.min(), delta_ids2.max(), delta_ids2.std(), delta_ids2.mean(), np.median(delta_ids2),0)
+    #print "---------stats----------"
+    #print "dataset ---- %s:%s:%s ----" % (exp[0], runexec[0], runexec[1])
+    #print "dataset ---- %s:%s:%s ----" % (exp[1], srunexec[0], srunexec[1])
+    #print "-----------------------"
+    #print """Muestra & min & max & std & mean & mediam & mode \\"""
+    #print "%s & %.2f & %.2f & %.2f & %.2f & %.2f & %.2f \\" % (exp[0], delta_ids1.min(), delta_ids1.max(), delta_ids1.std(), delta_ids1.mean(), np.median(delta_ids1),0)
+    #print "%s & %.2f & %.2f & %.2f & %.2f & %.2f & %.2f \\" % (exp[1], delta_ids2.min(), delta_ids2.max(), delta_ids2.std(), delta_ids2.mean(), np.median(delta_ids2),0)
     #
     #
     #
     fig = plt.figure()
     ax = plt.subplot(111)
-    ax.plot(axis_x, delta_ids1,'b.', label='%s '%(exp[0])+r'$\Delta id(n)$', alpha= 0.5)
-    ax.plot(axis_x, delta_ids2,'r.', label='%s '%(exp[1])+r'$\Delta id(n)$', alpha= 0.5)
+    ax.plot(axis_x, delta_ids1, color, label='%s '%(exp[0])+r'$\Delta id(n)$', alpha= 0.5)
+    if options.sfilename is not None:
+        ax.plot(axis_x, delta_ids2,'r.', label='%s '%(exp[1])+r'$\Delta id(n)$', alpha= 0.5)
     box = ax.get_position()
     ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
 #    csfont = {'fontname':'Comic Sans MS'}
@@ -115,6 +126,5 @@ if __name__=="__main__":
     grid()
 #    ax.legend(loc='center left', bbox_to_anchor=(0.75, 0.92), fancybox=False, framealpha=0.2)
     ax.legend(loc='best', fancybox=True)#, bbox_to_anchor=(0.75, 0.92), fancybox=True)#, framealpha=0.8)
-    plt.savefig(exp[0]+'-'+exp[1]+'-'+str(__file__).split('.')[0]+'.png',dpi=300) # format='eps'
+    plt.savefig(experiment+'-'+str(__file__).split('.')[0]+'.png',dpi=300) # format='eps'
 #    plt.show()
-    print "Done"
