@@ -93,8 +93,8 @@ if __name__=="__main__":
         cmax = (np_sfnos[1:]-np_sfnos[:-1]).max()
     else:
         cmax = (np_fnos[1:]-np_fnos[:-1]).max()
+    ######################################################################################################
     bins = np.linspace(0,int(cmax+1),100)#20#range(0,3000,10)#[0,10,100,200,500,100,3000]#range(0,200,10)
-    print bins
     exp = options.experiment.split('-')
     hist(fns,bins,normed=True,log=True, color='b', label=exp[0], alpha=0.5)
     if options.sfilename is not None:
