@@ -14,7 +14,6 @@ if __name__=="__main__":
     '''
     parser = argparse.ArgumentParser(usage=usage)
     parser.add_argument('-f', '--filename', dest='filename', type=str, help='Path to get txt source', default=None)
-    parser.add_argument('-e', '--experiment', dest='experiment', type=str, help='Experiment name', default='A')
     parser.add_argument('-l', '--limit', dest='limit', type=int, help='Default limit to plot', default=None)#131100)#393300)#786600)#None)
     parser.add_argument('--hertz', dest='hertz', type=int, help='Herzt to be plotted', default=220)
 
@@ -28,6 +27,8 @@ if __name__=="__main__":
     options.filename = os.path.normpath(options.filename)
     basename = os.path.basename(options.filename)
     filename = options.filename
+    exp = []
+    exp.append(filename.split('/')[-2])
     print filename
     f = open(filename,'r')
     filehandler = f.readlines()
@@ -57,10 +58,10 @@ if __name__=="__main__":
     fig = plt.figure()
     ax = plt.subplot(111)
     #print len(diff)
-    ax.plot(y,x,'r-',label=r'$id(n)$')
+    ax.plot(y,x,'g-',label='%s '%exp[0]+r'$id(n)$', alpha=0.5)
     box = ax.get_position()
     ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
-    plt.title(r'time v.s $id(n)$ %s:%s' % (runexec[0], runexec[1]))
+    plt.title(r'time v.s $id(n)$')
     plt.ylabel(r'$id(n)$')
     plt.xlabel(r'time')
     formatter = ticker.ScalarFormatter(useMathText=True)
@@ -69,8 +70,9 @@ if __name__=="__main__":
     ax.yaxis.set_major_formatter(formatter) 
     ax.xaxis.grid(True)
     grid()
+    ax.legend(loc='best', fancybox=True)#, bbox_to_anchor=(0.75, 0.92), fancybox=True)#, framealpha=0.8)
     plt.gcf().autofmt_xdate()
 #    ax.legend(loc='center left', bbox_to_anchor=(0.75, 0.92))
-    plt.savefig(options.experiment+'-'+str(__file__).split('.')[0]+'.png')
+    plt.savefig(exp[0]+'-'+str(__file__).split('.')[0]+'.png',dpi=300) # format='eps'
     plt.show()
     
