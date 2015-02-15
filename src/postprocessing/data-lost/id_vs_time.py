@@ -2,18 +2,19 @@
 import datetime
 from pylab import grid#imshow,show
 import matplotlib.pyplot as plt
-import matplotlib.cm as cm
 from matplotlib import ticker
 import argparse 
 import sys
 import os
 import numpy as np
+import pandas as pd
 
 if __name__=="__main__":
     usage = '''
     '''
     parser = argparse.ArgumentParser(usage=usage)
     parser.add_argument('-f', '--filename', dest='filename', type=str, help='Path to get txt source', default=None)
+    parser.add_argument('-s', '--sfilename', dest='sfilename', type=str, help='Path to get txt source', default=None)
     parser.add_argument('-l', '--limit', dest='limit', type=int, help='Default limit to plot', default=None)#131100)#393300)#786600)#None)
     parser.add_argument('--hertz', dest='hertz', type=int, help='Herzt to be plotted', default=220)
 
@@ -24,41 +25,77 @@ if __name__=="__main__":
         print "Use -f /path/to/the/filename"
         sys.exit(-1)
 
+    exp = []
+    m_cols = ['ts', 'id', 'cam0', 'cam1', 'cam2', 'cam3']
+    freq = 1./options.hertz
+
     options.filename = os.path.normpath(options.filename)
     basename = os.path.basename(options.filename)
-    filename = options.filename
-    exp = []
-    exp.append(filename.split('/')[-2])
+    filename = os.path.normpath(options.filename)
     print filename
-    f = open(filename,'r')
-    filehandler = f.readlines()
-    f.close()
-    d0 = None#datetime.datetime.fromtimestamp(1421959082.652726)
-    counter = 0
-    x = []
-    y = []
-    freq = 1./options.hertz
-    for line in filehandler:
-        line = line.rstrip('\n').split(' ')
-        ts = float(line[0])
-        fno= float(line[1])
-        if counter == 0:
-            d = datetime.datetime.fromtimestamp(ts)
-        else:
-            d = d + datetime.timedelta(0,freq)
-        y.append(d)
-        x.append(fno)
-        counter += 1
-        if counter == options.limit:
-            break
-    np_x = np.array(x)
-    np_x = np_x/np_x.max()
-    x = np_x.tolist()
+    color = 'g.'
+    exp.append(filename.split('/')[-2])
+    filedata = pd.read_csv(options.filename, sep=' ', names=m_cols)
     runexec = basename.split('-')[3].replace('_','-').split('.')
+    ids1 = filedata['id']
+    experiment = exp[0]
+    if options.sfilename is not None:
+        options.sfilename = os.path.normpath(options.sfilename)
+        sbasename = os.path.basename(options.sfilename)
+        sfilename = os.path.normpath(options.sfilename)
+        print sfilename
+        exp.append(sfilename.split('/')[-2])
+        sfiledata = pd.read_csv(options.sfilename, sep=' ', names=m_cols)
+        srunexec = sbasename.split('-')[3].replace('_','-').split('.')
+        ids2 = sfiledata['id']
+        experiment= exp[0]+'-'+exp[1]
+        color = 'b.'
+    #
+    #
+    #
+    axis_x = []
+    ts1 = filedata['ts']
+    d = datetime.datetime.fromtimestamp(ts1[0])
+    axis_x.append(d)
+    #
+    #Fixing axis x
+    #
+    if options.sfilename is not None:
+        if len(ids1) > len(ids2):
+            axis_len = len(ids2)
+            drops = len(ids1) - len(ids2)
+            ids1 = ids1[:axis_len]
+            print "using ids2 , dropping : %d from ids1" % (drops)
+        else:
+            axis_len = len(ids1)
+            drops = len(ids2) - len(ids1)
+            ids2 = ids2[:axis_len]
+            print "using ids1 , dropping : %d from ids2" % (drops)
+        #
+        #Fixing axis y
+        #
+        ids1_ = ids1[0]
+        ids2_ = ids2[0]
+        if ids1_ > ids2_:
+            delta = ids1_ - ids2_
+            ids1 = ids1 - delta
+        else:
+            delta = ids2_ - ids1_
+            ids2 = ids2 - delta
+    else:
+        axis_len = len(ids1)
+    #
+    #
+    #
+    axis_x = [d + datetime.timedelta(0, freq*x) for x in range(0, axis_len)]
+    #
+    # PLOT
+    #
     fig = plt.figure()
     ax = plt.subplot(111)
-    #print len(diff)
-    ax.plot(y,x,'g-',label='%s '%exp[0]+r'$id(n)$', alpha=0.5)
+    ax.plot(axis_x, ids1, color, label='%s '%(exp[0])+r'$id(n)$', alpha= 0.5)
+    if options.sfilename is not None:
+        ax.plot(axis_x, ids2,'r.', label='%s '%(exp[1])+r'$id(n)$', alpha= 0.5)
     box = ax.get_position()
     ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
     plt.title(r'time v.s $id(n)$')
@@ -72,7 +109,6 @@ if __name__=="__main__":
     grid()
     ax.legend(loc='best', fancybox=True)#, bbox_to_anchor=(0.75, 0.92), fancybox=True)#, framealpha=0.8)
     plt.gcf().autofmt_xdate()
+    plt.savefig(experiment+'-'+str(__file__).split('.')[0]+'.png',dpi=300) # format='eps'
 #    ax.legend(loc='center left', bbox_to_anchor=(0.75, 0.92))
-    plt.savefig(exp[0]+'-'+str(__file__).split('.')[0]+'.png',dpi=300) # format='eps'
-    plt.show()
     
