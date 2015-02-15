@@ -25,33 +25,34 @@ if __name__=="__main__":
         print "Use -f /path/to/the/filename"
         sys.exit(-1)
 
-    if options.sfilename is None:
-        print "No sfilename to be to analised, you need give a path for the sfilename"
-        print "Use -f /path/to/the/sfilename"
-        sys.exit(-1)
+    exp = []
+    m_cols = ['ts', 'id', 'cam0', 'cam1', 'cam2', 'cam3']
+    freq = 1./options.hertz
 
     options.filename = os.path.normpath(options.filename)
     basename = os.path.basename(options.filename)
-    options.sfilename = os.path.normpath(options.sfilename)
-    sbasename = os.path.basename(options.sfilename)
     filename = os.path.normpath(options.filename)
-    sfilename = os.path.normpath(options.sfilename)
     print filename
-    print sfilename
-    exp = []
+    color = 'g.'
     exp.append(filename.split('/')[-2])
-    exp.append(sfilename.split('/')[-2])
-    freq = 1./options.hertz
-    m_cols = ['ts', 'id', 'cam0', 'cam1', 'cam2', 'cam3']
     filedata = pd.read_csv(options.filename, sep=' ', names=m_cols)
-    sfiledata = pd.read_csv(options.sfilename, sep=' ', names=m_cols)
     runexec = basename.split('-')[3].replace('_','-').split('.')
-    srunexec = sbasename.split('-')[3].replace('_','-').split('.')
-    #
-    #
-    #
     ids1 = filedata['id']
-    ids2 = sfiledata['id']
+    experiment = exp[0]
+    if options.sfilename is not None:
+        options.sfilename = os.path.normpath(options.sfilename)
+        sbasename = os.path.basename(options.sfilename)
+        sfilename = os.path.normpath(options.sfilename)
+        print sfilename
+        exp.append(sfilename.split('/')[-2])
+        sfiledata = pd.read_csv(options.sfilename, sep=' ', names=m_cols)
+        srunexec = sbasename.split('-')[3].replace('_','-').split('.')
+        ids2 = sfiledata['id']
+        experiment= exp[0]+'-'+exp[1]
+        color = 'b.'
+    #
+    #
+    #
     axis_x = []
     ts1 = filedata['ts']
     d = datetime.datetime.fromtimestamp(ts1[0])
@@ -59,27 +60,30 @@ if __name__=="__main__":
     #
     #Fixing axis x
     #
-    if len(ids1) > len(ids2):
-        axis_len = len(ids2)
-        drops = len(ids1) - len(ids2)
-        ids1 = ids1[:axis_len]
-        print "using ids2 , dropping : %d from ids1" % (drops)
+    if options.sfilename is not None:
+        if len(ids1) > len(ids2):
+            axis_len = len(ids2)
+            drops = len(ids1) - len(ids2)
+            ids1 = ids1[:axis_len]
+            print "using ids2 , dropping : %d from ids1" % (drops)
+        else:
+            axis_len = len(ids1)
+            drops = len(ids2) - len(ids1)
+            ids2 = ids2[:axis_len]
+            print "using ids1 , dropping : %d from ids2" % (drops)
+        #
+        #Fixing axis y
+        #
+        ids1_ = ids1[0]
+        ids2_ = ids2[0]
+        if ids1_ > ids2_:
+            delta = ids1_ - ids2_
+            ids1 = ids1 - delta
+        else:
+            delta = ids2_ - ids1_
+            ids2 = ids2 - delta
     else:
         axis_len = len(ids1)
-        drops = len(ids2) - len(ids1)
-        ids2 = ids2[:axis_len]
-        print "using ids1 , dropping : %d from ids2" % (drops)
-    #
-    #Fixing axis y
-    #
-    ids1_ = ids1[0]
-    ids2_ = ids2[0]
-    if ids1_ > ids2_:
-        delta = ids1_ - ids2_
-        ids1 = ids1 - delta
-    else:
-        delta = ids2_ - ids1_
-        ids2 = ids2 - delta
     #
     #
     #
@@ -89,9 +93,9 @@ if __name__=="__main__":
     #
     fig = plt.figure()
     ax = plt.subplot(111)
-    #print len(diff)
-    ax.plot(axis_x, ids1,'b.', label='%s '%(exp[0])+r'$id(n)$', alpha= 0.5)
-    ax.plot(axis_x, ids2,'r.', label='%s '%(exp[1])+r'$id(n)$', alpha= 0.5)
+    ax.plot(axis_x, ids1, color, label='%s '%(exp[0])+r'$id(n)$', alpha= 0.5)
+    if options.sfilename is not None:
+        ax.plot(axis_x, ids2,'r.', label='%s '%(exp[1])+r'$id(n)$', alpha= 0.5)
     box = ax.get_position()
     ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
     plt.title(r'time v.s $id(n)$')
@@ -105,6 +109,6 @@ if __name__=="__main__":
     grid()
     ax.legend(loc='best', fancybox=True)#, bbox_to_anchor=(0.75, 0.92), fancybox=True)#, framealpha=0.8)
     plt.gcf().autofmt_xdate()
-    plt.savefig(exp[0]+'-'+exp[1]+'-'+str(__file__).split('.')[0]+'.png',dpi=300) # format='eps'
+    plt.savefig(experiment+'-'+str(__file__).split('.')[0]+'.png',dpi=300) # format='eps'
 #    plt.show()
     
