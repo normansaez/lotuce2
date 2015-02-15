@@ -101,8 +101,8 @@ if __name__=="__main__":
     #
     fig = plt.figure()
     ax = plt.subplot(111)
-    ax.plot(axis_x, delta_ids1,'r.', label='%s '%(exp[0])+r'$\Delta id(n)$', alpha= 0.5)
-    ax.plot(axis_x, delta_ids2,'b.', label='%s '%(exp[1])+r'$\Delta id(n)$', alpha= 0.5)
+    ax.plot(axis_x, delta_ids1,'b.', label='%s '%(exp[0])+r'$\Delta id(n)$', alpha= 0.5)
+    ax.plot(axis_x, delta_ids2,'r.', label='%s '%(exp[1])+r'$\Delta id(n)$', alpha= 0.5)
     box = ax.get_position()
     ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
 #    csfont = {'fontname':'Comic Sans MS'}
