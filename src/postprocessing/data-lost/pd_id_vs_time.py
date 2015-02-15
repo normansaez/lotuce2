@@ -56,6 +56,9 @@ if __name__=="__main__":
     ts1 = filedata['ts']
     d = datetime.datetime.fromtimestamp(ts1[0])
     axis_x.append(d)
+    #
+    #Fixing axis x
+    #
     if len(ids1) > len(ids2):
         axis_len = len(ids2)
         drops = len(ids1) - len(ids2)
@@ -67,6 +70,17 @@ if __name__=="__main__":
         ids2 = ids2[:axis_len]
         print "using ids1 , dropping : %d from ids2" % (drops)
     #
+    #Fixing axis y
+    #
+    ids1_ = ids1[0]
+    ids2_ = ids2[0]
+    if ids1_ > ids2_:
+        delta = ids1_ - ids2_
+        ids1 = ids1 - delta
+    else:
+        delta = ids2_ - ids1_
+        ids2 = ids2 - delta
+    #
     #
     #
     axis_x = [d + datetime.timedelta(0, freq*x) for x in range(0, axis_len)]
@@ -76,8 +90,8 @@ if __name__=="__main__":
     fig = plt.figure()
     ax = plt.subplot(111)
     #print len(diff)
-    ax.plot(axis_x, ids1,'r-', label='%s '%(exp[0])+r'$id(n)$', alpha= 0.5)
-    ax.plot(axis_x, ids2,'b-', label='%s '%(exp[1])+r'$id(n)$', alpha= 0.5)
+    ax.plot(axis_x, ids1,'b.', label='%s '%(exp[0])+r'$id(n)$', alpha= 0.5)
+    ax.plot(axis_x, ids2,'r.', label='%s '%(exp[1])+r'$id(n)$', alpha= 0.5)
     box = ax.get_position()
     ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
     plt.title(r'time v.s $id(n)$')
