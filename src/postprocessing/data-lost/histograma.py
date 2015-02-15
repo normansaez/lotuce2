@@ -2,25 +2,18 @@
 import sys
 import os
 from pylab import grid#imshow,show
-#from pylab import xticks
 import matplotlib.pyplot as plt
-import matplotlib.cm as cm
 import argparse 
-import datetime
 import numpy as np
-from math import floor
-from matplotlib import ticker
-from matplotlib.dates import date2num
 from matplotlib.pylab import hist, show
-import mmap
+import pandas as pd
 
 if __name__=="__main__":
     usage = '''
     '''
     parser = argparse.ArgumentParser(usage=usage)
     parser.add_argument('-f', '--filename', dest='filename', type=str, help='Path to get txt source', default=None)
-    parser.add_argument('-s', '--sfilename', dest='sfilename', type=str, help='Path to get txt second source', default=None)
-    parser.add_argument('-e', '--experiment', dest='experiment', type=str, help='Experiment name', default='A')
+    parser.add_argument('-s', '--sfilename', dest='sfilename', type=str, help='Path to get txt source', default=None)
     parser.add_argument('-l', '--limit', dest='limit', type=int, help='Default limit to plot', default=None)#131100)#393300)#786600)#None)
 
     (options, unknown) = parser.parse_known_args()
@@ -30,80 +23,71 @@ if __name__=="__main__":
         print "Use -f /path/to/the/filename"
         sys.exit(-1)
 
+    exp = []
+    m_cols = ['ts', 'id', 'cam0', 'cam1', 'cam2', 'cam3']
+    #
+    #
+    #
     options.filename = os.path.normpath(options.filename)
     basename = os.path.basename(options.filename)
+    filename = os.path.normpath(options.filename)
+    print filename
+    color_ = 'g'
+    exp.append(filename.split('/')[-2])
+    experiment = exp[0]
+    filedata = pd.read_csv(options.filename, sep=' ', names=m_cols)
+    runexec = basename.split('-')[3].replace('_','-').split('.')
+    ids1 = filedata['id']
+    # 
+    #
+    #
+    np_ids1 = np.array(ids1)
+    delta_ids1 = np_ids1[1:]-np_ids1[:-1]
+    #
+    #Calculating deriv
+    #
+    np_ids1 = np.array(ids1)
+    delta_ids1 = np_ids1[1:]-np_ids1[:-1]
+    #
+    #
+    #
     if options.sfilename is not None:
         options.sfilename = os.path.normpath(options.sfilename)
         sbasename = os.path.basename(options.sfilename)
-        
-    print "GO !!"
-    axis_x = []
-    fnos = []
-    fns = []
-    filename = os.path.normpath(options.filename)
-    print filename
-    i = 0
-    with open(filename, "r+b") as f:
-        map = mmap.mmap(f.fileno(), 0, prot=mmap.PROT_READ)
-        for line in iter(map.readline, ""):
-            line = line.rstrip('\n').split(' ')
-            ts = float(line[0])
-            fno= float(line[1])
-            fnos.append(fno)
-            d = datetime.datetime.fromtimestamp(ts)
-            axis_x.append(d)
-            i += 1
-            if i == options.limit:
-                break
-    del axis_x[-1]
-    np_fnos = np.array(fnos)
-    print (np_fnos[1:]-np_fnos[:-1]).max()
-    print (np_fnos[1:]-np_fnos[:-1]).min()
-    
-    for j in range(0,i-1):
-        fno_id = np_fnos[j+1] - np_fnos[j]
-        fns.append(fno_id)
-    if options.sfilename is not None:
-        sfnos = []
-        sfns = []
-        i = 0
-        print options.sfilename
-        with open(options.sfilename, "r+b") as f:
-            map = mmap.mmap(f.fileno(), 0, prot=mmap.PROT_READ)
-            for line in iter(map.readline, ""):
-                line = line.rstrip('\n').split(' ')
-                ts = float(line[0])
-                fno= float(line[1])
-                sfnos.append(fno)
-                d = datetime.datetime.fromtimestamp(ts)
-                axis_x.append(d)
-                i += 1
-                if i == options.limit:
-                    break
-        del axis_x[-1]
-        np_sfnos = np.array(sfnos)
-        print (np_sfnos[1:]-np_sfnos[:-1]).max()
-        print (np_sfnos[1:]-np_sfnos[:-1]).min()
-        
-        for j in range(0,i-1):
-            sfno_id = np_sfnos[j+1] - np_sfnos[j]
-            sfns.append(sfno_id)
-    cmax = 0
-    if (np_sfnos[1:]-np_sfnos[:-1]).max() > (np_fnos[1:]-np_fnos[:-1]).max():
-        cmax = (np_sfnos[1:]-np_sfnos[:-1]).max()
-    else:
-        cmax = (np_fnos[1:]-np_fnos[:-1]).max()
-    ######################################################################################################
+        sfilename = os.path.normpath(options.sfilename)
+        print sfilename
+        exp.append(sfilename.split('/')[-2])
+        sfiledata = pd.read_csv(options.sfilename, sep=' ', names=m_cols)
+        srunexec = sbasename.split('-')[3].replace('_','-').split('.')
+        ids2 = sfiledata['id']
+        color_ = 'b'
+        experiment= exp[0]+'-'+exp[1]
+        #
+        #Calculating deriv
+        #
+        np_ids2 = np.array(ids2)
+        delta_ids2 = np_ids2[1:]-np_ids2[:-1]
+        #
+        #Calculating deriv
+        #
+        np_ids2 = np.array(ids2)
+        delta_ids2 = np_ids2[1:]-np_ids2[:-1]
+        #
+        #
+        #
+    cmax = delta_ids1.max() 
+    if cmax < delta_ids2.max():
+            cmax = delta_ids2.max()
     bins = np.linspace(0,int(cmax+1),100)#20#range(0,3000,10)#[0,10,100,200,500,100,3000]#range(0,200,10)
-    exp = options.experiment.split('-')
-    hist(fns,bins,normed=True,log=True, color='b', label=exp[0], alpha=0.5)
+    hist(delta_ids1, bins, normed=True, log=True, color=color_, label=exp[0], alpha=0.5)
     if options.sfilename is not None:
-        hist(sfns, bins, histtype='stepfilled', normed=True, log=True ,color='r', alpha=0.7, label=exp[1])
+        hist(delta_ids2, bins, normed=True, log=True ,color='r', alpha=0.7, label=exp[1]) #histtype='stepfilled'
     runexec = basename.split('-')[3].replace('_','-').split('.')
     srunexec = sbasename.split('-')[3].replace('_','-').split('.')
-    plt.title("Histograma: %s:%s:%s %s:%s:%s"%(exp[0],runexec[0], runexec[1],exp[1],srunexec[0],srunexec[1]))
+    plt.title("Histograma: %s-%s"%(exp[0],exp[1]))
     plt.xlabel(r"$id(n)=id(n+1)-id(n)$")
     plt.ylabel("log(eventos)")
-    plt.legend(loc='upper right')
-    plt.savefig(options.experiment+'-'+str(__file__).split('.')[0]+'.png',dpi=300)
+#    plt.legend(loc='upper right')
+    plt.legend(loc='best', fancybox=True)#, bbox_to_anchor=(0.75, 0.92), fancybox=True)#, framealpha=0.8)
+    plt.savefig(experiment+'-'+str(__file__).split('.')[0]+'.png',dpi=300)
     show()
