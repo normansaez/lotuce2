@@ -2,36 +2,92 @@
 import pandas as pd
 import argparse 
 import os
+import pandas as pd
+import numpy as np
+import glob
+import multiprocessing as mp
+
+def data_stats(filename, stat):
+    exp = []
+    freq = 1./220.
+    m_cols = ['ts', 'id', 'cam0', 'cam1', 'cam2', 'cam3']
+    filename = os.path.normpath(filename)
+    basename = os.path.basename(filename)
+    runexec = basename.split('-')[3].replace('_','-').split('.')
+    exp.append(filename.split('/')[-2])
+
+    filedata = pd.read_csv(filename, sep=' ', names=m_cols)
+    ids1 = filedata['id']
+    np_ids1 = np.array(ids1)
+    delta_ids1 = np_ids1[1:]-np_ids1[:-1]
+
+#    print "---------stats----------"
+#    print "dataset ---- %s:%s:%s ----" % (exp[0], runexec[0], runexec[1])
+#    print """Muestra & min & max & std & mean & mediam & mode \\"""
+    results = "%s & %.2f & %.2f & %.2f & %.2f & %.2f & %.2f %% %s:%s\\" % \
+                (exp[0], delta_ids1.min(), delta_ids1.max(), delta_ids1.std(), delta_ids1.mean(), np.median(delta_ids1), mode(delta_ids1)[0], runexec[0], runexec[1])
+#    print "-----------------------"
+    stat.put(results)
+    
+    
+
+def wrapper(func, args, res):
+        res.append(func(*args))
+ 
+def mode(a, axis=0):
+    scores = np.unique(np.ravel(a))       # get ALL unique values
+    testshape = list(a.shape)
+    testshape[axis] = 1
+    oldmostfreq = np.zeros(testshape)
+    oldcounts = np.zeros(testshape)
+
+    for score in scores:
+        template = (a == score)
+        counts = np.expand_dims(np.sum(template, axis),axis)
+        mostfrequent = np.where(counts > oldcounts, score, oldmostfreq)
+        oldcounts = np.maximum(counts, oldcounts)
+        oldmostfreq = mostfrequent
+
+    return mostfrequent, oldcounts
 
 if __name__=="__main__":
     usage = '''
     '''
     parser = argparse.ArgumentParser(usage=usage)
-    parser.add_argument('-f', '--filename', dest='filename', type=str, help='Path to get txt source', default=None)
-    parser.add_argument('-e', '--experiment', dest='experiment', type=str, help='Experiment name', default='A')
-    parser.add_argument('-l', '--limit', dest='limit', type=int, help='Default limit to plot', default=None)#131100)#393300)#786600)#None)
-    parser.add_argument('--hertz', dest='hertz', type=int, help='Herzt to be plotted', default=220)
+    parser.add_argument('-d', '--dirname', dest='dirname', type=str, help='Path dir to get txt source', default=None)
 
     (options, unknown) = parser.parse_known_args()
 
-    if options.filename is None:
+    if options.dirname is None:
         print "No filename to be to analised, you need give a path for the filename"
         print "Use -f /path/to/the/filename"
         sys.exit(-1)
 
-    options.filename = os.path.normpath(options.filename)
-    basename = os.path.basename(options.filename)
+    options.dirname = os.path.normpath(options.dirname)
+    dirlist = glob.glob(options.dirname+'/*')
+    processes = []
+    stat = mp.Queue()
+    for dirname in dirlist:
+        if os.path.isdir(dirname) is True:
+            filenames = glob.glob(dirname+'/*')
+            for filename in filenames:
+                processes.append(mp.Process(target=data_stats, args=(filename, stat)))
 
-    m_cols = ['ts', 'id', 'cam0', 'cam1', 'cam2', 'cam3']
-    data = pd.read_csv(options.filename, sep=' ', names=m_cols)
-    total = len(data) - 1 
-    id_i = data['id'][0]
-    id_f = data['id'][total]
-    id_t = (id_i + total)
-#    print options.filename
-#    print "id_i %d" % id_i
-#    print "id_f %d" % id_f
-#    print "id_t %d" % id_t
-#    print "f - t: %d" % (id_f - id_t)
-#    print "(f - t)/f: %f" % (((id_f - id_t)/(id_f*1.))*100.)
-    print "%s: %f" % (options.experiment, ((id_f - id_t)/(id_f*1.))*100.)
+    for p in processes:
+        p.start()
+
+    for p in processes:
+        p.join()
+    
+#    stats = [stat.get() for p in processes]
+    print """Muestra & min & max & std & mean & mediam & mode \\"""
+    for p in processes:
+        print stat.get()
+
+#    m_cols = ['ts', 'id', 'cam0', 'cam1', 'cam2', 'cam3']
+#    data = pd.read_csv(options.filename, sep=' ', names=m_cols)
+#    total = len(data) - 1 
+#    id_i = data['id'][0]
+#    id_f = data['id'][total]
+#    id_t = (id_i + total)
+#    print "%s: %f" % (options.experiment, ((id_f - id_t)/(id_f*1.))*100.)
