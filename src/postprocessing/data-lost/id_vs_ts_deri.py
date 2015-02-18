@@ -6,6 +6,7 @@ from matplotlib import ticker
 import matplotlib.cm as cm
 import argparse 
 import os
+import pandas as pd
 import numpy as np
 from subprocess import Popen, PIPE
 from threading import Thread
@@ -35,7 +36,6 @@ if __name__=="__main__":
     '''
     parser = argparse.ArgumentParser(usage=usage)
     parser.add_argument('-f', '--filename', dest='filename', type=str, help='Path to get txt source', default=None)
-    parser.add_argument('-e', '--experiment', dest='experiment', type=str, help='Experiment name', default='A')
     parser.add_argument('-l', '--limit', dest='limit', type=int, help='Default limit to plot', default=None)#131100)#393300)#786600)#None)
 
     (options, unknown) = parser.parse_known_args()
@@ -45,37 +45,26 @@ if __name__=="__main__":
         print "Use -f /path/to/the/filename"
         sys.exit(-1)
 
+    exp = []
+    m_cols = ['ts', 'id', 'cam0', 'cam1', 'cam2', 'cam3']
+
+
     options.filename = os.path.normpath(options.filename)
     basename = os.path.basename(options.filename)
-    filename = options.filename
+    filename = os.path.normpath(options.filename)
     print filename
-    f = open(filename,'r')
-    filehandler = f.readlines()
-    f.close()
-    d0 = None#datetime.datetime.fromtimestamp(1421959082.652726)
-    y = []
-    fnos = []
-    delta_ts = []
-    counter = 0
-    for line in filehandler:
-        line = line.rstrip('\n').split(' ')
-        ts = float(line[0])
-        fno= float(line[1])
-        d = datetime.datetime.fromtimestamp(ts)
-        y.append(d)
-        fnos.append(fno)
-        if counter == options.limit:
-            break
-        counter += 1
-    np_y = np.array(y)
-    for j in range(0,counter-1):
-        d_ts = (np_y[j+1] - np_y[j]).total_seconds()
-#        print d_ts
-        delta_ts.append(d_ts)
-    del fnos[-1]
-    print len(fnos)
-    print len(delta_ts)
-    np_delta_ts = np.array(delta_ts)
+    color = 'g.'
+    exp.append(filename.split('/')[-2])
+    experiment = exp[0]
+    filedata = pd.read_csv(options.filename, sep=' ', names=m_cols)
+    runexec = basename.split('-')[3].replace('_','-').split('.')
+
+    tss = filedata['ts'] # delta Y
+
+    np_tss = np.array(tss)
+    np_delta_ts = np_tss[1:]-np_tss[:-1]
+    print np_delta_ts
+    #np_delta_ts = np_delta_ts[:len(np_delta_ts)-1] 
     print "min  %f" % np_delta_ts.min()
     print "max  %f" % np_delta_ts.max()
     print "mean %f" % np_delta_ts.mean()
@@ -92,7 +81,15 @@ if __name__=="__main__":
     runexec = basename.split('-')[3].replace('_','-').split('.')
     fig = plt.figure()
     ax = plt.subplot(111)
-    ax.plot(fnos, delta_ts,'r-',label=r'$\Delta timestamp(n)$')
+    print len(np_delta_ts)
+    freq = 1/220.
+    d = datetime.datetime.fromtimestamp(tss[0])
+    axis_x = []
+    axis_x.append(d)
+    axis_x = [d + datetime.timedelta(0, freq*x) for x in range(0, len(np_delta_ts))]
+    print len(axis_x)
+
+    ax.plot(axis_x, np_delta_ts,'r-',label=r'$\Delta timestamp(n)$')
     box = ax.get_position()
     ax.set_position([box.x0, box.y0, box.width * 1, box.height])
     plt.title(r'id(n) vs $\Delta timestamp(n)$ %s:%s' % (runexec[0], runexec[1]))
@@ -106,7 +103,7 @@ if __name__=="__main__":
     ax.xaxis.grid(True)
     grid()
     ax.legend(loc='center left', bbox_to_anchor=(0.75, 0.92))
-    plt.savefig(options.experiment+'-'+str(__file__).split('.')[0]+'.png')
+    plt.savefig(exp[0]+'-'+str(__file__).split('.')[0]+'.png')
     thread1.join()
     mostfrequent = res[0][0]
     print "--------------------------------------"
