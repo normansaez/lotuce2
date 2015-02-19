@@ -17,7 +17,11 @@ def move_files(filenames, dst):
     t1 = datetime.datetime.utcnow()
     sts.put(t1 - t0)
 if __name__ == '__main__':
+<<<<<<< HEAD
     src_dirname = '/home/lotuce2/sata-acquisition/2015_02_19.12/'
+=======
+    src_dirname = '/home/lotuce2/sata-acquisition/2015_02_18.9/'
+>>>>>>> 851875e1d4742b94dbb6e43a2c91233a7e920e33
     dst_dirname = os.path.split(os.path.abspath(__file__))[0]
     filenames = []
     sts = mp.Queue()
