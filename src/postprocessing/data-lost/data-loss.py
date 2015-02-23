@@ -6,6 +6,7 @@ import pandas as pd
 import numpy as np
 import glob
 import multiprocessing as mp
+import sys
 
 def data_stats(filename, stat):
     exp = []
@@ -21,11 +22,17 @@ def data_stats(filename, stat):
     np_ids1 = np.array(ids1)
     delta_ids1 = np_ids1[1:]-np_ids1[:-1]
 
+    total = len(filedata) - 1 
+    id_i = filedata['id'][0]
+    id_f = filedata['id'][total]
+    id_t = (id_i + total)
+    lost = ((id_f - id_t)/(id_f*1.))*100.
+    print "%s - %s:%s: %f  %% data lost" % (exp[0], runexec[0], runexec[1], lost)
 #    print "---------stats----------"
 #    print "dataset ---- %s:%s:%s ----" % (exp[0], runexec[0], runexec[1])
-#    print """Muestra & min & max & std & mean & mediam & mode \\"""
-    results = "%s & %.2f & %.2f & %.2f & %.2f & %.2f & %.2f %% %s:%s\\" % \
-                (exp[0], delta_ids1.min(), delta_ids1.max(), delta_ids1.std(), delta_ids1.mean(), np.median(delta_ids1), mode(delta_ids1)[0], runexec[0], runexec[1])
+#    print """Muestra & min & max & std & mean & median & mode \\"""
+    results = "%s & %d & %d & %.2f & %.2f & %.2f & %.2f & %f \\%% %s:%s \\\\" % \
+                (exp[0], delta_ids1.min(), delta_ids1.max(), delta_ids1.std(), delta_ids1.mean(), np.median(delta_ids1), mode(delta_ids1)[0], lost, runexec[0], runexec[1])
 #    print "-----------------------"
     stat.put(results)
     
@@ -79,11 +86,18 @@ if __name__=="__main__":
     for p in processes:
         p.join()
     
-#    stats = [stat.get() for p in processes]
-    print """Muestra & min & max & std & mean & mediam & mode \\"""
+    print """
+\\begin{tabular}{lllllllll}
+\\toprule
+Muestra & min & max & std & promedio & mediana & moda & perdidas \% & fecha:ejec \\\\
+\\midrule 
+    """
     for p in processes:
         print stat.get()
-
+    print """
+\\bottomrule
+\\end{tabular}
+"""
 #    m_cols = ['ts', 'id', 'cam0', 'cam1', 'cam2', 'cam3']
 #    data = pd.read_csv(options.filename, sep=' ', names=m_cols)
 #    total = len(data) - 1 
