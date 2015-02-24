@@ -1,4 +1,7 @@
-import darc,plot,gtk,os
+import darc
+import plot
+import gtk
+import os
 from darcaravis import DarcAravis
 from matplotlib.backends.backend_gtkagg import FigureCanvasGTKAgg as FigureCanvas
 from numpy import arange, sin, pi
