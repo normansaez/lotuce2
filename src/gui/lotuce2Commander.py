@@ -12,7 +12,7 @@ from matplotlib.figure import Figure
 gtk.gdk.threads_init()
 configdir = "/opt/darc/conf"
 w=gtk.Window()
-w.set_default_size(800,600)
+w.set_default_size(800,700)
 v=gtk.VBox()
 h1=gtk.HBox()
 h2=gtk.HBox()
