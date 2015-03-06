@@ -8,7 +8,35 @@ from numpy import arange, sin, pi
 from matplotlib.figure import Figure
 
 
+#takes camera pixels (x,y)
+_prefix = 'all'
+d = darc.Control(_prefix)
+pxlx =d.Get("npxlx")[0]
+pxly =d.Get("npxly")[0]
+print pxlx
+print pxly
+stream=d.GetStream('%srtcPxlBuf'% _prefix)
+print len(stream[0])
+xi_cam0 = 200#492#200
+xf_cam0 = 400#984#400
+yi_cam0 = 0#0
+yf_cam0 = 200#656#200
 
+xi_cam1 = 0#0
+xf_cam1 = 200#492#200
+yi_cam1 = 0#0
+yf_cam1 = 200#656#200
+
+xi_cam2 = 400#0
+yi_cam2 = 0#0
+xf_cam2 = 600#492#200
+yf_cam2 = 200#656#200
+
+xi_cam3 = 600#0
+yi_cam3 = 0#0
+xf_cam3 = 800#492#200
+yf_cam3 = 200#656#200 
+#####################
 gtk.gdk.threads_init()
 configdir = "/opt/darc/conf"
 w=gtk.Window()
@@ -37,10 +65,10 @@ h2.pack_start(f4,True)
 h2.pack_start(p2_cov,True)
 w.add(v)
 #w.add(h)
-p1=plot.DarcReader([], prefix="all", dec=125, configdir=configdir, withScroll=1, window=f1, showPlots=0)
-p2=plot.DarcReader([], prefix="all", dec=125, configdir=configdir, withScroll=1, window=f2, showPlots=0)
-p3=plot.DarcReader([], prefix="all", dec=125, configdir=configdir, withScroll=1, window=f3, showPlots=0)
-p4=plot.DarcReader([], prefix="all", dec=125, configdir=configdir, withScroll=1, window=f4, showPlots=0)
+p1=plot.DarcReader([], prefix=_prefix, dec=125, configdir=configdir, withScroll=1, window=f1, showPlots=0)
+p2=plot.DarcReader([], prefix=_prefix, dec=125, configdir=configdir, withScroll=1, window=f2, showPlots=0)
+p3=plot.DarcReader([], prefix=_prefix, dec=125, configdir=configdir, withScroll=1, window=f3, showPlots=0)
+p4=plot.DarcReader([], prefix=_prefix, dec=125, configdir=configdir, withScroll=1, window=f4, showPlots=0)
 p1.p.loadFunc("/home/lotuce2/lotuce2/src/gui/cam0.xml")
 p2.p.loadFunc("/home/lotuce2/lotuce2/src/gui/cam1.xml")
 p3.p.loadFunc("/home/lotuce2/lotuce2/src/gui/cam2.xml")

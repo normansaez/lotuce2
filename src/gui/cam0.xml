@@ -34,6 +34,6 @@ if tbVal[-1]:
  data=data[1:-1,1:-1]
 fast=1
 </mangle>
-<sub>[('rtcPxlBuf',1,125)]</sub>
+<sub>[('rtcPxlBuf',1,1)]</sub>
 </plot>
 </displayset>
