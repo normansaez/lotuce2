@@ -138,12 +138,12 @@ v.pack_start(h1,True)
 v.pack_start(h2,True)
 v.pack_start(h3,True)
 #----- two plots:
-p1_cov=gtk.Frame()
+cam_profile=gtk.Frame()
 p2_cov=gtk.Frame()
 #----------------------
 h1.pack_start(f1,True)
 h1.pack_start(f2,True)
-h1.pack_start(p1_cov,True)
+h1.pack_start(cam_profile,True)
 
 h2.pack_start(f3,True)
 h2.pack_start(f4,True)
@@ -169,7 +169,7 @@ p4.p.loadFunc("/home/lotuce2/lotuce2/src/gui/cam3.xml")
 
 canvas_c1_fx = FigureCanvas(cam1_fx)  # a gtk.DrawingArea
 canvas_c1_fy = FigureCanvas(cam1_fy)  # a gtk.DrawingArea
-p1_cov.add(canvas_c1_fx)
+cam_profile.add(canvas_c1_fx)
 p2_cov.add(canvas_c1_fy)
 
 
