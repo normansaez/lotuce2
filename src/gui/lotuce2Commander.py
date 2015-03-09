@@ -11,6 +11,7 @@ from matplotlib.figure import Figure
 _prefix = 'all'
 d_obj = darc.Control(_prefix)
 
+int_max = (2**12 - 1. )# 0 to 2^(camera bits). As start from 0, it is needed get one value less
 # funcs
 def update_profile():
     pxlx =d_obj.Get("npxlx")[0]
@@ -67,6 +68,11 @@ cam2_ny = np.array([])
 cam3_nx = np.array([])
 cam3_ny = np.array([])
 
+c0 = cam0.max()
+c1 = cam1.max()
+c2 = cam2.max()
+c3 = cam3.max()
+ 
 for i in range(0,x):
     cam0_nx = np.append(cam0_nx, cam0[i,].sum())
     cam0_ny = np.append(cam0_ny, cam0[:,i].sum())
@@ -77,10 +83,23 @@ for i in range(0,x):
     cam3_nx = np.append(cam3_nx, cam3[i,].sum())
     cam3_ny = np.append(cam3_ny, cam3[:,i].sum())
 axis = range(0,x)
+#normalize according cameras:
+cam0_nx = cam0_nx/int_max
+cam0_ny = cam0_ny/int_max
+
+cam1_nx = cam1_nx/int_max
+cam1_ny = cam1_ny/int_max
+
+cam2_nx = cam2_nx/int_max
+cam2_ny = cam2_ny/int_max
+
+cam3_nx = cam3_nx/int_max
+cam3_ny = cam3_ny/int_max
 
 cam0_fx = Figure(figsize=(5,4), dpi=30)
 ax = cam0_fx.add_subplot(111)
 ax.set_ylim(0,x)
+ax.invert_xaxis()
 ax.plot(cam0_nx,axis,'-')
 
 cam0_fy = Figure(figsize=(5,4), dpi=30)
@@ -101,11 +120,13 @@ ax2.plot(axis,cam1_ny,'-')
 cam2_fx = Figure(figsize=(5,4), dpi=30)
 ax = cam2_fx.add_subplot(111)
 ax.set_ylim(0,x)
+ax.invert_xaxis()
 ax.plot(cam2_nx,axis,'-')
 
 cam2_fy = Figure(figsize=(5,4), dpi=30)
 ax2 = cam2_fy.add_subplot(111)
 ax2.set_xlim(0,x)
+ax2.invert_yaxis()
 ax2.plot(axis,cam2_ny,'-')
 #--------------------------------------------------
 cam3_fx = Figure(figsize=(5,4), dpi=30)
@@ -116,6 +137,7 @@ ax.plot(cam3_nx,axis,'-')
 cam3_fy = Figure(figsize=(5,4), dpi=30)
 ax2 = cam3_fy.add_subplot(111)
 ax2.set_xlim(0,x)
+ax2.invert_yaxis()
 ax2.plot(axis,cam3_ny,'-')
 #--------------------------------------------------
 gtk.gdk.threads_init()
@@ -155,7 +177,7 @@ cam0_l=gtk.Frame()
 cam1_l=gtk.Frame()
 cam2_l=gtk.Frame()
 cam3_l=gtk.Frame()
-
+label = gtk.Label("cam0 test")
 #----------------------
 hor1.pack_start(cam0_l,True)
 hor1.pack_start(cam0_p_y,True)
@@ -211,7 +233,8 @@ canvas_c3_fy = FigureCanvas(cam3_fy)  # a gtk.DrawingArea
 cam3_p_x.add(canvas_c3_fx)
 cam3_p_y.add(canvas_c3_fy)
 
-
+#adding label:
+cam0_l.add(label)
 win.connect("delete-event",quit)
 win.show_all()
 gtk.main()#note - currently doesn't quit cleanly!
