@@ -35,6 +35,6 @@ if tbVal[-1]:
 fast=1
 tbVal = [0, 0, 1, 0, 0]
 </mangle>
-<sub>[('rtcPxlBuf',1,1)]</sub>
+<sub>[('rtcPxlBuf',1,125)]</sub>
 </plot>
 </displayset>
