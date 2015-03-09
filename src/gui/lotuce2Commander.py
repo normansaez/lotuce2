@@ -133,23 +133,52 @@ f1=gtk.Frame()
 f2=gtk.Frame()
 f3=gtk.Frame()
 #----------------------
-ver1.pack_start(hor4,True)
 ver1.pack_start(hor1,True)
 ver1.pack_start(hor2,True)
 ver1.pack_start(hor3,True)
-#----- two plots:
-cam_prof_x=gtk.Frame()
-cam_prof_y=gtk.Frame()
-#----------------------
-hor1.pack_start(cam_prof_y,True)
-hor1.pack_start(f0,True)
-hor1.pack_start(f1,True)
-hor1.pack_start(cam_prof_x,True)
+ver1.pack_start(hor4,True)
+#----- profiles: 2 per camera x,y
+cam0_p_x=gtk.Frame()
+cam0_p_y=gtk.Frame()
 
-hor2.pack_start(f2,True)
-hor2.pack_start(f3,True)
+cam1_p_x=gtk.Frame()
+cam1_p_y=gtk.Frame()
+
+cam2_p_x=gtk.Frame()
+cam2_p_y=gtk.Frame()
+
+cam3_p_x=gtk.Frame()
+cam3_p_y=gtk.Frame()
+
+# labels: 1 per camera
+cam0_l=gtk.Frame()
+cam1_l=gtk.Frame()
+cam2_l=gtk.Frame()
+cam3_l=gtk.Frame()
+
+#----------------------
+hor1.pack_start(cam0_l,True)
+hor1.pack_start(cam0_p_x,True)
+hor1.pack_start(cam1_p_x,True)
+hor1.pack_start(cam1_l,True)
+#----------------------
+hor2.pack_start(cam0_p_y,True)
+hor2.pack_start(f0,True)
+hor2.pack_start(f1,True)
+hor2.pack_start(cam1_p_y,True)
+#----------------------
+hor3.pack_start(cam2_p_y,True)
+hor3.pack_start(f2,True)
+hor3.pack_start(f3,True)
+hor3.pack_start(cam3_p_y,True)
+#----------------------
+hor4.pack_start(cam2_l,True)
+hor4.pack_start(cam2_p_x,True)
+hor4.pack_start(cam3_p_x,True)
+hor4.pack_start(cam3_l,True)
+#-------------------
 win.add(ver1)
-#win.add(h)
+
 p1=plot.DarcReader([], prefix=_prefix, dec=125, configdir=configdir, withScroll=1, window=f0, showPlots=0)
 p2=plot.DarcReader([], prefix=_prefix, dec=125, configdir=configdir, withScroll=1, window=f1, showPlots=0)
 p3=plot.DarcReader([], prefix=_prefix, dec=125, configdir=configdir, withScroll=1, window=f2, showPlots=0)
@@ -161,16 +190,26 @@ p4.p.loadFunc("/home/lotuce2/lotuce2/src/gui/cam3.xml")
 #p1.subWid.hide()
 #p2.subWid.hide()
 
-#f = Figure(figsize=(5,4), dpi=100)
-#a = f.add_subplot(111)
-#t = arange(0.0,3.0,0.01)
-#s = sin(2*pi*t)
-#a.plot(t,s)
+#fill up profiles
+canvas_c0_fx = FigureCanvas(cam0_fx)  # a gtk.DrawingArea
+canvas_c0_fy = FigureCanvas(cam0_fy)  # a gtk.DrawingArea
+cam0_p_x.add(canvas_c0_fx)
+cam0_p_y.add(canvas_c0_fy)
 
 canvas_c1_fx = FigureCanvas(cam1_fx)  # a gtk.DrawingArea
 canvas_c1_fy = FigureCanvas(cam1_fy)  # a gtk.DrawingArea
-cam_prof_x.add(canvas_c1_fx)
-cam_prof_y.add(canvas_c1_fy)
+cam1_p_x.add(canvas_c1_fx)
+cam1_p_y.add(canvas_c1_fy)
+
+canvas_c2_fx = FigureCanvas(cam2_fx)  # a gtk.DrawingArea
+canvas_c2_fy = FigureCanvas(cam2_fy)  # a gtk.DrawingArea
+cam2_p_x.add(canvas_c2_fx)
+cam2_p_y.add(canvas_c2_fy)
+
+canvas_c3_fx = FigureCanvas(cam3_fx)  # a gtk.DrawingArea
+canvas_c3_fy = FigureCanvas(cam3_fy)  # a gtk.DrawingArea
+cam3_p_x.add(canvas_c3_fx)
+cam3_p_y.add(canvas_c3_fy)
 
 
 win.connect("delete-event",quit)
