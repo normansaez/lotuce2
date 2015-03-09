@@ -21,24 +21,24 @@ def update_profile():
     stream=d_obj.GetStream('%srtcPxlBuf'% _prefix)
     mydata = stream[0].reshape((4*pxly,pxlx))
     
-    xi_cam1 = 200#492#200
-    xf_cam1 = 400#984#400
-    yi_cam1 = 0#0
-    yf_cam1 = 200#656#200
-    
     xi_cam0 = 0#0
     xf_cam0 = 200#492#200
     yi_cam0 = 0#0
     yf_cam0 = 200#656#200
     
+    xi_cam1 = 200#492#200
+    xf_cam1 = 400#984#400
+    yi_cam1 = 0#0
+    yf_cam1 = 200#656#200
+    
     xi_cam2 = 400#0
-    yi_cam2 = 0#0
     xf_cam2 = 600#492#200
+    yi_cam2 = 0#0
     yf_cam2 = 200#656#200
     
     xi_cam3 = 600#0
-    yi_cam3 = 0#0
     xf_cam3 = 800#492#200
+    yi_cam3 = 0#0
     yf_cam3 = 200#656#200
     
     #data per camera:
@@ -143,7 +143,7 @@ ax2.plot(axis,cam3_ny,'-')
 gtk.gdk.threads_init()
 configdir = "/opt/darc/conf"
 win=gtk.Window()
-win.set_default_size(800,700)
+win.set_default_size(800,800)
 ver1=gtk.VBox()
 hor1=gtk.HBox()
 hor2=gtk.HBox()
