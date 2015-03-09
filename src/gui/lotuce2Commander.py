@@ -7,15 +7,17 @@ import numpy as np
 from matplotlib.figure import Figure
 
 
-#takes camera pixels (x,y)
+#DARC stuff
 _prefix = 'all'
-d = darc.Control(_prefix)
+d_obj = darc.Control(_prefix)
+
+# funcs
 def update_profile():
-    pxlx =d.Get("npxlx")[0]
-    pxly =d.Get("npxly")[0]
+    pxlx =d_obj.Get("npxlx")[0]
+    pxly =d_obj.Get("npxly")[0]
     print pxlx
     print pxly
-    stream=d.GetStream('%srtcPxlBuf'% _prefix)
+    stream=d_obj.GetStream('%srtcPxlBuf'% _prefix)
     mydata = stream[0].reshape((4*pxly,pxlx))
     
     xi_cam0 = 200#492#200
@@ -46,11 +48,11 @@ def update_profile():
     return cam0, cam1, cam2, cam3 
 
 #####################
-def quit(w,a=None):
-    p1.p.quit(w)
-    p2.p.quit(w)
-    p3.p.quit(w)
-    p4.p.quit(w)
+def quit(win,a=None):
+    p1.p.quit(win)
+    p2.p.quit(win)
+    p3.p.quit(win)
+    p4.p.quit(win)
     gtk.main_quit()
 #####################
 
@@ -118,40 +120,40 @@ ax2.plot(axis,cam3_ny,'-')
 #--------------------------------------------------
 gtk.gdk.threads_init()
 configdir = "/opt/darc/conf"
-w=gtk.Window()
-w.set_default_size(800,700)
-v=gtk.VBox()
-h1=gtk.HBox()
-h2=gtk.HBox()
-h3=gtk.HBox()
-h4=gtk.HBox()
+win=gtk.Window()
+win.set_default_size(800,700)
+ver1=gtk.VBox()
+hor1=gtk.HBox()
+hor2=gtk.HBox()
+hor3=gtk.HBox()
+hor4=gtk.HBox()
 #-----------------
+f0=gtk.Frame()
 f1=gtk.Frame()
 f2=gtk.Frame()
 f3=gtk.Frame()
-f4=gtk.Frame()
 #----------------------
-v.pack_start(h4,True)
-v.pack_start(h1,True)
-v.pack_start(h2,True)
-v.pack_start(h3,True)
+ver1.pack_start(hor4,True)
+ver1.pack_start(hor1,True)
+ver1.pack_start(hor2,True)
+ver1.pack_start(hor3,True)
 #----- two plots:
-cam_profile=gtk.Frame()
-p2_cov=gtk.Frame()
+cam_prof_x=gtk.Frame()
+cam_prof_y=gtk.Frame()
 #----------------------
-h1.pack_start(f1,True)
-h1.pack_start(f2,True)
-h1.pack_start(cam_profile,True)
+hor1.pack_start(cam_prof_y,True)
+hor1.pack_start(f0,True)
+hor1.pack_start(f1,True)
+hor1.pack_start(cam_prof_x,True)
 
-h2.pack_start(f3,True)
-h2.pack_start(f4,True)
-h2.pack_start(p2_cov,True)
-w.add(v)
-#w.add(h)
-p1=plot.DarcReader([], prefix=_prefix, dec=125, configdir=configdir, withScroll=1, window=f1, showPlots=0)
-p2=plot.DarcReader([], prefix=_prefix, dec=125, configdir=configdir, withScroll=1, window=f2, showPlots=0)
-p3=plot.DarcReader([], prefix=_prefix, dec=125, configdir=configdir, withScroll=1, window=f3, showPlots=0)
-p4=plot.DarcReader([], prefix=_prefix, dec=125, configdir=configdir, withScroll=1, window=f4, showPlots=0)
+hor2.pack_start(f2,True)
+hor2.pack_start(f3,True)
+win.add(ver1)
+#win.add(h)
+p1=plot.DarcReader([], prefix=_prefix, dec=125, configdir=configdir, withScroll=1, window=f0, showPlots=0)
+p2=plot.DarcReader([], prefix=_prefix, dec=125, configdir=configdir, withScroll=1, window=f1, showPlots=0)
+p3=plot.DarcReader([], prefix=_prefix, dec=125, configdir=configdir, withScroll=1, window=f2, showPlots=0)
+p4=plot.DarcReader([], prefix=_prefix, dec=125, configdir=configdir, withScroll=1, window=f3, showPlots=0)
 p1.p.loadFunc("/home/lotuce2/lotuce2/src/gui/cam0.xml")
 p2.p.loadFunc("/home/lotuce2/lotuce2/src/gui/cam1.xml")
 p3.p.loadFunc("/home/lotuce2/lotuce2/src/gui/cam2.xml")
@@ -167,11 +169,11 @@ p4.p.loadFunc("/home/lotuce2/lotuce2/src/gui/cam3.xml")
 
 canvas_c1_fx = FigureCanvas(cam1_fx)  # a gtk.DrawingArea
 canvas_c1_fy = FigureCanvas(cam1_fy)  # a gtk.DrawingArea
-cam_profile.add(canvas_c1_fx)
-p2_cov.add(canvas_c1_fy)
+cam_prof_x.add(canvas_c1_fx)
+cam_prof_y.add(canvas_c1_fy)
 
 
-w.connect("delete-event",quit)
-w.show_all()
+win.connect("delete-event",quit)
+win.show_all()
 gtk.main()#note - currently doesn't quit cleanly!
 
