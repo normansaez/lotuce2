@@ -2,9 +2,7 @@ import darc
 import plot
 import gtk
 import os
-from darcaravis import DarcAravis
 from matplotlib.backends.backend_gtkagg import FigureCanvasGTKAgg as FigureCanvas
-from numpy import arange, sin, pi, array, append
 import numpy as np
 from matplotlib.figure import Figure
 
