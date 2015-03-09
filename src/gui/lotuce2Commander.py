@@ -21,15 +21,15 @@ def update_profile():
     stream=d_obj.GetStream('%srtcPxlBuf'% _prefix)
     mydata = stream[0].reshape((4*pxly,pxlx))
     
-    xi_cam0 = 200#492#200
-    xf_cam0 = 400#984#400
-    yi_cam0 = 0#0
-    yf_cam0 = 200#656#200
-    
-    xi_cam1 = 0#0
-    xf_cam1 = 200#492#200
+    xi_cam1 = 200#492#200
+    xf_cam1 = 400#984#400
     yi_cam1 = 0#0
     yf_cam1 = 200#656#200
+    
+    xi_cam0 = 0#0
+    xf_cam0 = 200#492#200
+    yi_cam0 = 0#0
+    yf_cam0 = 200#656#200
     
     xi_cam2 = 400#0
     yi_cam2 = 0#0
@@ -177,7 +177,14 @@ cam0_l=gtk.Frame()
 cam1_l=gtk.Frame()
 cam2_l=gtk.Frame()
 cam3_l=gtk.Frame()
-label = gtk.Label("cam0 test")
+c0_label = gtk.Label("cam0\n int max: %d\n sat: %.2f %% " % (c0,(c0/int_max)*100.))
+c1_label = gtk.Label("cam1\n int max: %d\n sat: %.2f %% " % (c1,(c1/int_max)*100.))
+c2_label = gtk.Label("cam2\n int max: %d\n sat: %.2f %% " % (c2,(c2/int_max)*100.))
+c3_label = gtk.Label("cam3\n int max: %d\n sat: %.2f %% " % (c3,(c3/int_max)*100.))
+cam0_l.add(c0_label)
+cam1_l.add(c1_label)
+cam2_l.add(c2_label)
+cam3_l.add(c3_label)
 #----------------------
 hor1.pack_start(cam0_l,True)
 hor1.pack_start(cam0_p_y,True)
@@ -233,8 +240,6 @@ canvas_c3_fy = FigureCanvas(cam3_fy)  # a gtk.DrawingArea
 cam3_p_x.add(canvas_c3_fx)
 cam3_p_y.add(canvas_c3_fy)
 
-#adding label:
-cam0_l.add(label)
 win.connect("delete-event",quit)
 win.show_all()
 gtk.main()#note - currently doesn't quit cleanly!
