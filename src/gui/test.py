@@ -1,7 +1,9 @@
 import darc
-value = 90000
+import sys
+
+value = int(sys.argv[1])
 d = darc.Control("all")
-cam = "aravisCmd%d" % 3
+cam = "aravisCmd%d" % int(sys.argv[2])
 parameter = 'ExposureTimeAbs'
 cmd = '%s=%s;' % (parameter, str(value))
 d.Set(cam, cmd)
