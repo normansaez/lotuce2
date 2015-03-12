@@ -5,6 +5,7 @@ import os
 from matplotlib.backends.backend_gtkagg import FigureCanvasGTKAgg as FigureCanvas
 import numpy as np
 from matplotlib.figure import Figure
+from scipy.stats import norm
 
 
 #DARC stuff
@@ -99,22 +100,25 @@ cam3_ny = cam3_ny/int_max
 #cam0_fx = Figure(figsize=(5,4), dpi=30)
 cam0_fx = Figure(dpi=30, tight_layout=True)
 ax = cam0_fx.add_subplot(111)
-ax.set_xlim(0,1)
+#ax.set_xlim(0,1)
 ax.set_ylim(0,x)
 ax.invert_xaxis()
 ax.plot(cam0_nx,axis,'-')
+mu, std = norm.fit(cam0_nx)
+p = norm.pdf(axis, mu, std)
+ax.plot(axis, p, 'k', linewidth=2)
 
 #cam0_fy = Figure(figsize=(5,4), dpi=30)
 cam0_fy = Figure(dpi=30, tight_layout=True)
 ax2 = cam0_fy.add_subplot(111)
 ax2.set_xlim(0,x)
-ax2.set_ylim(0,1)
+#ax2.set_ylim(0,1)
 ax2.plot(axis,cam0_ny,'-')
 #--------------------------------------------------
 #cam1_fx = Figure(figsize=(5,4), dpi=30)
 cam1_fx = Figure(dpi=30, tight_layout=True)
 ax = cam1_fx.add_subplot(111)
-ax.set_xlim(0,1)
+#ax.set_xlim(0,1)
 ax.set_ylim(0,x)
 ax.plot(cam1_nx,axis,'-')
 
@@ -122,13 +126,13 @@ ax.plot(cam1_nx,axis,'-')
 cam1_fy = Figure(dpi=30, tight_layout=True)
 ax2 = cam1_fy.add_subplot(111)
 ax2.set_xlim(0,x)
-ax2.set_ylim(0,1)
+#ax2.set_ylim(0,1)
 ax2.plot(axis,cam1_ny,'-')
 #--------------------------------------------------
 #cam2_fx = Figure(figsize=(5,4), dpi=30)
 cam2_fx = Figure(dpi=30, tight_layout=True)
 ax = cam2_fx.add_subplot(111)
-ax.set_xlim(0,1)
+#ax.set_xlim(0,1)
 ax.set_ylim(0,x)
 ax.invert_xaxis()
 ax.plot(cam2_nx,axis,'-')
@@ -137,14 +141,14 @@ ax.plot(cam2_nx,axis,'-')
 cam2_fy = Figure(dpi=30, tight_layout=True)
 ax2 = cam2_fy.add_subplot(111)
 ax2.set_xlim(0,x)
-ax2.set_ylim(0,1)
+#ax2.set_ylim(0,1)
 ax2.invert_yaxis()
 ax2.plot(axis,cam2_ny,'-')
 #--------------------------------------------------
 #cam3_fx = Figure(figsize=(5,4), dpi=30)
 cam3_fx = Figure(dpi=30, tight_layout=True)
 ax = cam3_fx.add_subplot(111)
-ax.set_xlim(0,1)
+#ax.set_xlim(0,1)
 ax.set_ylim(0,x)
 ax.plot(cam3_nx,axis,'-')
 
@@ -152,7 +156,7 @@ ax.plot(cam3_nx,axis,'-')
 cam3_fy = Figure(dpi=30, tight_layout=True)
 ax2 = cam3_fy.add_subplot(111)
 ax2.set_xlim(0,x)
-ax2.set_ylim(0,1)
+#ax2.set_ylim(0,1)
 ax2.invert_yaxis()
 ax2.plot(axis,cam3_ny,'-')
 #--------------------------------------------------
