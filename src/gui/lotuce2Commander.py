@@ -16,30 +16,30 @@ int_max = (2**12 - 1. )# 0 to 2^(camera bits). As start from 0, it is needed get
 def update_profile():
     pxlx =d_obj.Get("npxlx")[0]
     pxly =d_obj.Get("npxly")[0]
-    print pxlx
-    print pxly
+    print "x: %d" % pxlx
+    print "y: %d" % pxly
     stream=d_obj.GetStream('%srtcPxlBuf'% _prefix)
     mydata = stream[0].reshape((4*pxly,pxlx))
+
+    xi_cam0 = 0*pxly
+    xf_cam0 = 1*pxly
+    yi_cam0 = 0*pxlx
+    yf_cam0 = 1*pxlx
     
-    xi_cam0 = 0#0
-    xf_cam0 = 200#492#200
-    yi_cam0 = 0#0
-    yf_cam0 = 200#656#200
+    xi_cam1 = 1*pxly
+    xf_cam1 = 2*pxly
+    yi_cam1 = 0*pxlx
+    yf_cam1 = 1*pxlx
     
-    xi_cam1 = 200#492#200
-    xf_cam1 = 400#984#400
-    yi_cam1 = 0#0
-    yf_cam1 = 200#656#200
+    xi_cam2 = 2*pxly
+    xf_cam2 = 3*pxly
+    yi_cam2 = 0*pxlx
+    yf_cam2 = 1*pxlx
     
-    xi_cam2 = 400#0
-    xf_cam2 = 600#492#200
-    yi_cam2 = 0#0
-    yf_cam2 = 200#656#200
-    
-    xi_cam3 = 600#0
-    xf_cam3 = 800#492#200
-    yi_cam3 = 0#0
-    yf_cam3 = 200#656#200
+    xi_cam3 = 3*pxly
+    xf_cam3 = 4*pxly
+    yi_cam3 = 0*pxlx
+    yf_cam3 = 1*pxlx
     
     #data per camera:
     cam0 = mydata[xi_cam0:xf_cam0,yi_cam0:yf_cam0]
