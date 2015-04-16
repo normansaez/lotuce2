@@ -28,13 +28,36 @@ class Go:
         self.config = ConfigParser.ConfigParser()
         self.config.read(self.configfile)
 
-        print self.config.get('cam0', 'pxlx')
-        print self.config.get('cam0', 'pxly')
-        print self.config.get('cam0', 'offset_x')
-        print self.config.get('cam0', 'offset_y')
-        print self.config.get('cam0', 'trigger')
-        print self.config.get('cam0', 'exptime')
-
+        for i in range(0,4):
+            camera = 'cam%d' % i
+            print "Reading configuration for %s ... " % camera
+#            pxlx = self.config.get(camera, 'pxlx')
+#            pxly = self.config.get(camera, 'pxly')
+            offset_x = self.config.get(camera, 'offset_x')
+            offset_y = self.config.get(camera, 'offset_y')
+            trigger = self.config.get(camera, 'trigger')
+            exptime = self.config.get(camera, 'exptime')
+#            print pxlx
+#            print pxly
+            print "OffsetX: %s" % offset_x 
+            print "OffsetY: %s" % offset_y 
+            print "Trigger: %s" % trigger
+            print "exptime: %s" % exptime
+            print "\nReading current configuration from HW : %s" % camera
+            print "OffsetX: %s" % self.DarcAravis.get(i, 'OffsetX') 
+            print "OffsetY: %s" % self.DarcAravis.get(i, 'OffsetY') 
+            print "Trigger: %s" % self.DarcAravis.get(i, 'ExposureTimeAbs')
+            print "exptime: %s" % self.DarcAravis.get(i, 'TriggerSource') 
+            print "\nSET configuration readed from file, for  %s" % camera
+            self.DarcAravis.set(i, 'OffsetX', offset_x) 
+            self.DarcAravis.set(i, 'OffsetY', offset_y) 
+            self.DarcAravis.set(i, 'ExposureTimeAbs', exptime)
+            if trigger is 'True':
+                value = 'Line1'
+            else:
+                value = 'Freerun'
+            print value
+            self.DarcAravis.set(i, 'TriggerSource', value) 
         if self.window:
             self.window.connect("destroy", Gtk.main_quit)
 
@@ -71,10 +94,6 @@ class Go:
 
             if data == "pause":
                 self.button_play.set_active(False)
-            offset_y = self.DarcAravis.get(self.camera, 'OffsetY')
-            self.offset_y.set_text("%d pixel(s)"% int(offset_y)) 
-            offset_x = self.DarcAravis.get(self.camera, 'OffsetX')
-            self.offset_x.set_text("%d pixel(s)"% int(offset_x))
 
     def quit(self, widget):
         '''
