@@ -21,3 +21,4 @@ for stream in streams:
     fitsname = 'full.fits'#options.directory+"/img_%s.fits" % (str(count).zfill(3))
     FITS.Write(data, fitsname, writeMode='w')
     count += 1
+    print data
