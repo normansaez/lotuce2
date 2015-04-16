@@ -94,6 +94,8 @@ class Go:
                 directory = self.config.get('bbb', 'image_path')
                 time = self.config.get('bbb', 'adquisition_time')
                 script = self.config.get('bbb', 'adquisition_script')
+                daemon = self.config.get('bbb', 'daemon')
+                os.system('python %s -d %s -t %s' % (daemon, directory, time))
                 os.system('python %s -d %s -t %s' % (script, directory, time))
             if data == "pause":
                 self.button_play.set_active(False)
