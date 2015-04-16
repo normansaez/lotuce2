@@ -53,40 +53,15 @@ class Go:
         print "%s: %s" % (data, ("disconnecting", "connecting")[widget.get_active()])
         #CONN
         if widget.get_active() is True:
-            if data == "0":
-#                self.togglebutton_cam0.set_active(False)
-                self.togglebutton_cam1.set_active(False)
-                self.togglebutton_cam2.set_active(False)
-                self.togglebutton_cam3.set_active(False)
+            if data == "play":
+                self.button_pause.set_active(False)
 
-            if data == "1":
-                self.togglebutton_cam0.set_active(False)
-#                self.togglebutton_cam1.set_active(False)
-                self.togglebutton_cam2.set_active(False)
-                self.togglebutton_cam3.set_active(False)
-
-            if data == "2":
-                self.togglebutton_cam0.set_active(False)
-                self.togglebutton_cam1.set_active(False)
-#                self.togglebutton_cam2.set_active(False)
-                self.togglebutton_cam3.set_active(False)
-
-            if data == "3":
-                self.togglebutton_cam0.set_active(False)
-                self.togglebutton_cam1.set_active(False)
-                self.togglebutton_cam2.set_active(False)
-#                self.togglebutton_cam3.set_active(False)
-
-            self.camera = int(data)
+            if data == "pause":
+                self.button_play.set_active(False)
             offset_y = self.DarcAravis.get(self.camera, 'OffsetY')
             self.offset_y.set_text("%d pixel(s)"% int(offset_y)) 
             offset_x = self.DarcAravis.get(self.camera, 'OffsetX')
             self.offset_x.set_text("%d pixel(s)"% int(offset_x))
-
-
-#        if widget.get_active() is False:
-#            print "OFF"
-
 
     def quit(self, widget):
         '''
