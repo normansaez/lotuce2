@@ -6,6 +6,7 @@ from gi.repository import GObject
 
 from darcaravis import DarcAravis
 
+import ConfigParser
 class Go:
 
 
@@ -19,8 +20,20 @@ class Go:
         
         self.DarcAravis = DarcAravis()
 
-        #step
-        self.__step = 10
+        path, fil = os.path.split(os.path.abspath(__file__))
+        print path
+        self.configfile=path+'/../../conf/config.cfg'
+        print self.configfile
+        self.config = None
+        self.config = ConfigParser.ConfigParser()
+        self.config.read(self.configfile)
+
+        print self.config.get('cam0', 'pxlx')
+        print self.config.get('cam0', 'pxly')
+        print self.config.get('cam0', 'offset_x')
+        print self.config.get('cam0', 'offset_y')
+        print self.config.get('cam0', 'trigger')
+        print self.config.get('cam0', 'exptime')
 
         if self.window:
             self.window.connect("destroy", Gtk.main_quit)
