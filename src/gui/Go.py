@@ -21,9 +21,7 @@ class Go:
         self.DarcAravis = DarcAravis()
 
         path, fil = os.path.split(os.path.abspath(__file__))
-        print path
         self.configfile=path+'/../../conf/config.cfg'
-        print self.configfile
         self.config = None
         self.config = ConfigParser.ConfigParser()
         self.config.read(self.configfile)
@@ -33,18 +31,11 @@ class Go:
 
 
 
-        #cross to put available offset
-        # up = up
-        # do = down
-        # le = left
-        # ri = right
         self.button_play = self.builder.get_object("play")
         self.button_pause = self.builder.get_object("pause")
         
         self.button_play.connect("clicked", self._callback, "play")
         self.button_pause.connect("clicked", self._callback, "pause")
-
-        #apply_step
 
         dic = { 
             "on_buttonQuit_clicked" : self.quit,
@@ -90,7 +81,20 @@ class Go:
                     else:
                         value = 'Freerun'
                     self.DarcAravis.set(i, 'TriggerSource', value) 
-
+                #
+                # Seting up BBB
+                # 
+                import os
+                freq = self.config.get('bbb', 'frequency')
+                os.system('/bin/set_frecuency %s' % freq)
+                #
+                #
+                #
+                prefix =    self.config.get('bbb', 'prefix')
+                directory = self.config.get('bbb', 'image_path')
+                time = self.config.get('bbb', 'adquisition_time')
+                script = self.config.get('bbb', 'adquisition_script')
+                os.system('python %s -d %s -t %s' % (script, directory, time))
             if data == "pause":
                 self.button_play.set_active(False)
 
