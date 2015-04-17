@@ -19,8 +19,7 @@ class Go:
 
 
     def __init__( self ):
-        path, fil = os.path.split(os.path.abspath(__file__))
-
+        path, fil = os.path.split(os.path.abspath(os.path.realpath(__file__)))
         self.builder = Gtk.Builder()
         self.builder.add_from_file(path+"/play.glade")
         self.window = self.builder.get_object ("window1")
@@ -28,7 +27,6 @@ class Go:
         
         self.DarcAravis = DarcAravis()
 
-        path, fil = os.path.split(os.path.abspath(__file__))
         self.configfile=path+'/../../conf/config.cfg'
         self.config = None
         self.config = ConfigParser.ConfigParser()
