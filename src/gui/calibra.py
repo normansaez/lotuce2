@@ -1,193 +1,176 @@
 #!/usr/bin/env python
 import os
 import sys
+import time
+import signal
+import ConfigParser
+
+from multiprocessing import Process
+from subprocess import Popen, PIPE
+
 from gi.repository import Gtk
 from gi.repository import GObject
 
 from darcaravis import DarcAravis
 
-class OffSetGui:
+#signal.signal(signal.SIGINT, receive_signal)
+
+class Go:
 
 
     def __init__( self ):
-        path, fil = os.path.split(os.path.abspath(__file__))
-
+        path, fil = os.path.split(os.path.abspath(os.path.realpath(__file__)))
         self.builder = Gtk.Builder()
-        self.builder.add_from_file(path+"/offset.glade")
+        self.builder.add_from_file(path+"/play.glade")
         self.window = self.builder.get_object ("window1")
         self.window.set_events(self.window.get_events())
         
         self.DarcAravis = DarcAravis()
 
-        #step
-        self.__step = 10
+        self.configfile=path+'/../../conf/config.cfg'
+        self.config = None
+        self.config = ConfigParser.ConfigParser()
+        self.config.read(self.configfile)
 
         if self.window:
             self.window.connect("destroy", Gtk.main_quit)
 
-        self.camera = 0
-        #Offset x,y
-        self.offset_x = self.builder.get_object("offset_x")
-        offset_x = self.DarcAravis.get(self.camera, 'OffsetX')
-        self.offset_x.set_text("%s pixel(s)"% offset_x)
 
-        self.offset_y = self.builder.get_object("offset_y")
-        offset_y = self.DarcAravis.get(self.camera, 'OffsetY')
-        self.offset_y.set_text("%s pixel(s)"% offset_y)
 
-        #Toggle button to connect to cam0
-        self.togglebutton_cam0 = self.builder.get_object ("togglebutton0")
-        self.togglebutton_cam0.connect("toggled", self.callback, "0")
-
-        #Toggle button to connect to cam1
-        self.togglebutton_cam1 = self.builder.get_object ("togglebutton1")
-        self.togglebutton_cam1.connect("toggled", self.callback, "1")
-
-        #Toggle button to connect to cam2
-        self.togglebutton_cam2 = self.builder.get_object ("togglebutton2")
-        self.togglebutton_cam2.connect("toggled", self.callback, "2")
-
-        #Toggle button to connect to cam3
-        self.togglebutton_cam3 = self.builder.get_object ("togglebutton3")
-        self.togglebutton_cam3.connect("toggled", self.callback, "3")
+        self.button_play = self.builder.get_object("play")
+        self.button_mode = self.builder.get_object("mode")
+        self.button_stop = self.builder.get_object("stop")
+        self.label = self.builder.get_object("label")
+        self.m_label = self.builder.get_object("m_label")
         
-        #Default cam0:
-        self.togglebutton_cam0.set_active(True)
-
-        #cross to put available offset
-        # up = up
-        # do = down
-        # le = left
-        # ri = right
-        self.button_up = self.builder.get_object("button_up")
-        self.button_do = self.builder.get_object("button_do")
-        self.button_le = self.builder.get_object("button_le")
-        self.button_ri = self.builder.get_object("button_ri")
-        
-        self.button_up.connect("clicked", self.offset_callback, "up")
-        self.button_do.connect("clicked", self.offset_callback, "do")
-        self.button_le.connect("clicked", self.offset_callback, "le")
-        self.button_ri.connect("clicked", self.offset_callback, "ri")
-
-        #apply_step
-        self.button_apply_step = self.builder.get_object("apply_step")
-        self.button_apply_step.connect("clicked", self.step_callback, "step")
-
-        self.step = self.builder.get_object("step")
-        self.current_step = self.builder.get_object("current_step")
-        self.current_step.set_text("-- pixel(s)")
-        self.step.set_text("10")
-
-        #button brute force offset
-        self.button_brute_offset = self.builder.get_object("brute_offset")
-        self.button_brute_offset.connect("clicked", self.offset_callback, "first try")
+        self.button_play.connect("clicked", self._cb_play, "play")
+        self.button_mode.connect("clicked", self._callback, "mode")
+        self.button_stop.connect("clicked", self._cb_stop)
 
         dic = { 
             "on_buttonQuit_clicked" : self.quit,
         }
         
         self.builder.connect_signals( dic )
+        self.proc_grab = None
+        self.proc_daem = None
 
-    def callback(self, widget, data=None):
+    def _cb_stop( self, button):
+        print "Stop was clicked"
+
+    def _cb_play(self, widget, data=None):
+        print "%s: %s" % (data, ("disconnecting", "connecting")[widget.get_active()])
+        image=Gtk.Image()
+        if widget.get_active() is True:
+            image.set_from_stock(Gtk.STOCK_MEDIA_PAUSE, Gtk.IconSize.BUTTON)
+            self.button_play.set_image(image)
+            self.button_play.set_label("Pause")
+        else:
+            image.set_from_stock(Gtk.STOCK_MEDIA_PLAY, Gtk.IconSize.BUTTON)
+            self.button_play.set_image(image)
+            self.button_play.set_label("Play")
+
+        if self.label.get_text() == 'Calibration' and widget.get_active():
+            print "Starting DARC from this GUI"
+            #
+            # START DARC
+            #
+            cmd = 'python /opt/darc/bin/darccontrol -o /home/lotuce2/lotuce2/conf/configMantaFULL.py --prefix=all'
+            process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
+            #
+            # Wait until DARC start, and then show GUI
+            time.sleep(30)
+            cmd = 'python /home/lotuce2/lotuce2/src/gui/lotuce2Commander.py'
+            process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
+        else:
+            cmd = 'darcmagic stop -c  --prefix=all'
+            process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
+            process.wait()
+
+        if self.label.get_text() == 'Adquisition' and widget.get_active():
+            print "Parto Adquiero imagenes"
+
+#                for i in range(0,4):
+#                    camera = 'cam%d' % i
+#                    print "\n\nReading configuration for %s ... " % camera
+#                    offset_x = self.config.get(camera, 'offset_x')
+#                    offset_y = self.config.get(camera, 'offset_y')
+#                    trigger = self.config.get(camera, 'trigger')
+#                    exptime = self.config.get(camera, 'exptime')
+#                    print "OffsetX: %s" % offset_x 
+#                    print "OffsetY: %s" % offset_y 
+#                    print "Trigger: %s" % trigger
+#                    print "exptime: %s" % exptime
+#                    print "\nReading current configuration from HW : %s" % camera
+#                    self.DarcAravis.get(i, 'OffsetX') 
+#                    self.DarcAravis.get(i, 'OffsetY') 
+#                    self.DarcAravis.get(i, 'ExposureTimeAbs')
+#                    self.DarcAravis.get(i, 'TriggerSource') 
+#                    print "\nSET configuration readed from file, for  %s" % camera
+#                    self.DarcAravis.set(i, 'OffsetX', offset_x) 
+#                    self.DarcAravis.set(i, 'OffsetY', offset_y) 
+#                    self.DarcAravis.set(i, 'ExposureTimeAbs', exptime)
+#                    if trigger.__contains__('True'):
+#                        value = 'Line1'
+#                    else:
+#                        value = 'Freerun'
+#                    self.DarcAravis.set(i, 'TriggerSource', value) 
+#                #
+#                # Seting up BBB
+#                # 
+#                import os
+#                freq = self.config.get('bbb', 'frequency')
+#                os.system('/bin/set_frecuency %s' % freq)
+#                #
+#                #
+#                #
+#                prefix =    self.config.get('bbb', 'prefix')
+#                directory = self.config.get('bbb', 'image_path')
+#                time = self.config.get('bbb', 'adquisition_time')
+#                #
+#                #
+#                #
+#                script = self.config.get('bbb', 'adquisition_script')
+#                daemon = self.config.get('bbb', 'daemon')
+#
+#                cmd = "python %s -d %s -t %s" %  (script, directory, time)
+#                proc_daemon = Process(target=self.daemon, args=(cmd,)) 
+#                proc_daemon.start()
+#
+#                cmd = "python %s -d %s -t %s" %  (script, directory, time)
+#                proc_grab = Process(target=self.grab, args=(cmd,)) 
+#                proc_grab.start()
+#                
+#                self.proc_grab.join()
+#                proc_grab.join()
+#                if proc_grab.is_alive() is False:
+#                    self.proc_daem.terminate()
+#                    proc_daemon.terminate()
+
+#            if data == "pause":
+#                self.button_play.set_active(False)
+#                self.proc_grab.terminate()
+#                self.proc_daemon.terminate()
+#                self.proc_daem.terminate()
+            
+
+    def _callback(self, widget, data=None):
         '''
         callback
         '''
         print "%s: %s" % (data, ("disconnecting", "connecting")[widget.get_active()])
-        #CONN
-        if widget.get_active() is True:
-            if data == "0":
-#                self.togglebutton_cam0.set_active(False)
-                self.togglebutton_cam1.set_active(False)
-                self.togglebutton_cam2.set_active(False)
-                self.togglebutton_cam3.set_active(False)
+        image = Gtk.Image()
+        image.set_from_stock(Gtk.STOCK_MEDIA_PLAY, Gtk.IconSize.BUTTON)
+        self.button_play.set_image(image)
+        self.button_play.set_label("Play")
+        self.button_play.set_active(False)
+        if self.button_mode.get_active():
+            self.label.set_text("Adquisition")
+            self.m_label.set_text("Push to change from\nAdquisition --> Calibration")
+        if not self.button_mode.get_active():
+            self.label.set_text("Calibration")
+            self.m_label.set_text("Push to change from\nCalibration --> Adquisition")
 
-            if data == "1":
-                self.togglebutton_cam0.set_active(False)
-#                self.togglebutton_cam1.set_active(False)
-                self.togglebutton_cam2.set_active(False)
-                self.togglebutton_cam3.set_active(False)
-
-            if data == "2":
-                self.togglebutton_cam0.set_active(False)
-                self.togglebutton_cam1.set_active(False)
-#                self.togglebutton_cam2.set_active(False)
-                self.togglebutton_cam3.set_active(False)
-
-            if data == "3":
-                self.togglebutton_cam0.set_active(False)
-                self.togglebutton_cam1.set_active(False)
-                self.togglebutton_cam2.set_active(False)
-#                self.togglebutton_cam3.set_active(False)
-
-            self.camera = int(data)
-            offset_y = self.DarcAravis.get(self.camera, 'OffsetY')
-            self.offset_y.set_text("%d pixel(s)"% int(offset_y)) 
-            offset_x = self.DarcAravis.get(self.camera, 'OffsetX')
-            self.offset_x.set_text("%d pixel(s)"% int(offset_x))
-
-
-#        if widget.get_active() is False:
-#            print "OFF"
-
-    def offset_callback(self, widget, data=None):
-        '''
-        offset callback
-
-        The offset is taking as reference darcplot gui.  Therefore the offset
-        cross follows that darcplot axis references.
-        '''
-        print "offset: %s" % (data)
-        offset_y = self.DarcAravis.get(self.camera, 'OffsetY')
-        offset_x = self.DarcAravis.get(self.camera, 'OffsetX')
-        print "before apply step(%d)\noffset(%d,%d)" % (self.__step, offset_x, offset_y)
-
-        if data == 'up':
-            val = offset_y + self.__step
-            print "to be applied: %d" % val
-            self.DarcAravis.set(self.camera, 'OffsetY', val)
-        if data == 'do':
-            val = offset_y - self.__step
-            print "to be applied: %d" % val
-            self.DarcAravis.set(self.camera, 'OffsetY', val)
-        if data == 'le':
-            val = offset_x + self.__step
-            print "to be applied: %d" % val
-            self.DarcAravis.set(self.camera, 'OffsetX', val)
-        if data == 'ri':
-            val = offset_x - self.__step
-            print "to be applied: %d" % val
-            self.DarcAravis.set(self.camera, 'OffsetX', val)
-
-        if data == 'first try':
-            x = self.DarcAravis.get(self.camera, 'Width')
-            y = self.DarcAravis.get(self.camera, 'Height')
-            offsetX = int((656 - x )/2.0)
-            offsetY = int((492 - y)/2.0)
-            self.DarcAravis.set(self.camera, 'OffsetX', offsetX)
-            self.DarcAravis.set(self.camera, 'OffsetY', offsetY)
-
-        offset_y = self.DarcAravis.get(self.camera, 'OffsetY')
-        offset_x = self.DarcAravis.get(self.camera, 'OffsetX')
-        if data =='up' or data =='do' or data == 'first try':
-            self.offset_y.set_text("%d pixel(s)"% int(offset_y))
-        if data =='le' or data =='ri' or data == 'first try':
-            self.offset_x.set_text("%d pixel(s)"% int(offset_x))
-        print "after apply: offset(%d,%d)" % (offset_x, offset_y)
-        
-
-
-    def step_callback(self, widget, data=None):
-        '''
-        step_callback
-        '''
-        step = self.step.get_text()
-        print "step %s" % step
-        if step == "":
-            step = "10"
-        self.__step = int(step)
-        print "self.__step %d" % self.__step
-        self.current_step.set_text("%s pixel(s)"% step)
-        self.step.set_text("")
 
     def quit(self, widget):
         '''
@@ -197,6 +180,6 @@ class OffSetGui:
 
 if __name__ == '__main__':
 
-    OffSetGui = OffSetGui()
-    OffSetGui.window.show()
+    Go = Go()
+    Go.window.show()
     Gtk.main()
