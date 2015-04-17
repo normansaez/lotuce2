@@ -1,12 +1,18 @@
 #!/usr/bin/env python
 import os
 import sys
+import time
+import signal
+import ConfigParser
+
+from multiprocessing import Process
+
 from gi.repository import Gtk
 from gi.repository import GObject
 
 from darcaravis import DarcAravis
 
-import ConfigParser
+
 class Go:
 
 
@@ -42,6 +48,13 @@ class Go:
         }
         
         self.builder.connect_signals( dic )
+
+    def grabb(self, cmd):
+        self.grab_pid  
+        os.system('python %s -d %s -t %s' % (script, directory, time))
+    def daemon(self, cmd):
+        self.daemon_pid 
+                os.system('python %s -d %s -t %s' % (daemon, directory, time))
 
     def _callback(self, widget, data=None):
         '''
@@ -95,8 +108,7 @@ class Go:
                 time = self.config.get('bbb', 'adquisition_time')
                 script = self.config.get('bbb', 'adquisition_script')
                 daemon = self.config.get('bbb', 'daemon')
-                os.system('python %s -d %s -t %s' % (daemon, directory, time))
-                os.system('python %s -d %s -t %s' % (script, directory, time))
+
             if data == "pause":
                 self.button_play.set_active(False)
 
