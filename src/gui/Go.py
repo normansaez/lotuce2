@@ -40,10 +40,12 @@ class Go:
 
 
         self.button_play = self.builder.get_object("play")
-        self.button_pause = self.builder.get_object("pause")
+        self.button_mode = self.builder.get_object("mode")
+        self.button_stop = self.builder.get_object("stop")
         
         self.button_play.connect("clicked", self._callback, "play")
-        self.button_pause.connect("clicked", self._callback, "pause")
+        self.button_mode.connect("clicked", self._callback, "mode")
+        self.button_stop.connect("clicked", self._callback, "stop")
 
         dic = { 
             "on_buttonQuit_clicked" : self.quit,
@@ -71,62 +73,58 @@ class Go:
         #CONN
         if widget.get_active() is True:
             if data == "play":
-                self.button_pause.set_active(False)
-                for i in range(0,4):
-                    camera = 'cam%d' % i
-                    print "\n\nReading configuration for %s ... " % camera
-        #            pxlx = self.config.get(camera, 'pxlx')
-        #            pxly = self.config.get(camera, 'pxly')
-                    offset_x = self.config.get(camera, 'offset_x')
-                    offset_y = self.config.get(camera, 'offset_y')
-                    trigger = self.config.get(camera, 'trigger')
-                    exptime = self.config.get(camera, 'exptime')
-        #            print pxlx
-        #            print pxly
-                    print "OffsetX: %s" % offset_x 
-                    print "OffsetY: %s" % offset_y 
-                    print "Trigger: %s" % trigger
-                    print "exptime: %s" % exptime
-                    print "\nReading current configuration from HW : %s" % camera
-                    self.DarcAravis.get(i, 'OffsetX') 
-                    self.DarcAravis.get(i, 'OffsetY') 
-                    self.DarcAravis.get(i, 'ExposureTimeAbs')
-                    self.DarcAravis.get(i, 'TriggerSource') 
-                    print "\nSET configuration readed from file, for  %s" % camera
-                    self.DarcAravis.set(i, 'OffsetX', offset_x) 
-                    self.DarcAravis.set(i, 'OffsetY', offset_y) 
-                    self.DarcAravis.set(i, 'ExposureTimeAbs', exptime)
-                    if trigger.__contains__('True'):
-                        value = 'Line1'
-                    else:
-                        value = 'Freerun'
-                    self.DarcAravis.set(i, 'TriggerSource', value) 
-                #
-                # Seting up BBB
-                # 
-                import os
-                freq = self.config.get('bbb', 'frequency')
-                os.system('/bin/set_frecuency %s' % freq)
-                #
-                #
-                #
-                prefix =    self.config.get('bbb', 'prefix')
-                directory = self.config.get('bbb', 'image_path')
-                time = self.config.get('bbb', 'adquisition_time')
-                #
-                #
-                #
-                script = self.config.get('bbb', 'adquisition_script')
-                daemon = self.config.get('bbb', 'daemon')
-
-                cmd = "python %s -d %s -t %s" %  (script, directory, time)
-                proc_daemon = Process(target=self.daemon, args=(cmd,)) 
-                proc_daemon.start()
-
-                cmd = "python %s -d %s -t %s" %  (script, directory, time)
-                proc_grab = Process(target=self.grab, args=(cmd,)) 
-                proc_grab.start()
-                
+#                self.button_playCal.set_inconsistent(True)
+#                for i in range(0,4):
+#                    camera = 'cam%d' % i
+#                    print "\n\nReading configuration for %s ... " % camera
+#                    offset_x = self.config.get(camera, 'offset_x')
+#                    offset_y = self.config.get(camera, 'offset_y')
+#                    trigger = self.config.get(camera, 'trigger')
+#                    exptime = self.config.get(camera, 'exptime')
+#                    print "OffsetX: %s" % offset_x 
+#                    print "OffsetY: %s" % offset_y 
+#                    print "Trigger: %s" % trigger
+#                    print "exptime: %s" % exptime
+#                    print "\nReading current configuration from HW : %s" % camera
+#                    self.DarcAravis.get(i, 'OffsetX') 
+#                    self.DarcAravis.get(i, 'OffsetY') 
+#                    self.DarcAravis.get(i, 'ExposureTimeAbs')
+#                    self.DarcAravis.get(i, 'TriggerSource') 
+#                    print "\nSET configuration readed from file, for  %s" % camera
+#                    self.DarcAravis.set(i, 'OffsetX', offset_x) 
+#                    self.DarcAravis.set(i, 'OffsetY', offset_y) 
+#                    self.DarcAravis.set(i, 'ExposureTimeAbs', exptime)
+#                    if trigger.__contains__('True'):
+#                        value = 'Line1'
+#                    else:
+#                        value = 'Freerun'
+#                    self.DarcAravis.set(i, 'TriggerSource', value) 
+#                #
+#                # Seting up BBB
+#                # 
+#                import os
+#                freq = self.config.get('bbb', 'frequency')
+#                os.system('/bin/set_frecuency %s' % freq)
+#                #
+#                #
+#                #
+#                prefix =    self.config.get('bbb', 'prefix')
+#                directory = self.config.get('bbb', 'image_path')
+#                time = self.config.get('bbb', 'adquisition_time')
+#                #
+#                #
+#                #
+#                script = self.config.get('bbb', 'adquisition_script')
+#                daemon = self.config.get('bbb', 'daemon')
+#
+#                cmd = "python %s -d %s -t %s" %  (script, directory, time)
+#                proc_daemon = Process(target=self.daemon, args=(cmd,)) 
+#                proc_daemon.start()
+#
+#                cmd = "python %s -d %s -t %s" %  (script, directory, time)
+#                proc_grab = Process(target=self.grab, args=(cmd,)) 
+#                proc_grab.start()
+#                
 #                self.proc_grab.join()
                 proc_grab.join()
                 if proc_grab.is_alive() is False:
