@@ -55,16 +55,6 @@ class Go:
         self.proc_grab = None
         self.proc_daem = None
 
-    def grab(self, cmd):
-        process = Popen(cmd , stdout=PIPE , stderr=PIPE , shell=True)
-        self.proc_grab = process
-        process.wait()
-    
-    def daemon(self, cmd):
-        process = Popen(cmd , stdout=PIPE , stderr=PIPE , shell=True)
-        self.proc_daem = process
-        process.wait()
-
     def _cb_stop( self, button):
         print "Stop was clicked"
 
@@ -82,10 +72,15 @@ class Go:
 
         if self.label.get_text() == 'Calibration' and widget.get_active():
             print "Starting DARC from this GUI"
-            cmd = 'python /opt/darc/bin/darccontrol -o /home/lotuce2/lotuce2/conf/configManta.py --prefix=all'
-#            logfile = open('darc-log.txt','w')
-#            process = Popen(cmd , stdout=logfile , stderr=sys.stderr , shell=True)
-#            logfile.flush()
+            #
+            # START DARC
+            #
+            cmd = 'python /opt/darc/bin/darccontrol -o /home/lotuce2/lotuce2/conf/configMantaFULL.py --prefix=all'
+            process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
+            #
+            # Wait until DARC start, and then show GUI
+            time.sleep(30)
+            cmd = 'python /home/lotuce2/lotuce2/src/gui/lotuce2Commander.py'
             process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
         else:
             cmd = 'darcmagic stop -c  --prefix=all'
