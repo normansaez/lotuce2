@@ -47,7 +47,7 @@ class Go:
         
         self.button_play.connect("clicked", self._cb_play, "play")
         self.button_mode.connect("clicked", self._callback, "mode")
-        self.button_stop.connect("clicked", self._cb_stop, "stop")
+        self.button_stop.connect("clicked", self._cb_stop)
 
         dic = { 
             "on_buttonQuit_clicked" : self.quit,
@@ -67,9 +67,8 @@ class Go:
         self.proc_daem = process
         process.wait()
 
-    def _cb_stop( self, widget, data=None):
-        print "%s: %s" % (data, ("disconnecting", "connecting")[widget.get_active()])
-#        if widget.get_active() is True:
+    def _cb_stop( self, button):
+        print "Stop was clicked"
 
     def _cb_play(self, widget, data=None):
         print "%s: %s" % (data, ("disconnecting", "connecting")[widget.get_active()])
