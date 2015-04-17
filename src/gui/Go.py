@@ -42,10 +42,11 @@ class Go:
         self.button_play = self.builder.get_object("play")
         self.button_mode = self.builder.get_object("mode")
         self.button_stop = self.builder.get_object("stop")
+        self.label = self.builder.get_object("label")
         
-        self.button_play.connect("clicked", self._callback, "play")
+        self.button_play.connect("clicked", self._cb_play, "play")
         self.button_mode.connect("clicked", self._callback, "mode")
-        self.button_stop.connect("clicked", self._callback, "stop")
+        self.button_stop.connect("clicked", self._cb_stop, "stop")
 
         dic = { 
             "on_buttonQuit_clicked" : self.quit,
@@ -65,15 +66,27 @@ class Go:
         self.proc_daem = process
         process.wait()
 
-    def _callback(self, widget, data=None):
-        '''
-        callback
-        '''
+    def _cb_stop( self, widget, data=None):
         print "%s: %s" % (data, ("disconnecting", "connecting")[widget.get_active()])
-        #CONN
+#        if widget.get_active() is True:
+
+    def _cb_play(self, widget, data=None):
+        print "%s: %s" % (data, ("disconnecting", "connecting")[widget.get_active()])
+        image=Gtk.Image()
         if widget.get_active() is True:
-            if data == "play":
-#                self.button_playCal.set_inconsistent(True)
+#            image=Gtk.Image()
+            image.set_from_stock(Gtk.STOCK_MEDIA_PLAY, Gtk.IconSize.BUTTON)
+            self.button_play.set_image(image)
+            self.button_play.set_label("Play")
+        else:
+#            image=Gtk.Image()
+            image.set_from_stock(Gtk.STOCK_MEDIA_PAUSE, Gtk.IconSize.BUTTON)
+            self.button_play.set_image(image)
+            self.button_play.set_label("Pause")
+
+        mode = self.label.get_text()
+        if mode == 'Adquisition':
+            print "adquire"
 #                for i in range(0,4):
 #                    camera = 'cam%d' % i
 #                    print "\n\nReading configuration for %s ... " % camera
@@ -126,16 +139,29 @@ class Go:
 #                proc_grab.start()
 #                
 #                self.proc_grab.join()
-                proc_grab.join()
-                if proc_grab.is_alive() is False:
-                    self.proc_daem.terminate()
-                    proc_daemon.terminate()
+#                proc_grab.join()
+#                if proc_grab.is_alive() is False:
+#                    self.proc_daem.terminate()
+#                    proc_daemon.terminate()
 
-            if data == "pause":
-                self.button_play.set_active(False)
-                self.proc_grab.terminate()
+#            if data == "pause":
+#                self.button_play.set_active(False)
+#                self.proc_grab.terminate()
 #                self.proc_daemon.terminate()
-                self.proc_daem.terminate()
+#                self.proc_daem.terminate()
+            
+
+    def _callback(self, widget, data=None):
+        '''
+        callback
+        '''
+        print "%s: %s" % (data, ("disconnecting", "connecting")[widget.get_active()])
+        if self.button_mode.get_active():
+            self.label.set_text("Adquisition")
+
+        if not self.button_mode.get_active():
+            self.label.set_text("Calibration")
+
 
     def quit(self, widget):
         '''
