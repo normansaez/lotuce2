@@ -15,6 +15,9 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="label" translatable="yes">Calibration</property>
+            <attributes>
+              <attribute name="weight" value="bold"/>
+            </attributes>
           </object>
           <packing>
             <property name="left_attach">0</property>
@@ -25,7 +28,7 @@
         </child>
         <child>
           <object class="GtkToggleButton" id="play">
-            <property name="label">gtk-media-pause</property>
+            <property name="label">gtk-media-play</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="receives_default">True</property>
@@ -53,7 +56,7 @@
             <property name="label" translatable="yes">Push to change from:
 Calibration --&gt; Adquisition</property>
             <attributes>
-              <attribute name="weight" value="bold"/>
+              <attribute name="style" value="italic"/>
             </attributes>
           </object>
           <packing>
@@ -92,6 +95,10 @@ Calibration --&gt; Adquisition</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="receives_default">True</property>
+            <property name="margin_left">10</property>
+            <property name="margin_right">10</property>
+            <property name="margin_top">10</property>
+            <property name="margin_bottom">20</property>
             <property name="use_stock">True</property>
             <property name="image_position">top</property>
             <property name="always_show_image">True</property>

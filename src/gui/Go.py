@@ -74,13 +74,13 @@ class Go:
         print "%s: %s" % (data, ("disconnecting", "connecting")[widget.get_active()])
         image=Gtk.Image()
         if widget.get_active() is True:
-            image.set_from_stock(Gtk.STOCK_MEDIA_PLAY, Gtk.IconSize.BUTTON)
-            self.button_play.set_image(image)
-            self.button_play.set_label("Play")
-        else:
             image.set_from_stock(Gtk.STOCK_MEDIA_PAUSE, Gtk.IconSize.BUTTON)
             self.button_play.set_image(image)
             self.button_play.set_label("Pause")
+        else:
+            image.set_from_stock(Gtk.STOCK_MEDIA_PLAY, Gtk.IconSize.BUTTON)
+            self.button_play.set_image(image)
+            self.button_play.set_label("Play")
 
         if self.label.get_text() == 'Calibration' and widget.get_active():
             print "Starting DARC from this GUI"
@@ -167,9 +167,9 @@ class Go:
         '''
         print "%s: %s" % (data, ("disconnecting", "connecting")[widget.get_active()])
         image = Gtk.Image()
-        image.set_from_stock(Gtk.STOCK_MEDIA_PAUSE, Gtk.IconSize.BUTTON)
+        image.set_from_stock(Gtk.STOCK_MEDIA_PLAY, Gtk.IconSize.BUTTON)
         self.button_play.set_image(image)
-        self.button_play.set_label("Pause")
+        self.button_play.set_label("Play")
         self.button_play.set_active(False)
         if self.button_mode.get_active():
             self.label.set_text("Adquisition")
