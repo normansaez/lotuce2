@@ -6,12 +6,14 @@ import signal
 import ConfigParser
 
 from multiprocessing import Process
+from subprocess import Popen, PIPE
 
 from gi.repository import Gtk
 from gi.repository import GObject
 
 from darcaravis import DarcAravis
 
+#signal.signal(signal.SIGINT, receive_signal)
 
 class Go:
 
@@ -48,13 +50,18 @@ class Go:
         }
         
         self.builder.connect_signals( dic )
+        self.proc_grab = None
+        self.proc_daem = None
 
-    def grabb(self, cmd):
-        self.grab_pid  
-        os.system('python %s -d %s -t %s' % (script, directory, time))
+    def grab(self, cmd):
+        process = Popen(cmd , stdout=PIPE , stderr=PIPE , shell=True)
+        self.proc_grab = process
+        process.wait()
+    
     def daemon(self, cmd):
-        self.daemon_pid 
-                os.system('python %s -d %s -t %s' % (daemon, directory, time))
+        process = Popen(cmd , stdout=PIPE , stderr=PIPE , shell=True)
+        self.proc_daem = process
+        process.wait()
 
     def _callback(self, widget, data=None):
         '''
@@ -106,11 +113,31 @@ class Go:
                 prefix =    self.config.get('bbb', 'prefix')
                 directory = self.config.get('bbb', 'image_path')
                 time = self.config.get('bbb', 'adquisition_time')
+                #
+                #
+                #
                 script = self.config.get('bbb', 'adquisition_script')
                 daemon = self.config.get('bbb', 'daemon')
 
+                cmd = "python %s -d %s -t %s" %  (script, directory, time)
+                proc_daemon = Process(target=self.daemon, args=(cmd,)) 
+                proc_daemon.start()
+
+                cmd = "python %s -d %s -t %s" %  (script, directory, time)
+                proc_grab = Process(target=self.grab, args=(cmd,)) 
+                proc_grab.start()
+                
+#                self.proc_grab.join()
+                proc_grab.join()
+                if proc_grab.is_alive() is False:
+                    self.proc_daem.terminate()
+                    proc_daemon.terminate()
+
             if data == "pause":
                 self.button_play.set_active(False)
+                self.proc_grab.terminate()
+#                self.proc_daemon.terminate()
+                self.proc_daem.terminate()
 
     def quit(self, widget):
         '''
