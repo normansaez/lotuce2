@@ -43,6 +43,7 @@ class Go:
         self.button_mode = self.builder.get_object("mode")
         self.button_stop = self.builder.get_object("stop")
         self.label = self.builder.get_object("label")
+        self.m_label = self.builder.get_object("m_label")
         
         self.button_play.connect("clicked", self._cb_play, "play")
         self.button_mode.connect("clicked", self._callback, "mode")
@@ -74,12 +75,10 @@ class Go:
         print "%s: %s" % (data, ("disconnecting", "connecting")[widget.get_active()])
         image=Gtk.Image()
         if widget.get_active() is True:
-#            image=Gtk.Image()
             image.set_from_stock(Gtk.STOCK_MEDIA_PLAY, Gtk.IconSize.BUTTON)
             self.button_play.set_image(image)
             self.button_play.set_label("Play")
         else:
-#            image=Gtk.Image()
             image.set_from_stock(Gtk.STOCK_MEDIA_PAUSE, Gtk.IconSize.BUTTON)
             self.button_play.set_image(image)
             self.button_play.set_label("Pause")
@@ -156,11 +155,17 @@ class Go:
         callback
         '''
         print "%s: %s" % (data, ("disconnecting", "connecting")[widget.get_active()])
+        image = Gtk.Image()
+        image.set_from_stock(Gtk.STOCK_MEDIA_PAUSE, Gtk.IconSize.BUTTON)
+        self.button_play.set_image(image)
+        self.button_play.set_label("Pause")
+        self.button_play.set_active(False)
         if self.button_mode.get_active():
             self.label.set_text("Adquisition")
-
+            self.m_label.set_text("Push to change from\nAdquisition --> Calibration")
         if not self.button_mode.get_active():
             self.label.set_text("Calibration")
+            self.m_label.set_text("Push to change from\nCalibration --> Adquisition")
 
 
     def quit(self, widget):
