@@ -82,9 +82,21 @@ class Go:
             self.button_play.set_image(image)
             self.button_play.set_label("Pause")
 
-        mode = self.label.get_text()
-        if mode == 'Adquisition':
-            print "adquire"
+        if self.label.get_text() == 'Calibration' and widget.get_active():
+            print "Starting DARC from this GUI"
+            cmd = 'python /opt/darc/bin/darccontrol -o /home/lotuce2/lotuce2/conf/configManta.py --prefix=all'
+#            logfile = open('darc-log.txt','w')
+#            process = Popen(cmd , stdout=logfile , stderr=sys.stderr , shell=True)
+#            logfile.flush()
+            process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
+        else:
+            cmd = 'darcmagic stop -c  --prefix=all'
+            process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
+            process.wait()
+
+        if self.label.get_text() == 'Adquisition' and widget.get_active():
+            print "Parto Adquiero imagenes"
+
 #                for i in range(0,4):
 #                    camera = 'cam%d' % i
 #                    print "\n\nReading configuration for %s ... " % camera

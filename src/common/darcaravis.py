@@ -7,14 +7,14 @@ import glob
 class DarcAravis:
     def __init__(self, prefix=None):
         shm = self.get_darc_prefix()
-        if prefix is None:
-            prefix = shm
-        if shm is None:
-            raise Exception("DARC instance is not running !!!")
-        elif prefix != shm:
-            raise Exception("DARC instance is not running with prefix: %s" % prefix)
-          
-        self.darc_instance = darc.Control(prefix)
+        #if prefix is None:
+        #    prefix = shm
+        #if shm is None:
+        #    raise Exception("DARC instance is not running !!!")
+        #elif prefix != shm:
+        #    raise Exception("DARC instance is not running with prefix: %s" % prefix)
+        #  
+        #self.darc_instance = darc.Control(prefix)
         
 
             
