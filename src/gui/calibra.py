@@ -106,33 +106,31 @@ class Go:
         cam1 = data[xi_cam1:xf_cam1,yi_cam1:yf_cam1]
         cam2 = data[xi_cam2:xf_cam2,yi_cam2:yf_cam2]
         cam3 = data[xi_cam3:xf_cam3,yi_cam3:yf_cam3]
-        print type(data)
-        print type(cam0)
-        h, w = (100,100)#cam0.shape
-        print h
-        print w
+        h, w = cam0.shape
+        h = h - 100
+        w = w - 100
         surface0 = cairo.ImageSurface.create_for_data(cam0, cairo.FORMAT_RGB24, w, h)
-#        surface1 = cairo.ImageSurface.create_for_data(cam1, cairo.FORMAT_RGB24, w, h)
-#        surface2 = cairo.ImageSurface.create_for_data(cam2, cairo.FORMAT_RGB24, w, h)
-#        surface3 = cairo.ImageSurface.create_for_data(cam3, cairo.FORMAT_RGB24, w, h)
+        surface1 = cairo.ImageSurface.create_for_data(cam1, cairo.FORMAT_RGB24, w, h)
+        surface2 = cairo.ImageSurface.create_for_data(cam2, cairo.FORMAT_RGB24, w, h)
+        surface3 = cairo.ImageSurface.create_for_data(cam3, cairo.FORMAT_RGB24, w, h)
 #        cr = cairo.Context(surface)
         pb0 = Gdk.pixbuf_get_from_surface(surface0,0,0,w,h)
-#        pb1 = Gdk.pixbuf_get_from_surface(surface1,0,0,w,h)
-#        pb2 = Gdk.pixbuf_get_from_surface(surface2,0,0,w,h)
-#        pb3 = Gdk.pixbuf_get_from_surface(surface3,0,0,w,h)
+        pb1 = Gdk.pixbuf_get_from_surface(surface1,0,0,w,h)
+        pb2 = Gdk.pixbuf_get_from_surface(surface2,0,0,w,h)
+        pb3 = Gdk.pixbuf_get_from_surface(surface3,0,0,w,h)
 
         self.img_cam0_x.set_from_pixbuf(pb0)
-        self.img_cam1_x.set_from_pixbuf(pb0)
-        self.img_cam2_x.set_from_pixbuf(pb0)
-        self.img_cam3_x.set_from_pixbuf(pb0)
+        self.img_cam1_x.set_from_pixbuf(pb1)
+        self.img_cam2_x.set_from_pixbuf(pb2)
+        self.img_cam3_x.set_from_pixbuf(pb3)
         self.img_cam0_y.set_from_pixbuf(pb0)
-        self.img_cam1_y.set_from_pixbuf(pb0)
-        self.img_cam2_y.set_from_pixbuf(pb0)
-        self.img_cam3_y.set_from_pixbuf(pb0)
+        self.img_cam1_y.set_from_pixbuf(pb1)
+        self.img_cam2_y.set_from_pixbuf(pb2)
+        self.img_cam3_y.set_from_pixbuf(pb3)
         self.img_cam0.set_from_pixbuf(pb0)
-        self.img_cam1.set_from_pixbuf(pb0)
-        self.img_cam2.set_from_pixbuf(pb0)
-        self.img_cam3.set_from_pixbuf(pb0)
+        self.img_cam1.set_from_pixbuf(pb1)
+        self.img_cam2.set_from_pixbuf(pb2)
+        self.img_cam3.set_from_pixbuf(pb3)
 ################
 #        self.button_apply_subap.connect("clicked", self._cb_subap, "subap")
 #        self.button_apply_refresh.connect("clicked", self._cb_refresh, "refresh")
