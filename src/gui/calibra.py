@@ -20,9 +20,9 @@ from darcaravis import DarcAravis
 import numpy as np
 import darc
 import os
-#from matplotlib.backends.backend_gtkagg import FigureCanvasGTKAgg as FigureCanvas
 from matplotlib.backends.backend_gtk3cairo import FigureCanvasGTK3Cairo as FigureCanvas
 from matplotlib.figure import Figure
+import matplotlib.pyplot as plt
 
 class Go:
 
@@ -229,36 +229,37 @@ class Go:
         #ax2.set_ylim(0,1)
         ax2.invert_yaxis()
         ax2.plot(axis,cam3_ny,'-')
+        plt.savefig("testfig.png")
         #--------------------------------------------------
         #fill up profiles
-        canvas_c0_fx = FigureCanvas(cam0_fx)  # a gtk.DrawingArea
-        canvas_c0_fy = FigureCanvas(cam0_fy)  # a gtk.DrawingArea
-#        cam0_p_x.add(canvas_c0_fx)
-#        cam0_p_y.add(canvas_c0_fy)
-        
-        canvas_c1_fx = FigureCanvas(cam1_fx)  # a gtk.DrawingArea
-        canvas_c1_fy = FigureCanvas(cam1_fy)  # a gtk.DrawingArea
-#        cam1_p_x.add(canvas_c1_fx)
-#        cam1_p_y.add(canvas_c1_fy)
-        
-        canvas_c2_fx = FigureCanvas(cam2_fx)  # a gtk.DrawingArea
-        canvas_c2_fy = FigureCanvas(cam2_fy)  # a gtk.DrawingArea
-#        cam2_p_x.add(canvas_c2_fx)
-#        cam2_p_y.add(canvas_c2_fy)
-        
-        canvas_c3_fx = FigureCanvas(cam3_fx)  # a gtk.DrawingArea
-        canvas_c3_fy = FigureCanvas(cam3_fy)  # a gtk.DrawingArea
-#        cam3_p_x.add(canvas_c3_fx)
-#        cam3_p_y.add(canvas_c3_fy)
-
-        self.img_cam0_x.set_from_file(canvas_c0_fx)
-        self.img_cam1_x.set_from_file(canvas_c1_fx)
-        self.img_cam2_x.set_from_file(canvas_c2_fx)
-        self.img_cam3_x.set_from_file(canvas_c3_fx)
-        self.img_cam0_y.set_from_file(canvas_c0_fy)
-        self.img_cam1_y.set_from_file(canvas_c1_fy)
-        self.img_cam2_y.set_from_file(canvas_c2_fy)
-        self.img_cam3_y.set_from_file(canvas_c3_fy)
+#        canvas_c0_fx = FigureCanvas(cam0_fx)  # a gtk.DrawingArea
+#        canvas_c0_fy = FigureCanvas(cam0_fy)  # a gtk.DrawingArea
+##        cam0_p_x.add(canvas_c0_fx)
+##        cam0_p_y.add(canvas_c0_fy)
+#        
+#        canvas_c1_fx = FigureCanvas(cam1_fx)  # a gtk.DrawingArea
+#        canvas_c1_fy = FigureCanvas(cam1_fy)  # a gtk.DrawingArea
+##        cam1_p_x.add(canvas_c1_fx)
+##        cam1_p_y.add(canvas_c1_fy)
+#        
+#        canvas_c2_fx = FigureCanvas(cam2_fx)  # a gtk.DrawingArea
+#        canvas_c2_fy = FigureCanvas(cam2_fy)  # a gtk.DrawingArea
+##        cam2_p_x.add(canvas_c2_fx)
+##        cam2_p_y.add(canvas_c2_fy)
+#        
+#        canvas_c3_fx = FigureCanvas(cam3_fx)  # a gtk.DrawingArea
+#        canvas_c3_fy = FigureCanvas(cam3_fy)  # a gtk.DrawingArea
+##        cam3_p_x.add(canvas_c3_fx)
+##        cam3_p_y.add(canvas_c3_fy)
+#
+        self.img_cam0_x.set_from_file("circle.png")
+        self.img_cam1_x.set_from_file("circle.png")
+        self.img_cam2_x.set_from_file("circle.png")
+        self.img_cam3_x.set_from_file("circle.png")
+        self.img_cam0_y.set_from_file("circle.png")
+        self.img_cam1_y.set_from_file("circle.png")
+        self.img_cam2_y.set_from_file("circle.png")
+        self.img_cam3_y.set_from_file("circle.png")
 
 
 
