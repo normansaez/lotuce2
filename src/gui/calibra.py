@@ -55,10 +55,10 @@ class Go:
 ################ fully test
         self.img = self.builder.get_object("image_cam0_x")
         data = np.zeros(200*200).reshape(200,200)
-        data[:,30] = 1
-        data[:,100] = 1
-        data[100,:] = 1
-        data[30,:] = 1
+        data[:,4] = 1
+        data[:,196] = 1
+        data[24,:] = 1
+        data[176,:] = 1
         surface = cairo.ImageSurface.create_for_data(data, cairo.FORMAT_RGB24, 200, 200)
 #        cr = cairo.Context(surface)
         pb = Gdk.pixbuf_get_from_surface(surface,0,0,200,200)
