@@ -8,7 +8,7 @@
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <child>
-          <object class="GtkImage" id="image1">
+          <object class="GtkImage" id="image_cam0">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="stock">gtk-missing-image</property>
@@ -21,7 +21,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkImage" id="image2">
+          <object class="GtkImage" id="image_cam1">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="stock">gtk-missing-image</property>
@@ -34,7 +34,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkImage" id="image3">
+          <object class="GtkImage" id="image_cam2">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="stock">gtk-missing-image</property>
@@ -47,7 +47,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkImage" id="image4">
+          <object class="GtkImage" id="image_cam3">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="stock">gtk-missing-image</property>
@@ -60,7 +60,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkImage" id="image5">
+          <object class="GtkImage" id="image_cam0_x">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="stock">gtk-missing-image</property>
@@ -73,7 +73,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkImage" id="image6">
+          <object class="GtkImage" id="image_cam1_x">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="stock">gtk-missing-image</property>
@@ -86,7 +86,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkImage" id="image7">
+          <object class="GtkImage" id="image_cam0_y">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="stock">gtk-missing-image</property>
@@ -99,7 +99,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkImage" id="image8">
+          <object class="GtkImage" id="image_cam1_y">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="stock">gtk-missing-image</property>
@@ -112,7 +112,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkImage" id="image9">
+          <object class="GtkImage" id="image_cam2_y">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="stock">gtk-missing-image</property>
@@ -125,7 +125,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkImage" id="image10">
+          <object class="GtkImage" id="image_cam3_y">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="stock">gtk-missing-image</property>
@@ -138,7 +138,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkImage" id="image11">
+          <object class="GtkImage" id="image_cam2_x">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="stock">gtk-missing-image</property>
@@ -151,7 +151,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkImage" id="image12">
+          <object class="GtkImage" id="image_cam3_x">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="stock">gtk-missing-image</property>

@@ -49,9 +49,9 @@ class Go:
         self.label_refresh = self.builder.get_object("refresh_label")
         self.label_offset = self.builder.get_object("offset_step_label")
         
-#        self.button_play.connect("clicked", self._cb_play, "play")
-#        self.button_mode.connect("clicked", self._callback, "mode")
-#        self.button_stop.connect("clicked", self._cb_stop)
+        self.button_apply_subap.connect("clicked", self._cb_subap, "subap")
+        self.button_apply_refresh.connect("clicked", self._cb_refresh, "refresh")
+        self.button_apply_offset.connect("clicked", self._cb_offset,"offset")
 
         dic = { 
             "on_buttonQuit_clicked" : self.quit,
