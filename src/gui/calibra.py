@@ -11,13 +11,18 @@ from subprocess import Popen, PIPE
 
 from gi.repository import Gtk
 from gi.repository import Gdk
-from gi.repository import GObject
+#from gi.repository import GObject
 
 from darcaravis import DarcAravis
 
 #signal.signal(signal.SIGINT, receive_signal)
 
 import numpy as np
+import darc
+import os
+#from matplotlib.backends.backend_gtkagg import FigureCanvasGTKAgg as FigureCanvas
+from matplotlib.backends.backend_gtk3cairo import FigureCanvasGTK3Cairo as FigureCanvas
+from matplotlib.figure import Figure
 
 class Go:
 
@@ -71,7 +76,6 @@ class Go:
         data[196,:] = 1
         data[:,24] = 1
         data[:,176] = 1
-        import darc
         d=darc.Control('all')
         #takes camera pixels (x,y)
         pxlx =d.Get("npxlx")[0]
@@ -119,18 +123,152 @@ class Go:
         pb2 = Gdk.pixbuf_get_from_surface(surface2,0,0,w,h)
         pb3 = Gdk.pixbuf_get_from_surface(surface3,0,0,w,h)
 
-        self.img_cam0_x.set_from_pixbuf(pb0)
-        self.img_cam1_x.set_from_pixbuf(pb1)
-        self.img_cam2_x.set_from_pixbuf(pb2)
-        self.img_cam3_x.set_from_pixbuf(pb3)
-        self.img_cam0_y.set_from_pixbuf(pb0)
-        self.img_cam1_y.set_from_pixbuf(pb1)
-        self.img_cam2_y.set_from_pixbuf(pb2)
-        self.img_cam3_y.set_from_pixbuf(pb3)
         self.img_cam0.set_from_pixbuf(pb0)
         self.img_cam1.set_from_pixbuf(pb1)
         self.img_cam2.set_from_pixbuf(pb2)
         self.img_cam3.set_from_pixbuf(pb3)
+        #new profile
+        x = len(cam0)
+        cam0_nx = np.array([])
+        cam0_ny = np.array([])
+        cam1_nx = np.array([])
+        cam1_ny = np.array([])
+        cam2_nx = np.array([])
+        cam2_ny = np.array([])
+        cam3_nx = np.array([])
+        cam3_ny = np.array([])
+        
+        c0 = cam0.max()
+        c1 = cam1.max()
+        c2 = cam2.max()
+        c3 = cam3.max()
+        
+        for i in range(0,x):
+            cam0_nx = np.append(cam0_nx, cam0[i,].sum())
+            cam0_ny = np.append(cam0_ny, cam0[:,i].sum())
+            cam1_nx = np.append(cam1_nx, cam1[i,].sum())
+            cam1_ny = np.append(cam1_ny, cam1[:,i].sum())
+            cam2_nx = np.append(cam2_nx, cam2[i,].sum())
+            cam2_ny = np.append(cam2_ny, cam2[:,i].sum())
+            cam3_nx = np.append(cam3_nx, cam3[i,].sum())
+            cam3_ny = np.append(cam3_ny, cam3[:,i].sum())
+        axis = range(0,x)
+        #normalize according cameras:
+        int_max = 4095
+        cam0_nx = cam0_nx/int_max
+        cam0_ny = cam0_ny/int_max
+        
+        cam1_nx = cam1_nx/int_max
+        cam1_ny = cam1_ny/int_max
+        
+        cam2_nx = cam2_nx/int_max
+        cam2_ny = cam2_ny/int_max
+        
+        cam3_nx = cam3_nx/int_max
+        cam3_ny = cam3_ny/int_max
+        
+        #cam0_fx = Figure(figsize=(5,4), dpi=30)
+        cam0_fx = Figure(dpi=30, tight_layout=True)
+        ax = cam0_fx.add_subplot(111)
+        #ax.set_xlim(0,1)
+        ax.set_ylim(0,x)
+        ax.invert_xaxis()
+        ax.plot(cam0_nx,axis,'-')
+        #mu, std = norm.fit(cam0_nx)
+        #p = norm.pdf(axis, mu, std)
+        #ax.plot(axis, p, 'k', linewidth=2)
+        
+        #cam0_fy = Figure(figsize=(5,4), dpi=30)
+        cam0_fy = Figure(dpi=30, tight_layout=True)
+        ax2 = cam0_fy.add_subplot(111)
+        ax2.set_xlim(0,x)
+        #ax2.set_ylim(0,1)
+        ax2.plot(axis,cam0_ny,'-')
+        #--------------------------------------------------
+        #cam1_fx = Figure(figsize=(5,4), dpi=30)
+        cam1_fx = Figure(dpi=30, tight_layout=True)
+        ax = cam1_fx.add_subplot(111)
+        #ax.set_xlim(0,1)
+        ax.set_ylim(0,x)
+        ax.plot(cam1_nx,axis,'-')
+        
+        #cam1_fy = Figure(figsize=(5,4), dpi=30)
+        cam1_fy = Figure(dpi=30, tight_layout=True)
+        ax2 = cam1_fy.add_subplot(111)
+        ax2.set_xlim(0,x)
+        #ax2.set_ylim(0,1)
+        ax2.plot(axis,cam1_ny,'-')
+        #--------------------------------------------------
+        #cam2_fx = Figure(figsize=(5,4), dpi=30)
+        cam2_fx = Figure(dpi=30, tight_layout=True)
+        ax = cam2_fx.add_subplot(111)
+        #ax.set_xlim(0,1)
+        ax.set_ylim(0,x)
+        ax.invert_xaxis()
+        ax.plot(cam2_nx,axis,'-')
+        
+        #cam2_fy = Figure(figsize=(5,4), dpi=30)
+        cam2_fy = Figure(dpi=30, tight_layout=True)
+        ax2 = cam2_fy.add_subplot(111)
+        ax2.set_xlim(0,x)
+        #ax2.set_ylim(0,1)
+        ax2.invert_yaxis()
+        ax2.plot(axis,cam2_ny,'-')
+        #--------------------------------------------------
+        #cam3_fx = Figure(figsize=(5,4), dpi=30)
+        cam3_fx = Figure(dpi=30, tight_layout=True)
+        ax = cam3_fx.add_subplot(111)
+        #ax.set_xlim(0,1)
+        ax.set_ylim(0,x)
+        ax.plot(cam3_nx,axis,'-')
+        
+        #cam3_fy = Figure(figsize=(5,4), dpi=30)
+        cam3_fy = Figure(dpi=30, tight_layout=True)
+        ax2 = cam3_fy.add_subplot(111)
+        ax2.set_xlim(0,x)
+        #ax2.set_ylim(0,1)
+        ax2.invert_yaxis()
+        ax2.plot(axis,cam3_ny,'-')
+        #--------------------------------------------------
+        #fill up profiles
+        canvas_c0_fx = FigureCanvas(cam0_fx)  # a gtk.DrawingArea
+        canvas_c0_fy = FigureCanvas(cam0_fy)  # a gtk.DrawingArea
+#        cam0_p_x.add(canvas_c0_fx)
+#        cam0_p_y.add(canvas_c0_fy)
+        
+        canvas_c1_fx = FigureCanvas(cam1_fx)  # a gtk.DrawingArea
+        canvas_c1_fy = FigureCanvas(cam1_fy)  # a gtk.DrawingArea
+#        cam1_p_x.add(canvas_c1_fx)
+#        cam1_p_y.add(canvas_c1_fy)
+        
+        canvas_c2_fx = FigureCanvas(cam2_fx)  # a gtk.DrawingArea
+        canvas_c2_fy = FigureCanvas(cam2_fy)  # a gtk.DrawingArea
+#        cam2_p_x.add(canvas_c2_fx)
+#        cam2_p_y.add(canvas_c2_fy)
+        
+        canvas_c3_fx = FigureCanvas(cam3_fx)  # a gtk.DrawingArea
+        canvas_c3_fy = FigureCanvas(cam3_fy)  # a gtk.DrawingArea
+#        cam3_p_x.add(canvas_c3_fx)
+#        cam3_p_y.add(canvas_c3_fy)
+
+        self.img_cam0_x.set_from_file(canvas_c0_fx)
+        self.img_cam1_x.set_from_file(canvas_c1_fx)
+        self.img_cam2_x.set_from_file(canvas_c2_fx)
+        self.img_cam3_x.set_from_file(canvas_c3_fx)
+        self.img_cam0_y.set_from_file(canvas_c0_fy)
+        self.img_cam1_y.set_from_file(canvas_c1_fy)
+        self.img_cam2_y.set_from_file(canvas_c2_fy)
+        self.img_cam3_y.set_from_file(canvas_c3_fy)
+
+
+
+
+
+
+
+
+
+
 ################
 #        self.button_apply_subap.connect("clicked", self._cb_subap, "subap")
 #        self.button_apply_refresh.connect("clicked", self._cb_refresh, "refresh")
