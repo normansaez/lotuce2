@@ -3,10 +3,10 @@ from pprint import pprint
 from matplotlib import pyplot as plt
 
 
-sizeY = 656#200
-sizeX = 492
-#subap = [  4, 196,   1,  24, 176,   1]
-subap = [4, 488,   1,  24, 632,   1]
+sizeY = 200#656#200
+sizeX = 200#492
+subap = [  4, 196,   1,  24, 176,   1]
+#subap = [4, 488,   1,  24, 632,   1]
 # [ystart, yend, ystep, xstart, xend, xstep].
 matrix = np.zeros(sizeX*sizeY).reshape(sizeX,sizeY)
 #print (subap[3], subap[0])

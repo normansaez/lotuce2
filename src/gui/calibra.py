@@ -67,25 +67,72 @@ class Go:
         self.img_cam3_y = self.builder.get_object("image_cam3_y")
         #dummy data
         data = np.zeros(200*200).reshape(200,200)
-        data[:,4] = 1
-        data[:,196] = 1
-        data[24,:] = 1
-        data[176,:] = 1
-        surface = cairo.ImageSurface.create_for_data(data, cairo.FORMAT_RGB24, 200, 200)
+        data[4,:] = 1
+        data[196,:] = 1
+        data[:,24] = 1
+        data[:,176] = 1
+        import darc
+        d=darc.Control('all')
+        #takes camera pixels (x,y)
+        pxlx =d.Get("npxlx")[0]
+        pxly =d.Get("npxly")[0]
+
+        streamBlock = d.GetStreamBlock('%srtcPxlBuf'%'all',1)#,block=1,flysave=options.directory+'/img.fits')
+        streams = streamBlock['%srtcPxlBuf'%'all']
+        stream = streams[0]
+        data = stream[0].reshape((4*pxly,pxlx))
+        xi_cam0 = 0*pxly
+        xf_cam0 = 1*pxly
+        yi_cam0 = 0*pxlx
+        yf_cam0 = 1*pxlx
+    
+        xi_cam1 = 1*pxly
+        xf_cam1 = 2*pxly
+        yi_cam1 = 0*pxlx
+        yf_cam1 = 1*pxlx
+    
+        xi_cam2 = 2*pxly
+        xf_cam2 = 3*pxly
+        yi_cam2 = 0*pxlx
+        yf_cam2 = 1*pxlx
+    
+        xi_cam3 = 3*pxly
+        xf_cam3 = 4*pxly
+        yi_cam3 = 0*pxlx
+        yf_cam3 = 1*pxlx
+    
+        #data per camera:
+        cam0 = data[xi_cam0:xf_cam0,yi_cam0:yf_cam0]
+        cam1 = data[xi_cam1:xf_cam1,yi_cam1:yf_cam1]
+        cam2 = data[xi_cam2:xf_cam2,yi_cam2:yf_cam2]
+        cam3 = data[xi_cam3:xf_cam3,yi_cam3:yf_cam3]
+        print type(data)
+        print type(cam0)
+        h, w = (100,100)#cam0.shape
+        print h
+        print w
+        surface0 = cairo.ImageSurface.create_for_data(cam0, cairo.FORMAT_RGB24, w, h)
+#        surface1 = cairo.ImageSurface.create_for_data(cam1, cairo.FORMAT_RGB24, w, h)
+#        surface2 = cairo.ImageSurface.create_for_data(cam2, cairo.FORMAT_RGB24, w, h)
+#        surface3 = cairo.ImageSurface.create_for_data(cam3, cairo.FORMAT_RGB24, w, h)
 #        cr = cairo.Context(surface)
-        pb = Gdk.pixbuf_get_from_surface(surface,0,0,200,200)
-        self.img_cam0_x.set_from_pixbuf(pb)
-        self.img_cam1_x.set_from_pixbuf(pb)
-        self.img_cam2_x.set_from_pixbuf(pb)
-        self.img_cam3_x.set_from_pixbuf(pb)
-        self.img_cam0_y.set_from_pixbuf(pb)
-        self.img_cam1_y.set_from_pixbuf(pb)
-        self.img_cam2_y.set_from_pixbuf(pb)
-        self.img_cam3_y.set_from_pixbuf(pb)
-        self.img_cam0.set_from_pixbuf(pb)
-        self.img_cam1.set_from_pixbuf(pb)
-        self.img_cam2.set_from_pixbuf(pb)
-        self.img_cam3.set_from_pixbuf(pb)
+        pb0 = Gdk.pixbuf_get_from_surface(surface0,0,0,w,h)
+#        pb1 = Gdk.pixbuf_get_from_surface(surface1,0,0,w,h)
+#        pb2 = Gdk.pixbuf_get_from_surface(surface2,0,0,w,h)
+#        pb3 = Gdk.pixbuf_get_from_surface(surface3,0,0,w,h)
+
+        self.img_cam0_x.set_from_pixbuf(pb0)
+        self.img_cam1_x.set_from_pixbuf(pb0)
+        self.img_cam2_x.set_from_pixbuf(pb0)
+        self.img_cam3_x.set_from_pixbuf(pb0)
+        self.img_cam0_y.set_from_pixbuf(pb0)
+        self.img_cam1_y.set_from_pixbuf(pb0)
+        self.img_cam2_y.set_from_pixbuf(pb0)
+        self.img_cam3_y.set_from_pixbuf(pb0)
+        self.img_cam0.set_from_pixbuf(pb0)
+        self.img_cam1.set_from_pixbuf(pb0)
+        self.img_cam2.set_from_pixbuf(pb0)
+        self.img_cam3.set_from_pixbuf(pb0)
 ################
 #        self.button_apply_subap.connect("clicked", self._cb_subap, "subap")
 #        self.button_apply_refresh.connect("clicked", self._cb_refresh, "refresh")
