@@ -12,9 +12,9 @@ d=darc.Control('all')
 #takes camera pixels (x,y)
 pxlx =d.Get("npxlx")[0]
 pxly =d.Get("npxly")[0]
-
-streamBlock = d.GetStreamBlock('%srtcCentBuf'%'all',1)#,block=1,flysave=options.directory+'/img.fits')
-streams = streamBlock['%srtcCentBuf'%'all']
+prefix = "all"
+streamBlock = d.GetStreamBlock('%srtcCentBuf'%prefix,1)#,block=1,flysave=options.directory+'/img.fits')
+streams = streamBlock['%srtcCentBuf'%prefix]
 for stream in streams:
     print stream[0]
     print stream[0].shape
