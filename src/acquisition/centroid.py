@@ -8,7 +8,7 @@ import re
 import os
 import glob
 
-prefix = "all"
+prefix = "cam0"
 d=darc.Control(prefix)
 #takes camera pixels (x,y)
 pxlx =d.Get("npxlx")[0]
