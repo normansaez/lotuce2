@@ -21,7 +21,7 @@ class Go:
     def __init__( self ):
         path, fil = os.path.split(os.path.abspath(os.path.realpath(__file__)))
         self.builder = Gtk.Builder()
-        self.builder.add_from_file(path+"/play.glade")
+        self.builder.add_from_file(path+"/calibra.glade")
         self.window = self.builder.get_object ("window1")
         self.window.set_events(self.window.get_events())
         
@@ -37,15 +37,15 @@ class Go:
 
 
 
-        self.button_play = self.builder.get_object("play")
-        self.button_mode = self.builder.get_object("mode")
-        self.button_stop = self.builder.get_object("stop")
-        self.label = self.builder.get_object("label")
-        self.m_label = self.builder.get_object("m_label")
-        
-        self.button_play.connect("clicked", self._cb_play, "play")
-        self.button_mode.connect("clicked", self._callback, "mode")
-        self.button_stop.connect("clicked", self._cb_stop)
+#        self.button_play = self.builder.get_object("play")
+#        self.button_mode = self.builder.get_object("mode")
+#        self.button_stop = self.builder.get_object("stop")
+#        self.label = self.builder.get_object("label")
+#        self.m_label = self.builder.get_object("m_label")
+#        
+#        self.button_play.connect("clicked", self._cb_play, "play")
+#        self.button_mode.connect("clicked", self._callback, "mode")
+#        self.button_stop.connect("clicked", self._cb_stop)
 
         dic = { 
             "on_buttonQuit_clicked" : self.quit,
