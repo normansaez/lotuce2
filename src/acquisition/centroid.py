@@ -8,11 +8,11 @@ import re
 import os
 import glob
 
-d=darc.Control('all')
+prefix = "all"
+d=darc.Control(prefix)
 #takes camera pixels (x,y)
 pxlx =d.Get("npxlx")[0]
 pxly =d.Get("npxly")[0]
-prefix = "all"
 streamBlock = d.GetStreamBlock('%srtcCentBuf'%prefix,1)#,block=1,flysave=options.directory+'/img.fits')
 streams = streamBlock['%srtcCentBuf'%prefix]
 for stream in streams:
