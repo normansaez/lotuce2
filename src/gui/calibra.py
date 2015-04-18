@@ -3,17 +3,21 @@ import os
 import sys
 import time
 import signal
+import cairo
 import ConfigParser
 
 from multiprocessing import Process
 from subprocess import Popen, PIPE
 
 from gi.repository import Gtk
+from gi.repository import Gdk
 from gi.repository import GObject
 
 from darcaravis import DarcAravis
 
 #signal.signal(signal.SIGINT, receive_signal)
+
+import numpy as np
 
 class Go:
 
@@ -48,11 +52,22 @@ class Go:
         self.label_subap = self.builder.get_object("subap_label")
         self.label_refresh = self.builder.get_object("refresh_label")
         self.label_offset = self.builder.get_object("offset_step_label")
-        
-        self.button_apply_subap.connect("clicked", self._cb_subap, "subap")
-        self.button_apply_refresh.connect("clicked", self._cb_refresh, "refresh")
-        self.button_apply_offset.connect("clicked", self._cb_offset,"offset")
-
+################ fully test
+        self.img = self.builder.get_object("image_cam0_x")
+        data = np.zeros(200*200).reshape(200,200)
+        data[:,30] = 1
+        data[:,100] = 1
+        data[100,:] = 1
+        data[30,:] = 1
+        surface = cairo.ImageSurface.create_for_data(data, cairo.FORMAT_RGB24, 200, 200)
+#        cr = cairo.Context(surface)
+        pb = Gdk.pixbuf_get_from_surface(surface,0,0,200,200)
+        self.img.set_from_pixbuf(pb)
+################
+#        self.button_apply_subap.connect("clicked", self._cb_subap, "subap")
+#        self.button_apply_refresh.connect("clicked", self._cb_refresh, "refresh")
+#        self.button_apply_offset.connect("clicked", self._cb_offset,"offset")
+#
         dic = { 
             "on_buttonQuit_clicked" : self.quit,
         }
