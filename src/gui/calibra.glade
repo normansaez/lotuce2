@@ -11,10 +11,10 @@
           <object class="GtkImage" id="image_cam0">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="margin_left">30</property>
-            <property name="margin_right">30</property>
-            <property name="margin_top">30</property>
-            <property name="margin_bottom">30</property>
+            <property name="margin_left">2</property>
+            <property name="margin_right">2</property>
+            <property name="margin_top">2</property>
+            <property name="margin_bottom">2</property>
             <property name="stock">gtk-missing-image</property>
           </object>
           <packing>
@@ -28,10 +28,10 @@
           <object class="GtkImage" id="image_cam1">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="margin_left">30</property>
-            <property name="margin_right">30</property>
-            <property name="margin_top">30</property>
-            <property name="margin_bottom">30</property>
+            <property name="margin_left">2</property>
+            <property name="margin_right">2</property>
+            <property name="margin_top">2</property>
+            <property name="margin_bottom">2</property>
             <property name="stock">gtk-missing-image</property>
           </object>
           <packing>
@@ -45,10 +45,10 @@
           <object class="GtkImage" id="image_cam2">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="margin_left">30</property>
-            <property name="margin_right">30</property>
-            <property name="margin_top">30</property>
-            <property name="margin_bottom">30</property>
+            <property name="margin_left">2</property>
+            <property name="margin_right">2</property>
+            <property name="margin_top">2</property>
+            <property name="margin_bottom">2</property>
             <property name="stock">gtk-missing-image</property>
           </object>
           <packing>
@@ -62,10 +62,10 @@
           <object class="GtkImage" id="image_cam3">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="margin_left">30</property>
-            <property name="margin_right">30</property>
-            <property name="margin_top">30</property>
-            <property name="margin_bottom">30</property>
+            <property name="margin_left">2</property>
+            <property name="margin_right">2</property>
+            <property name="margin_top">2</property>
+            <property name="margin_bottom">2</property>
             <property name="stock">gtk-missing-image</property>
           </object>
           <packing>
@@ -83,7 +83,7 @@
             <property name="margin_left">30</property>
             <property name="margin_right">30</property>
             <property name="margin_top">30</property>
-            <property name="margin_bottom">30</property>
+            <property name="margin_bottom">2</property>
             <property name="stock">gtk-missing-image</property>
           </object>
           <packing>
@@ -100,7 +100,7 @@
             <property name="margin_left">30</property>
             <property name="margin_right">30</property>
             <property name="margin_top">30</property>
-            <property name="margin_bottom">30</property>
+            <property name="margin_bottom">2</property>
             <property name="stock">gtk-missing-image</property>
           </object>
           <packing>
@@ -115,7 +115,7 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="margin_left">30</property>
-            <property name="margin_right">30</property>
+            <property name="margin_right">2</property>
             <property name="margin_top">30</property>
             <property name="margin_bottom">30</property>
             <property name="stock">gtk-missing-image</property>
@@ -131,7 +131,7 @@
           <object class="GtkImage" id="image_cam1_y">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="margin_left">30</property>
+            <property name="margin_left">2</property>
             <property name="margin_right">30</property>
             <property name="margin_top">30</property>
             <property name="margin_bottom">30</property>
@@ -149,7 +149,7 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="margin_left">30</property>
-            <property name="margin_right">30</property>
+            <property name="margin_right">2</property>
             <property name="margin_top">30</property>
             <property name="margin_bottom">30</property>
             <property name="stock">gtk-missing-image</property>
@@ -165,7 +165,7 @@
           <object class="GtkImage" id="image_cam3_y">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="margin_left">30</property>
+            <property name="margin_left">2</property>
             <property name="margin_right">30</property>
             <property name="margin_top">30</property>
             <property name="margin_bottom">30</property>
@@ -184,7 +184,7 @@
             <property name="can_focus">False</property>
             <property name="margin_left">30</property>
             <property name="margin_right">30</property>
-            <property name="margin_top">30</property>
+            <property name="margin_top">2</property>
             <property name="margin_bottom">30</property>
             <property name="stock">gtk-missing-image</property>
           </object>
@@ -201,7 +201,7 @@
             <property name="can_focus">False</property>
             <property name="margin_left">30</property>
             <property name="margin_right">30</property>
-            <property name="margin_top">30</property>
+            <property name="margin_top">2</property>
             <property name="margin_bottom">30</property>
             <property name="stock">gtk-missing-image</property>
           </object>
@@ -541,7 +541,7 @@
               <object class="GtkLabel" id="subap_label">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">label</property>
+                <property name="label" translatable="yes">--</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
@@ -554,7 +554,7 @@
               <object class="GtkLabel" id="refresh_label">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">label</property>
+                <property name="label" translatable="yes">--</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
@@ -567,7 +567,7 @@
               <object class="GtkLabel" id="offset_step_label">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">label</property>
+                <property name="label" translatable="yes">--</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
