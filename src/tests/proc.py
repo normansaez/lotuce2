@@ -20,6 +20,7 @@ def grabb(name):
     cmd = 'while true; do echo "grabbing"; sleep 1; done'
     process = Popen(cmd , stdout=PIPE , stderr=PIPE , shell=True)
     print process.pid
+    process.terminate()
     process.wait()
 
 def daemon(name):
