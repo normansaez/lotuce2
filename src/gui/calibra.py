@@ -37,12 +37,18 @@ class Go:
 
 
 
-#        self.button_play = self.builder.get_object("play")
-#        self.button_mode = self.builder.get_object("mode")
-#        self.button_stop = self.builder.get_object("stop")
-#        self.label = self.builder.get_object("label")
-#        self.m_label = self.builder.get_object("m_label")
-#        
+        self.button_apply_subap = self.builder.get_object("apply_subap_button")
+        self.button_apply_refresh = self.builder.get_object("refresh_button")
+        self.button_apply_offset = self.builder.get_object("offset_step_button")
+
+        self.entry_subap = self.builder.get_object("subap_size_entry")
+        self.entry_refresh = self.builder.get_object("refresh_entry")
+        self.entry_offset = self.builder.get_object("offset_step_entry")
+
+        self.label_subap = self.builder.get_object("subap_label")
+        self.label_refresh = self.builder.get_object("refresh_label")
+        self.label_offset = self.builder.get_object("offset_step_label")
+        
 #        self.button_play.connect("clicked", self._cb_play, "play")
 #        self.button_mode.connect("clicked", self._callback, "mode")
 #        self.button_stop.connect("clicked", self._cb_stop)
