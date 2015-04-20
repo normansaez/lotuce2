@@ -5,7 +5,7 @@ import time
 import glob
 
 class DarcAravis:
-    def __init__(self, prefix=None):
+    def __init__(self, prefix='all'):
         shm = self.get_darc_prefix()
         #if prefix is None:
         #    prefix = shm
@@ -14,7 +14,7 @@ class DarcAravis:
         #elif prefix != shm:
         #    raise Exception("DARC instance is not running with prefix: %s" % prefix)
         #  
-        #self.darc_instance = darc.Control(prefix)
+        self.darc_instance = darc.Control(prefix)
         
 
             

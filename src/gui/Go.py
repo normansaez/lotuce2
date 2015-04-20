@@ -11,7 +11,7 @@ from subprocess import Popen, PIPE
 from gi.repository import Gtk
 from gi.repository import GObject
 
-#from darcaravis import DarcAravis
+from darcaravis import DarcAravis
 
 #signal.signal(signal.SIGINT, receive_signal)
 
@@ -25,7 +25,7 @@ class Go:
         self.window = self.builder.get_object ("window1")
         self.window.set_events(self.window.get_events())
         
-#        self.DarcAravis = DarcAravis()
+        self.DarcAravis = DarcAravis()
 
         self.configfile=path+'/../../conf/config.cfg'
         self.config = None
@@ -104,31 +104,31 @@ class Go:
             cmd = "python /home/lotuce2/lotuce2/src/gui/acquisition.py"
             process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
 
-#                for i in range(0,4):
-#                    camera = 'cam%d' % i
-#                    print "\n\nReading configuration for %s ... " % camera
-#                    offset_x = self.config.get(camera, 'offset_x')
-#                    offset_y = self.config.get(camera, 'offset_y')
-#                    trigger = self.config.get(camera, 'trigger')
-#                    exptime = self.config.get(camera, 'exptime')
-#                    print "OffsetX: %s" % offset_x 
-#                    print "OffsetY: %s" % offset_y 
-#                    print "Trigger: %s" % trigger
-#                    print "exptime: %s" % exptime
-#                    print "\nReading current configuration from HW : %s" % camera
-#                    self.DarcAravis.get(i, 'OffsetX') 
-#                    self.DarcAravis.get(i, 'OffsetY') 
-#                    self.DarcAravis.get(i, 'ExposureTimeAbs')
-#                    self.DarcAravis.get(i, 'TriggerSource') 
-#                    print "\nSET configuration readed from file, for  %s" % camera
-#                    self.DarcAravis.set(i, 'OffsetX', offset_x) 
-#                    self.DarcAravis.set(i, 'OffsetY', offset_y) 
-#                    self.DarcAravis.set(i, 'ExposureTimeAbs', exptime)
-#                    if trigger.__contains__('True'):
-#                        value = 'Line1'
-#                    else:
-#                        value = 'Freerun'
-#                    self.DarcAravis.set(i, 'TriggerSource', value) 
+            for i in range(0,4):
+                camera = 'cam%d' % i
+                print "\n\nReading configuration for %s ... " % camera
+                offset_x = self.config.get(camera, 'offset_x')
+                offset_y = self.config.get(camera, 'offset_y')
+                trigger = self.config.get(camera, 'trigger')
+                exptime = self.config.get(camera, 'exptime')
+                print "OffsetX: %s" % offset_x 
+                print "OffsetY: %s" % offset_y 
+                print "Trigger: %s" % trigger
+                print "exptime: %s" % exptime
+                print "\nReading current configuration from HW : %s" % camera
+                self.DarcAravis.get(i, 'OffsetX') 
+                self.DarcAravis.get(i, 'OffsetY') 
+                self.DarcAravis.get(i, 'ExposureTimeAbs')
+                self.DarcAravis.get(i, 'TriggerSource') 
+                print "\nSET configuration readed from file, for  %s" % camera
+                self.DarcAravis.set(i, 'OffsetX', offset_x) 
+                self.DarcAravis.set(i, 'OffsetY', offset_y) 
+                self.DarcAravis.set(i, 'ExposureTimeAbs', exptime)
+                if trigger.__contains__('True'):
+                    value = 'Line1'
+                else:
+                    value = 'Freerun'
+                self.DarcAravis.set(i, 'TriggerSource', value) 
 #                #
 #                # Seting up BBB
 #                # 
