@@ -57,6 +57,14 @@ class Go:
 
     def _cb_stop( self, button):
         print "Stop was clicked"
+        cmd = "ps aux|grep calibra|awk '{print $2}'|xargs kill -9"
+        process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
+        cmd = "ps aux|grep acquisition|awk '{print $2}'|xargs kill -9"
+        process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
+        cmd = 'darcmagic stop -c  --prefix=all'
+        process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
+        process.wait()
+
 
     def _cb_play(self, widget, data=None):
         print "%s: %s" % (data, ("disconnecting", "connecting")[widget.get_active()])
@@ -71,7 +79,6 @@ class Go:
             self.button_play.set_label("Play")
 
         if self.label.get_text() == 'Calibration' and widget.get_active():
-            print "Starting DARC from this GUI"
             #
             # START DARC
             #
@@ -80,15 +87,22 @@ class Go:
             #
             # Wait until DARC start, and then show GUI
             time.sleep(30)
-            cmd = 'python /home/lotuce2/lotuce2/src/gui/lotuce2Commander.py'
+            cmd = 'python /home/lotuce2/lotuce2/src/gui/calibra.py'
             process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
-        else:
+
+        if self.label.get_text() == 'Adquisition' and widget.get_active():
             cmd = 'darcmagic stop -c  --prefix=all'
             process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
             process.wait()
 
-        if self.label.get_text() == 'Adquisition' and widget.get_active():
-            print "Parto Adquiero imagenes"
+            cmd = "ps aux|grep calibra|awk '{print $2}'|xargs kill -9"
+            process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
+            cmd = 'python /opt/darc/bin/darccontrol -o /home/lotuce2/lotuce2/conf/configManta.py --prefix=all'
+            process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
+            #
+            time.sleep(30)
+            cmd = "python /home/lotuce2/lotuce2/src/gui/acquisition.py"
+            process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
 
 #                for i in range(0,4):
 #                    camera = 'cam%d' % i

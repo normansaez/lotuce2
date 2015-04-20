@@ -32,7 +32,7 @@ class Go:
         GObject.threads_init()
         path, fil = os.path.split(os.path.abspath(os.path.realpath(__file__)))
         self.builder = Gtk.Builder()
-        self.builder.add_from_file(path+"/adq.glade")
+        self.builder.add_from_file(path+"/acquisition.glade")
         self.window = self.builder.get_object ("window1")
         self.window.set_events(self.window.get_events())
         
@@ -110,7 +110,7 @@ class Go:
         subap = 60
         radio = 5
         kernel = 20
-        inchs = 2
+        inchs = 4
         #get mask
 #        mask = get_mask_spot(radio,kernel)
 
@@ -224,6 +224,7 @@ class Go:
         ax.xaxis.grid(True)
         ax.yaxis.grid(True)
         ax.legend(loc='center left', bbox_to_anchor=(0.75, 0.92))
+        plt.gcf().set_size_inches(inchs,inchs)
         plt.savefig('covx.png')
         self.img_cov.set_from_file("covx.png")
 
