@@ -1,6 +1,7 @@
 import darc
 import plot
 import gtk
+import gobject
 import os
 from matplotlib.backends.backend_gtkagg import FigureCanvasGTKAgg as FigureCanvas
 import numpy as np
@@ -11,6 +12,7 @@ from scipy.stats import norm
 #DARC stuff
 _prefix = 'all'
 d_obj = darc.Control(_prefix)
+global counter
 
 int_max = (2**12 - 1. )# 0 to 2^(camera bits). As start from 0, it is needed get one value less
 # funcs
@@ -160,7 +162,6 @@ ax2.set_xlim(0,x)
 ax2.invert_yaxis()
 ax2.plot(axis,cam3_ny,'-')
 #--------------------------------------------------
-gtk.gdk.threads_init()
 configdir = "/opt/darc/conf"
 win=gtk.Window()
 win.set_default_size(800,800)
