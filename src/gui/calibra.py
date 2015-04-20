@@ -8,6 +8,7 @@ import ConfigParser
 
 from multiprocessing import Process
 from subprocess import Popen, PIPE
+from math import pi
 
 from gi.repository import Gtk
 from gi.repository import Gdk
@@ -146,9 +147,11 @@ class Go:
         cam2 = data[xi_cam2:xf_cam2,yi_cam2:yf_cam2]
         cam3 = data[xi_cam3:xf_cam3,yi_cam3:yf_cam3]
 
-        subap = 60
-        radio = 5
-        kernel = 20
+        weight = 200
+        height = weight
+        subap = 150
+        radio = 30
+        kernel = 50
         #get mask
         mask = get_mask_spot(radio,kernel)
 
