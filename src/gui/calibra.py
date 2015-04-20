@@ -153,48 +153,57 @@ class Go:
         subap = 60
         radio = 5
         kernel = 20
-        inchs = 3.5
+        inchs = 2.5
         #get mask
         mask = get_mask_spot(radio,kernel)
 
         cy, cx = get_centroid(cam0, mask)
         
+        plt.figure(1, frameon=False)
         patch = get_square(cx,cy,subap)
         plt.gca().add_patch(patch)
         patch = get_square(cx,cy,height,color='green')
         plt.gca().add_patch(patch)
+        plt.Axes(plt.figure(1), [0., 0., 1., 1.])
         plt.gcf().set_size_inches(inchs,inchs)
-        imshow(cam0)
+        plt.gca().set_axis_off()
+        imshow(cam0, aspect='normal')
         plt.savefig("cam0.png")
 
-        plt.figure(2)
+        plt.figure(2, frameon=False)
         cy, cx = get_centroid(cam1, mask)
         patch = get_square(cx,cy,subap)
         plt.gca().add_patch(patch)
         patch = get_square(cx,cy,height,color='green')
         plt.gca().add_patch(patch)
+        plt.Axes(plt.figure(2), [0., 0., 1., 1.])
         plt.gcf().set_size_inches(inchs,inchs)
-        imshow(cam1)
+        plt.gca().set_axis_off()
+        imshow(cam1, aspect='normal')
         plt.savefig("cam1.png")
 
-        plt.figure(3)
+        plt.figure(3, frameon=False)
         cy, cx = get_centroid(cam2, mask)
         patch = get_square(cx,cy,subap)
         plt.gca().add_patch(patch)
         patch = get_square(cx,cy,height,color='green')
         plt.gca().add_patch(patch)
+        plt.Axes(plt.figure(3), [0., 0., 1., 1.])
         plt.gcf().set_size_inches(inchs,inchs)
-        imshow(cam2)
+        plt.gca().set_axis_off()
+        imshow(cam2, aspect='normal')
         plt.savefig("cam2.png")
 
-        plt.figure(4)
+        plt.figure(4, frameon=False)
         cy, cx = get_centroid(cam3, mask)
         patch = get_square(cx,cy,subap)
         plt.gca().add_patch(patch)
         patch = get_square(cx,cy,height,color='green')
         plt.gca().add_patch(patch)
+        plt.Axes(plt.figure(4), [0., 0., 1., 1.])
         plt.gcf().set_size_inches(inchs,inchs)
-        imshow(cam3)
+        plt.gca().set_axis_off()
+        imshow(cam3, aspect='normal')
         plt.savefig("cam3.png")
         
         self.img_cam0.set_from_file("cam0.png")
