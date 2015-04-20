@@ -407,7 +407,7 @@
             <child>
               <object class="GtkEntry" id="subap_size_entry">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
+                <property name="can_focus">True</property>
                 <property name="invisible_char">•</property>
                 <property name="invisible_char_set">True</property>
               </object>
@@ -421,7 +421,7 @@
             <child>
               <object class="GtkEntry" id="refresh_entry">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
+                <property name="can_focus">True</property>
                 <property name="invisible_char">•</property>
                 <property name="invisible_char_set">True</property>
               </object>
@@ -435,9 +435,9 @@
             <child>
               <object class="GtkEntry" id="offset_step_entry">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
+                <property name="can_focus">True</property>
                 <property name="invisible_char">•</property>
-                <property name="invisible_char_set">True</property>
+                <property name="shadow_type">none</property>
               </object>
               <packing>
                 <property name="left_attach">2</property>

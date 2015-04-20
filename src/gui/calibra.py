@@ -13,6 +13,7 @@ from pylab import imshow,show
 from scipy import signal
 from matplotlib.figure import Figure
 from matplotlib.path import Path
+from darcaravis import DarcAravis
 
 from gi.repository import Gtk
 from gi.repository import Gdk
@@ -68,13 +69,14 @@ class Go:
         self.window = self.builder.get_object ("window1")
         self.window.set_events(self.window.get_events())
         
-#        self.DarcAravis = DarcAravis()
+        self.DarcAravis = DarcAravis()
 
         self.configfile=path+'/../../conf/config.cfg'
         self.config = None
         self.config = ConfigParser.ConfigParser()
         self.config.read(self.configfile)
-
+        
+        self.__step = "--"
         if self.window:
             self.window.connect("destroy", Gtk.main_quit)
 
@@ -347,10 +349,6 @@ class Go:
         
 
 ################
-#        self.button_apply_subap.connect("clicked", self._cb_subap, "subap")
-#        self.button_apply_refresh.connect("clicked", self._cb_refresh, "refresh")
-#        self.button_apply_offset.connect("clicked", self._cb_offset,"offset")
-#
         #Toggle button to connect to cam0
         self.togglebutton_cam0 = self.builder.get_object ("togglebutton0")
         self.togglebutton_cam0.connect("toggled", self.callback, "0")
@@ -385,11 +383,25 @@ class Go:
         self.button_le.connect("clicked", self.offset_callback, "le")
         self.button_ri.connect("clicked", self.offset_callback, "ri")
 
+        self.button_apply_offset.connect("clicked", self.step_callback, "step")
         dic = { 
             "on_buttonQuit_clicked" : self.quit,
         }
         
         self.builder.connect_signals( dic )
+
+    def step_callback(self, widget, data=None):
+        '''
+        step_callback
+        '''
+        step = self.entry_offset.get_text()
+        print "step %s" % step
+        if step == "":
+            step = "10"
+        self.__step = int(step)
+        print "self.__step %d" % self.__step
+        self.label_offset.set_text("%s" % str(step))
+        self.entry_offset.set_text("")
 
     def offset_callback(self, widget, data=None):
         '''
