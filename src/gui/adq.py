@@ -103,68 +103,6 @@ class Go:
         cam2 = data[xi_cam2:xf_cam2,yi_cam2:yf_cam2]
         cam3 = data[xi_cam3:xf_cam3,yi_cam3:yf_cam3]
 
-#        weight = 120
-        height = 30
-        subap = 60
-        radio = 5
-        kernel = 20
-        inchs = 2
-        #get mask
-        mask = get_mask_spot(radio,kernel)
-
-        cy, cx = get_centroid(cam0, mask)
-        
-        plt.figure(1, frameon=False)
-        patch = get_square(cx,cy,subap)
-        plt.gca().add_patch(patch)
-        patch = get_square(cx,cy,height,color='green')
-        plt.gca().add_patch(patch)
-        plt.gcf().set_size_inches(inchs,inchs)
-        plt.Axes(plt.figure(1), [0., 0., 1., 1.])
-        plt.gca().set_axis_off()
-        imshow(cam0, aspect='normal', cmap = cm.Greys_r)
-        plt.savefig("cam0.png")
-
-        plt.figure(2, frameon=False)
-        cy, cx = get_centroid(cam1, mask)
-        patch = get_square(cx,cy,subap)
-        plt.gca().add_patch(patch)
-        patch = get_square(cx,cy,height,color='green')
-        plt.gca().add_patch(patch)
-        plt.Axes(plt.figure(2), [0., 0., 1., 1.])
-        plt.gcf().set_size_inches(inchs,inchs)
-        plt.gca().set_axis_off()
-        imshow(cam1, aspect='normal', cmap = cm.Greys_r)
-        plt.savefig("cam1.png")
-
-        plt.figure(3, frameon=False)
-        cy, cx = get_centroid(cam2, mask)
-        patch = get_square(cx,cy,subap)
-        plt.gca().add_patch(patch)
-        patch = get_square(cx,cy,height,color='green')
-        plt.gca().add_patch(patch)
-        plt.Axes(plt.figure(3), [0., 0., 1., 1.])
-        plt.gcf().set_size_inches(inchs,inchs)
-        plt.gca().set_axis_off()
-        imshow(cam2, aspect='normal', cmap = cm.Greys_r)
-        plt.savefig("cam2.png")
-
-        plt.figure(4, frameon=False)
-        cy, cx = get_centroid(cam3, mask)
-        patch = get_square(cx,cy,subap)
-        plt.gca().add_patch(patch)
-        patch = get_square(cx,cy,height,color='green')
-        plt.gca().add_patch(patch)
-        plt.Axes(plt.figure(4), [0., 0., 1., 1.])
-        plt.gcf().set_size_inches(inchs,inchs)
-        plt.gca().set_axis_off()
-        imshow(cam3, aspect='normal', cmap = cm.Greys_r)
-        plt.savefig("cam3.png")
-        
-        self.img_cam0.set_from_file("cam0.png")
-        self.img_cam1.set_from_file("cam1.png")
-        self.img_cam2.set_from_file("cam2.png")
-        self.img_cam3.set_from_file("cam3.png")
         
         dic = { 
             "on_buttonQuit_clicked" : self.quit,
@@ -275,7 +213,7 @@ class Go:
 
     def _cb_timeout(self):
         self.counter += 1 
-        self.label_refresh.set_text(str(self.counter))
+#        self.label_refresh.set_text(str(self.counter))
         print "pase"
 
     def _cb_stop( self, button):
