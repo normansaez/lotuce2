@@ -9,6 +9,7 @@ import ConfigParser
 from multiprocessing import Process
 from subprocess import Popen, PIPE
 from math import pi
+from pylab import imshow,show
 
 from gi.repository import Gtk
 from gi.repository import Gdk
@@ -147,46 +148,55 @@ class Go:
         cam2 = data[xi_cam2:xf_cam2,yi_cam2:yf_cam2]
         cam3 = data[xi_cam3:xf_cam3,yi_cam3:yf_cam3]
 
-        weight = 200
-        height = weight
-        subap = 150
-        radio = 30
-        kernel = 50
+#        weight = 120
+        height = 30
+        subap = 60
+        radio = 5
+        kernel = 20
+        inchs = 3.5
         #get mask
         mask = get_mask_spot(radio,kernel)
 
         cy, cx = get_centroid(cam0, mask)
+        
         patch = get_square(cx,cy,subap)
         plt.gca().add_patch(patch)
         patch = get_square(cx,cy,height,color='green')
         plt.gca().add_patch(patch)
-        plt.gcf().set_size_inches(2,2)
+        plt.gcf().set_size_inches(inchs,inchs)
+        imshow(cam0)
         plt.savefig("cam0.png")
 
+        plt.figure(2)
         cy, cx = get_centroid(cam1, mask)
         patch = get_square(cx,cy,subap)
         plt.gca().add_patch(patch)
         patch = get_square(cx,cy,height,color='green')
         plt.gca().add_patch(patch)
-        plt.gcf().set_size_inches(2,2)
+        plt.gcf().set_size_inches(inchs,inchs)
+        imshow(cam1)
         plt.savefig("cam1.png")
 
+        plt.figure(3)
         cy, cx = get_centroid(cam2, mask)
         patch = get_square(cx,cy,subap)
         plt.gca().add_patch(patch)
         patch = get_square(cx,cy,height,color='green')
         plt.gca().add_patch(patch)
-        plt.gcf().set_size_inches(2,2)
+        plt.gcf().set_size_inches(inchs,inchs)
+        imshow(cam2)
         plt.savefig("cam2.png")
 
+        plt.figure(4)
         cy, cx = get_centroid(cam3, mask)
         patch = get_square(cx,cy,subap)
         plt.gca().add_patch(patch)
         patch = get_square(cx,cy,height,color='green')
         plt.gca().add_patch(patch)
-        plt.gcf().set_size_inches(2,2)
+        plt.gcf().set_size_inches(inchs,inchs)
+        imshow(cam3)
         plt.savefig("cam3.png")
-
+        
         self.img_cam0.set_from_file("cam0.png")
         self.img_cam1.set_from_file("cam1.png")
         self.img_cam2.set_from_file("cam2.png")
