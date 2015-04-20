@@ -159,8 +159,8 @@ class Go:
         plt.gca().add_patch(patch)
         patch = get_square(cx,cy,height,color='green')
         plt.gca().add_patch(patch)
-        plt.Axes(plt.figure(1), [0., 0., 1., 1.])
         plt.gcf().set_size_inches(inchs,inchs)
+        plt.Axes(plt.figure(1), [0., 0., 1., 1.])
         plt.gca().set_axis_off()
         imshow(cam0, aspect='normal', cmap = cm.Greys_r)
         plt.savefig("cam0.png")
@@ -248,12 +248,14 @@ class Go:
 
         #plot px,py cam0       
         plt.close()
-        cam0_fy = plt.figure(11, tight_layout=True)
+        cam0_fy = plt.figure(11, tight_layout=True, frameon=False)
         ax = cam0_fy.add_subplot(111)
         ax.set_ylim(0,x)
         ax.invert_xaxis()
         ax.plot(cam0_nx,axis,'-')
         plt.gcf().set_size_inches(inchs,inchs)
+        plt.Axes(cam0_fy, [0., 0., 1., 1.])
+        plt.gca().set_axis_off()
         plt.savefig("cam0y.png")
         self.img_cam0_y.set_from_file("cam0y.png")
         
