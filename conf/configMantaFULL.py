@@ -84,15 +84,20 @@ for k in range(ncam):
             indx=nsubapsCum[k]+i*nsubx[k]+j
             subapLocation[indx]=(yoff[k]+i*suby[k],yoff[k]+i*suby[k]+suby[k],1,xoff[k]+j*subx[k],xoff[k]+j*subx[k]+subx[k],1)
 
-pxlCnt=numpy.zeros((nsubaps,),"i")
-# set up the pxlCnt array - number of pixels to wait until each subap is ready.  Here assume identical for each camera.
-for k in range(ncam):
-    # tot=0#reset for each camera
-    for i in range(nsub[k]):
-        indx=nsubapsCum[k]+i
-        #n=(subapLocation[indx,1]-1)*npxlx[k]+subapLocation[indx,4]
-        n=subapLocation[indx,1]*npxlx[k]#whole rows together...
-        pxlCnt[indx]=n
+pxlCnt=numpy.ones((nsubaps,),"i")
+print "############ ACA ##################"
+print pxlCnt
+## set up the pxlCnt array - number of pixels to wait until each subap is ready.  Here assume identical for each camera.
+#for k in range(ncam):
+#    # tot=0#reset for each camera
+#    for i in range(nsub[k]):
+#        indx=nsubapsCum[k]+i
+#        #n=(subapLocation[indx,1]-1)*npxlx[k]+subapLocation[indx,4]
+#        n=subapLocation[indx,1]*npxlx[k]#whole rows together...
+#        pxlCnt[indx]=n
+pxlCnt = pxlCnt*pixel_number_x*pixel_number_y
+print pxlCnt
+print "############ ACA ##################"
 
 
 #The params are dependent on the interface library used.
