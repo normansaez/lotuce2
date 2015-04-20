@@ -67,6 +67,7 @@ class Go:
         self.img_cam1 = self.builder.get_object("image_cam1")
         self.img_cam2 = self.builder.get_object("image_cam2")
         self.img_cam3 = self.builder.get_object("image_cam3")
+        self.img_cov = self.builder.get_object("image_cov")
 #TODO: remove all to other place 
         d=darc.Control('all')
         #takes camera pixels (x,y)
@@ -104,6 +105,128 @@ class Go:
         cam3 = data[xi_cam3:xf_cam3,yi_cam3:yf_cam3]
 
         
+#        weight = 120
+        height = 30
+        subap = 60
+        radio = 5
+        kernel = 20
+        inchs = 2
+        #get mask
+#        mask = get_mask_spot(radio,kernel)
+
+#        cy, cx = get_centroid(cam0, mask)
+        
+        plt.figure(1, frameon=False)
+#        patch = get_square(cx,cy,subap)
+#        plt.gca().add_patch(patch)
+#        patch = get_square(cx,cy,height,color='green')
+#        plt.gca().add_patch(patch)
+        plt.gcf().set_size_inches(inchs,inchs)
+        plt.Axes(plt.figure(1), [0., 0., 1., 1.])
+        plt.gca().set_axis_off()
+        imshow(cam0, aspect='normal', cmap = cm.Greys_r)
+        plt.savefig("cam0.png")
+
+        plt.figure(2, frameon=False)
+#        cy, cx = get_centroid(cam1, mask)
+#        patch = get_square(cx,cy,subap)
+#        plt.gca().add_patch(patch)
+#        patch = get_square(cx,cy,height,color='green')
+#        plt.gca().add_patch(patch)
+        plt.Axes(plt.figure(2), [0., 0., 1., 1.])
+        plt.gcf().set_size_inches(inchs,inchs)
+        plt.gca().set_axis_off()
+        imshow(cam1, aspect='normal', cmap = cm.Greys_r)
+        plt.savefig("cam1.png")
+
+        plt.figure(3, frameon=False)
+#        cy, cx = get_centroid(cam2, mask)
+#        patch = get_square(cx,cy,subap)
+#        plt.gca().add_patch(patch)
+#        patch = get_square(cx,cy,height,color='green')
+#        plt.gca().add_patch(patch)
+        plt.Axes(plt.figure(3), [0., 0., 1., 1.])
+        plt.gcf().set_size_inches(inchs,inchs)
+        plt.gca().set_axis_off()
+        imshow(cam2, aspect='normal', cmap = cm.Greys_r)
+        plt.savefig("cam2.png")
+
+        plt.figure(4, frameon=False)
+#        cy, cx = get_centroid(cam3, mask)
+#        patch = get_square(cx,cy,subap)
+#        plt.gca().add_patch(patch)
+#        patch = get_square(cx,cy,height,color='green')
+#        plt.gca().add_patch(patch)
+        plt.Axes(plt.figure(4), [0., 0., 1., 1.])
+        plt.gcf().set_size_inches(inchs,inchs)
+        plt.gca().set_axis_off()
+        imshow(cam3, aspect='normal', cmap = cm.Greys_r)
+        plt.savefig("cam3.png")
+        
+        self.img_cam0.set_from_file("cam0.png")
+        self.img_cam1.set_from_file("cam1.png")
+        self.img_cam2.set_from_file("cam2.png")
+        self.img_cam3.set_from_file("cam3.png")
+
+        #COVAR
+        prefix = "all"
+        streamBlock = d.GetStreamBlock('%srtcCentBuf'%prefix,5)#,block=1,flysave=options.directory+'/img.fits')
+        streams = streamBlock['%srtcCentBuf'%prefix]
+        x0 = np.array([])
+        x1 = np.array([])
+        x2 = np.array([])
+        x3 = np.array([])
+        y0 = np.array([])
+        y1 = np.array([])
+        y2 = np.array([])
+        y3 = np.array([])
+        for stream in streams:
+            data = stream[0]
+            x0 = np.append(x0,data[0])
+            y0 = np.append(x0,data[1])
+        
+            x1 = np.append(x1,data[2])
+            y1 = np.append(x1,data[3])
+        
+            x2 = np.append(x2,data[4])
+            y2 = np.append(x2,data[5])
+        
+            x3 = np.append(x3,data[6])
+            y3 = np.append(x3,data[7])
+        
+        cov_x = np.array([])
+        cov_x = np.append(cov_x, np.cov(x0,x1)[0][1]) 
+        cov_x = np.append(cov_x, np.cov(x0,x2)[0][1])
+        cov_x = np.append(cov_x, np.cov(x0,x3)[0][1])
+        cov_x = np.append(cov_x, np.cov(x1,x2)[0][1])
+        cov_x = np.append(cov_x, np.cov(x1,x3)[0][1])
+        cov_x = np.append(cov_x, np.cov(x2,x3)[0][1])
+        
+        cov_y = np.array([])
+        cov_y = np.append(cov_y, np.cov(y0,y1)[0][1]) 
+        cov_y = np.append(cov_y, np.cov(y0,y2)[0][1])
+        cov_y = np.append(cov_y, np.cov(y0,y3)[0][1])
+        cov_y = np.append(cov_y, np.cov(y1,y2)[0][1])
+        cov_y = np.append(cov_y, np.cov(y1,y3)[0][1])
+        cov_y = np.append(cov_y, np.cov(y2,y3)[0][1])
+        
+        
+        baselines = [2,10,15,20,50,120]
+        plt.close()
+        fig = plt.figure()
+        ax = plt.subplot(111)
+        ax.plot(baselines, cov_x,'ro-',label=r'$COV(X_{i},X_{i+1})$')
+        ax.plot(baselines, cov_y,'bo-',label=r'$COV(Y_{i},Y_{i+1})$')
+        x = ax.get_position()
+        plt.title(r'COV(X,Y) v/s Baseline')
+        plt.ylabel(r'$COV(XY_{i},XY_{i+1})$')
+        plt.xlabel(r'baseline')
+        ax.xaxis.grid(True)
+        ax.yaxis.grid(True)
+        ax.legend(loc='center left', bbox_to_anchor=(0.75, 0.92))
+        plt.savefig('covx.png')
+        self.img_cov.set_from_file("covx.png")
+
         dic = { 
             "on_buttonQuit_clicked" : self.quit,
         }
