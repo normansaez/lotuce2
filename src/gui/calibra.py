@@ -16,6 +16,7 @@ from matplotlib.path import Path
 
 from gi.repository import Gtk
 from gi.repository import Gdk
+from gi.repository import GObject
 
 import numpy as np
 import matplotlib.cm as cm
@@ -77,6 +78,8 @@ class Go:
             self.window.connect("destroy", Gtk.main_quit)
 
 
+        self.counter = 0
+        GObject.timeout_add_seconds(30, self._cb_timeout)
 
         self.button_apply_subap = self.builder.get_object("apply_subap_button")
         self.button_apply_refresh = self.builder.get_object("refresh_button")
@@ -357,8 +360,10 @@ class Go:
         }
         
         self.builder.connect_signals( dic )
-        self.proc_grab = None
-        self.proc_daem = None
+
+    def _cb_timeout(self):
+        self.label_refresh.set_text(str(self.counter))
+        self.counter += 30 
 
     def _cb_stop( self, button):
         print "Stop was clicked"
