@@ -7,6 +7,8 @@ import numpy as np
 import re
 import os
 import glob
+from pylab import grid#imshow,show
+import matplotlib.pyplot as plt
 
 prefix = "all"
 d=darc.Control(prefix)
@@ -44,17 +46,53 @@ for stream in streams:
     x3 = np.append(x3,data[6])
     y3 = np.append(x3,data[7])
 
-print np.cov(x0,x1)[0][1]
-print np.cov(x0,x2)[0][1]
-print np.cov(x0,x3)[0][1]
-print np.cov(x1,x2)[0][1]
-print np.cov(x1,x3)[0][1]
-print np.cov(x2,x3)[0][1]
+cov_x = np.array([])
+cov_x = np.append(cov_x, np.cov(x0,x1)[0][1]) 
+cov_x = np.append(cov_x, np.cov(x0,x2)[0][1])
+cov_x = np.append(cov_x, np.cov(x0,x3)[0][1])
+cov_x = np.append(cov_x, np.cov(x1,x2)[0][1])
+cov_x = np.append(cov_x, np.cov(x1,x3)[0][1])
+cov_x = np.append(cov_x, np.cov(x2,x3)[0][1])
 
-print np.cov(y0,y1)[0][1]
-print np.cov(y0,y2)[0][1]
-print np.cov(y0,y3)[0][1]
-print np.cov(y1,y2)[0][1]
-print np.cov(y1,y3)[0][1]
-print np.cov(y2,y3)[0][1]
+cov_y = np.array([])
+cov_y = np.append(cov_y, np.cov(y0,y1)[0][1]) 
+cov_y = np.append(cov_y, np.cov(y0,y2)[0][1])
+cov_y = np.append(cov_y, np.cov(y0,y3)[0][1])
+cov_y = np.append(cov_y, np.cov(y1,y2)[0][1])
+cov_y = np.append(cov_y, np.cov(y1,y3)[0][1])
+cov_y = np.append(cov_y, np.cov(y2,y3)[0][1])
+
+
+baselines = [2,10,15,20,50,120]
+
+fig = plt.figure()
+ax = plt.subplot(111)
+ax.plot(baselines, cov_x,'ro',label=r'$COV(X_{i},X_{i+1})$')
+x = ax.get_position()
+plt.title(r'COV(X) v/s Baseline')
+plt.ylabel(r'$COV(X_{i},X_{i+1})$')
+plt.xlabel(r'baseline')
+ax.xaxis.grid(True)
+ax.yaxis.grid(True)
+ax.legend(loc='center left', bbox_to_anchor=(0.75, 0.92))
+plt.savefig('covx.png')
+plt.show()
+
+
+fig = plt.figure()
+ax = plt.subplot(111)
+ax.plot(baselines, cov_y,'bo',label=r'$COV(Y_{i},Y_{i+1})$')
+x = ax.get_position()
+plt.title(r'COV(Y) v/s Baseline')
+plt.ylabel(r'$COV(Y_{i},Y_{i+1})$')
+plt.xlabel(r'baseline')
+ax.xaxis.grid(True)
+ax.yaxis.grid(True)
+ax.legend(loc='center left', bbox_to_anchor=(0.75, 0.92))
+plt.savefig('covy.png')
+plt.show()
+
+
+
+
 
