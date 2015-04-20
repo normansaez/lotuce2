@@ -77,4 +77,6 @@ if __name__ == '__main__':
     plt.gca().add_patch(patch)
     imshow(img)
     print time.time() - start_time, "seconds"
+    plt.gcf().set_size_inches(2,2)
+    plt.savefig("test.png")
     plt.show()

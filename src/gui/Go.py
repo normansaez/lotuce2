@@ -11,7 +11,7 @@ from subprocess import Popen, PIPE
 from gi.repository import Gtk
 from gi.repository import GObject
 
-from darcaravis import DarcAravis
+#from darcaravis import DarcAravis
 
 #signal.signal(signal.SIGINT, receive_signal)
 
@@ -25,7 +25,7 @@ class Go:
         self.window = self.builder.get_object ("window1")
         self.window.set_events(self.window.get_events())
         
-        self.DarcAravis = DarcAravis()
+#        self.DarcAravis = DarcAravis()
 
         self.configfile=path+'/../../conf/config.cfg'
         self.config = None

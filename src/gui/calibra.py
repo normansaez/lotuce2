@@ -15,14 +15,49 @@ from gi.repository import Gdk
 
 from darcaravis import DarcAravis
 
-#signal.signal(signal.SIGINT, receive_signal)
-
 import numpy as np
 import darc
 import os
-from matplotlib.backends.backend_gtk3cairo import FigureCanvasGTK3Cairo as FigureCanvas
+#from matplotlib.backends.backend_gtk3cairo import FigureCanvasGTK3Cairo as FigureCanvas
 from matplotlib.figure import Figure
+from scipy import signal
 import matplotlib.pyplot as plt
+from matplotlib.path import Path
+import matplotlib.patches as patches
+
+def get_square(cx, cy, side, color='red'):
+    verts = [
+        (cx-side, cy-side), # left, bottom
+        (cx-side, cy+side), # left, top
+        (cx+side, cy+side), # right, top
+        (cx+side, cy-side), # right, bottom
+        (cx, cy), # ignored
+        ]
+    
+    codes = [Path.MOVETO,
+             Path.LINETO,
+             Path.LINETO,
+             Path.LINETO,
+             Path.CLOSEPOLY,
+             ]
+    
+    path = Path(verts, codes)
+    
+    patch = patches.PathPatch(path, facecolor='none', EdgeColor=color, lw=1)
+    return patch
+
+def get_centroid(img, mask):
+    correlation = signal.fftconvolve(img,mask,mode='same')
+    #Getting max 
+    cy, cx = np.unravel_index(correlation.argmax(),correlation.shape)
+    return cy,cx
+
+def get_mask_spot(radio=5, kernel=20):
+    # syntetic img to be convolved
+    y,x = np.ogrid[-kernel: kernel+1, -kernel: kernel+1]
+    mask = x**2+y**2 <= pi*radio**2
+    mask = mask*1
+    return mask
 
 class Go:
 
@@ -34,7 +69,7 @@ class Go:
         self.window = self.builder.get_object ("window1")
         self.window.set_events(self.window.get_events())
         
-        self.DarcAravis = DarcAravis()
+#        self.DarcAravis = DarcAravis()
 
         self.configfile=path+'/../../conf/config.cfg'
         self.config = None
@@ -110,156 +145,49 @@ class Go:
         cam1 = data[xi_cam1:xf_cam1,yi_cam1:yf_cam1]
         cam2 = data[xi_cam2:xf_cam2,yi_cam2:yf_cam2]
         cam3 = data[xi_cam3:xf_cam3,yi_cam3:yf_cam3]
-        h, w = cam0.shape
-        h = h - 100
-        w = w - 100
-        surface0 = cairo.ImageSurface.create_for_data(cam0, cairo.FORMAT_RGB24, w, h)
-        surface1 = cairo.ImageSurface.create_for_data(cam1, cairo.FORMAT_RGB24, w, h)
-        surface2 = cairo.ImageSurface.create_for_data(cam2, cairo.FORMAT_RGB24, w, h)
-        surface3 = cairo.ImageSurface.create_for_data(cam3, cairo.FORMAT_RGB24, w, h)
-#        cr = cairo.Context(surface)
-        pb0 = Gdk.pixbuf_get_from_surface(surface0,0,0,w,h)
-        pb1 = Gdk.pixbuf_get_from_surface(surface1,0,0,w,h)
-        pb2 = Gdk.pixbuf_get_from_surface(surface2,0,0,w,h)
-        pb3 = Gdk.pixbuf_get_from_surface(surface3,0,0,w,h)
 
-        self.img_cam0.set_from_pixbuf(pb0)
-        self.img_cam1.set_from_pixbuf(pb1)
-        self.img_cam2.set_from_pixbuf(pb2)
-        self.img_cam3.set_from_pixbuf(pb3)
-        #new profile
-        x = len(cam0)
-        cam0_nx = np.array([])
-        cam0_ny = np.array([])
-        cam1_nx = np.array([])
-        cam1_ny = np.array([])
-        cam2_nx = np.array([])
-        cam2_ny = np.array([])
-        cam3_nx = np.array([])
-        cam3_ny = np.array([])
-        
-        c0 = cam0.max()
-        c1 = cam1.max()
-        c2 = cam2.max()
-        c3 = cam3.max()
-        
-        for i in range(0,x):
-            cam0_nx = np.append(cam0_nx, cam0[i,].sum())
-            cam0_ny = np.append(cam0_ny, cam0[:,i].sum())
-            cam1_nx = np.append(cam1_nx, cam1[i,].sum())
-            cam1_ny = np.append(cam1_ny, cam1[:,i].sum())
-            cam2_nx = np.append(cam2_nx, cam2[i,].sum())
-            cam2_ny = np.append(cam2_ny, cam2[:,i].sum())
-            cam3_nx = np.append(cam3_nx, cam3[i,].sum())
-            cam3_ny = np.append(cam3_ny, cam3[:,i].sum())
-        axis = range(0,x)
-        #normalize according cameras:
-        int_max = 4095
-        cam0_nx = cam0_nx/int_max
-        cam0_ny = cam0_ny/int_max
-        
-        cam1_nx = cam1_nx/int_max
-        cam1_ny = cam1_ny/int_max
-        
-        cam2_nx = cam2_nx/int_max
-        cam2_ny = cam2_ny/int_max
-        
-        cam3_nx = cam3_nx/int_max
-        cam3_ny = cam3_ny/int_max
-        
-        #cam0_fx = Figure(figsize=(5,4), dpi=30)
-        cam0_fx = Figure(dpi=30, tight_layout=True)
-        ax = cam0_fx.add_subplot(111)
-        #ax.set_xlim(0,1)
-        ax.set_ylim(0,x)
-        ax.invert_xaxis()
-        ax.plot(cam0_nx,axis,'-')
-        #mu, std = norm.fit(cam0_nx)
-        #p = norm.pdf(axis, mu, std)
-        #ax.plot(axis, p, 'k', linewidth=2)
-        
-        #cam0_fy = Figure(figsize=(5,4), dpi=30)
-        cam0_fy = Figure(dpi=30, tight_layout=True)
-        ax2 = cam0_fy.add_subplot(111)
-        ax2.set_xlim(0,x)
-        #ax2.set_ylim(0,1)
-        ax2.plot(axis,cam0_ny,'-')
-        #--------------------------------------------------
-        #cam1_fx = Figure(figsize=(5,4), dpi=30)
-        cam1_fx = Figure(dpi=30, tight_layout=True)
-        ax = cam1_fx.add_subplot(111)
-        #ax.set_xlim(0,1)
-        ax.set_ylim(0,x)
-        ax.plot(cam1_nx,axis,'-')
-        
-        #cam1_fy = Figure(figsize=(5,4), dpi=30)
-        cam1_fy = Figure(dpi=30, tight_layout=True)
-        ax2 = cam1_fy.add_subplot(111)
-        ax2.set_xlim(0,x)
-        #ax2.set_ylim(0,1)
-        ax2.plot(axis,cam1_ny,'-')
-        #--------------------------------------------------
-        #cam2_fx = Figure(figsize=(5,4), dpi=30)
-        cam2_fx = Figure(dpi=30, tight_layout=True)
-        ax = cam2_fx.add_subplot(111)
-        #ax.set_xlim(0,1)
-        ax.set_ylim(0,x)
-        ax.invert_xaxis()
-        ax.plot(cam2_nx,axis,'-')
-        
-        #cam2_fy = Figure(figsize=(5,4), dpi=30)
-        cam2_fy = Figure(dpi=30, tight_layout=True)
-        ax2 = cam2_fy.add_subplot(111)
-        ax2.set_xlim(0,x)
-        #ax2.set_ylim(0,1)
-        ax2.invert_yaxis()
-        ax2.plot(axis,cam2_ny,'-')
-        #--------------------------------------------------
-        #cam3_fx = Figure(figsize=(5,4), dpi=30)
-        cam3_fx = Figure(dpi=30, tight_layout=True)
-        ax = cam3_fx.add_subplot(111)
-        #ax.set_xlim(0,1)
-        ax.set_ylim(0,x)
-        ax.plot(cam3_nx,axis,'-')
-        
-        #cam3_fy = Figure(figsize=(5,4), dpi=30)
-        cam3_fy = Figure(dpi=30, tight_layout=True)
-        ax2 = cam3_fy.add_subplot(111)
-        ax2.set_xlim(0,x)
-        #ax2.set_ylim(0,1)
-        ax2.invert_yaxis()
-        ax2.plot(axis,cam3_ny,'-')
-        plt.savefig("testfig.png")
-        #--------------------------------------------------
-        #fill up profiles
-#        canvas_c0_fx = FigureCanvas(cam0_fx)  # a gtk.DrawingArea
-#        canvas_c0_fy = FigureCanvas(cam0_fy)  # a gtk.DrawingArea
-##        cam0_p_x.add(canvas_c0_fx)
-##        cam0_p_y.add(canvas_c0_fy)
-#        
-#        canvas_c1_fx = FigureCanvas(cam1_fx)  # a gtk.DrawingArea
-#        canvas_c1_fy = FigureCanvas(cam1_fy)  # a gtk.DrawingArea
-##        cam1_p_x.add(canvas_c1_fx)
-##        cam1_p_y.add(canvas_c1_fy)
-#        
-#        canvas_c2_fx = FigureCanvas(cam2_fx)  # a gtk.DrawingArea
-#        canvas_c2_fy = FigureCanvas(cam2_fy)  # a gtk.DrawingArea
-##        cam2_p_x.add(canvas_c2_fx)
-##        cam2_p_y.add(canvas_c2_fy)
-#        
-#        canvas_c3_fx = FigureCanvas(cam3_fx)  # a gtk.DrawingArea
-#        canvas_c3_fy = FigureCanvas(cam3_fy)  # a gtk.DrawingArea
-##        cam3_p_x.add(canvas_c3_fx)
-##        cam3_p_y.add(canvas_c3_fy)
-#
-        self.img_cam0_x.set_from_file("circle.png")
-        self.img_cam1_x.set_from_file("circle.png")
-        self.img_cam2_x.set_from_file("circle.png")
-        self.img_cam3_x.set_from_file("circle.png")
-        self.img_cam0_y.set_from_file("circle.png")
-        self.img_cam1_y.set_from_file("circle.png")
-        self.img_cam2_y.set_from_file("circle.png")
-        self.img_cam3_y.set_from_file("circle.png")
+        subap = 60
+        radio = 5
+        kernel = 20
+        #get mask
+        mask = get_mask_spot(radio,kernel)
+
+        cy, cx = get_centroid(cam0, mask)
+        patch = get_square(cx,cy,subap)
+        plt.gca().add_patch(patch)
+        patch = get_square(cx,cy,height,color='green')
+        plt.gca().add_patch(patch)
+        plt.gcf().set_size_inches(2,2)
+        plt.savefig("cam0.png")
+
+        cy, cx = get_centroid(cam1, mask)
+        patch = get_square(cx,cy,subap)
+        plt.gca().add_patch(patch)
+        patch = get_square(cx,cy,height,color='green')
+        plt.gca().add_patch(patch)
+        plt.gcf().set_size_inches(2,2)
+        plt.savefig("cam1.png")
+
+        cy, cx = get_centroid(cam2, mask)
+        patch = get_square(cx,cy,subap)
+        plt.gca().add_patch(patch)
+        patch = get_square(cx,cy,height,color='green')
+        plt.gca().add_patch(patch)
+        plt.gcf().set_size_inches(2,2)
+        plt.savefig("cam2.png")
+
+        cy, cx = get_centroid(cam3, mask)
+        patch = get_square(cx,cy,subap)
+        plt.gca().add_patch(patch)
+        patch = get_square(cx,cy,height,color='green')
+        plt.gca().add_patch(patch)
+        plt.gcf().set_size_inches(2,2)
+        plt.savefig("cam3.png")
+
+        self.img_cam0.set_from_file("cam0.png")
+        self.img_cam1.set_from_file("cam1.png")
+        self.img_cam2.set_from_file("cam2.png")
+        self.img_cam3.set_from_file("cam3.png")
 
 
 
