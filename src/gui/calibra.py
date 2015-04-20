@@ -21,10 +21,11 @@ import numpy as np
 import darc
 import os
 #from matplotlib.backends.backend_gtk3cairo import FigureCanvasGTK3Cairo as FigureCanvas
-from matplotlib.figure import Figure
 from scipy import signal
-import matplotlib.pyplot as plt
+from matplotlib.figure import Figure
 from matplotlib.path import Path
+import matplotlib.cm as cm
+import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 
 def get_square(cx, cy, side, color='red'):
@@ -167,7 +168,7 @@ class Go:
         plt.Axes(plt.figure(1), [0., 0., 1., 1.])
         plt.gcf().set_size_inches(inchs,inchs)
         plt.gca().set_axis_off()
-        imshow(cam0, aspect='normal')
+        imshow(cam0, aspect='normal', cmap = cm.Greys_r)
         plt.savefig("cam0.png")
 
         plt.figure(2, frameon=False)
@@ -179,7 +180,7 @@ class Go:
         plt.Axes(plt.figure(2), [0., 0., 1., 1.])
         plt.gcf().set_size_inches(inchs,inchs)
         plt.gca().set_axis_off()
-        imshow(cam1, aspect='normal')
+        imshow(cam1, aspect='normal', cmap = cm.Greys_r)
         plt.savefig("cam1.png")
 
         plt.figure(3, frameon=False)
@@ -191,7 +192,7 @@ class Go:
         plt.Axes(plt.figure(3), [0., 0., 1., 1.])
         plt.gcf().set_size_inches(inchs,inchs)
         plt.gca().set_axis_off()
-        imshow(cam2, aspect='normal')
+        imshow(cam2, aspect='normal', cmap = cm.Greys_r)
         plt.savefig("cam2.png")
 
         plt.figure(4, frameon=False)
@@ -203,7 +204,7 @@ class Go:
         plt.Axes(plt.figure(4), [0., 0., 1., 1.])
         plt.gcf().set_size_inches(inchs,inchs)
         plt.gca().set_axis_off()
-        imshow(cam3, aspect='normal')
+        imshow(cam3, aspect='normal', cmap = cm.Greys_r)
         plt.savefig("cam3.png")
         
         self.img_cam0.set_from_file("cam0.png")
