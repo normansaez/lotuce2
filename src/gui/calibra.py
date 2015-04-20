@@ -2,28 +2,22 @@
 import os
 import sys
 import time
-import signal
+import darc
 import cairo
+import signal
 import ConfigParser
 
 from multiprocessing import Process
 from subprocess import Popen, PIPE
-from math import pi
 from pylab import imshow,show
-
-from gi.repository import Gtk
-from gi.repository import Gdk
-#from gi.repository import GObject
-
-from darcaravis import DarcAravis
-
-import numpy as np
-import darc
-import os
-#from matplotlib.backends.backend_gtk3cairo import FigureCanvasGTK3Cairo as FigureCanvas
 from scipy import signal
 from matplotlib.figure import Figure
 from matplotlib.path import Path
+
+from gi.repository import Gtk
+from gi.repository import Gdk
+
+import numpy as np
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
@@ -58,7 +52,7 @@ def get_centroid(img, mask):
 def get_mask_spot(radio=5, kernel=20):
     # syntetic img to be convolved
     y,x = np.ogrid[-kernel: kernel+1, -kernel: kernel+1]
-    mask = x**2+y**2 <= pi*radio**2
+    mask = x**2+y**2 <= np.pi*radio**2
     mask = mask*1
     return mask
 
@@ -154,7 +148,7 @@ class Go:
         subap = 60
         radio = 5
         kernel = 20
-        inchs = 2.5
+        inchs = 2
         #get mask
         mask = get_mask_spot(radio,kernel)
 
@@ -211,15 +205,127 @@ class Go:
         self.img_cam1.set_from_file("cam1.png")
         self.img_cam2.set_from_file("cam2.png")
         self.img_cam3.set_from_file("cam3.png")
+        
+        #profiles
+        int_max = (2**12 - 1. )# 0 to 2^(camera bits). As start from 0, it is needed get one value less
+        x = len(cam0)
+        cam0_nx = np.array([])
+        cam0_ny = np.array([])
+        cam1_nx = np.array([])
+        cam1_ny = np.array([])
+        cam2_nx = np.array([])
+        cam2_ny = np.array([])
+        cam3_nx = np.array([])
+        cam3_ny = np.array([])
+        
+        c0 = cam0.max()
+        c1 = cam1.max()
+        c2 = cam2.max()
+        c3 = cam3.max()
+         
+        for i in range(0,x):
+            cam0_nx = np.append(cam0_nx, cam0[i,].sum())
+            cam0_ny = np.append(cam0_ny, cam0[:,i].sum())
+            cam1_nx = np.append(cam1_nx, cam1[i,].sum())
+            cam1_ny = np.append(cam1_ny, cam1[:,i].sum())
+            cam2_nx = np.append(cam2_nx, cam2[i,].sum())
+            cam2_ny = np.append(cam2_ny, cam2[:,i].sum())
+            cam3_nx = np.append(cam3_nx, cam3[i,].sum())
+            cam3_ny = np.append(cam3_ny, cam3[:,i].sum())
+        axis = range(0,x)
+        #normalize according cameras:
+        cam0_nx = cam0_nx/int_max
+        cam0_ny = cam0_ny/int_max
+        
+        cam1_nx = cam1_nx/int_max
+        cam1_ny = cam1_ny/int_max
+        
+        cam2_nx = cam2_nx/int_max
+        cam2_ny = cam2_ny/int_max
+        
+        cam3_nx = cam3_nx/int_max
+        cam3_ny = cam3_ny/int_max
 
+        #plot px,py cam0       
+        plt.close()
+        cam0_fy = plt.figure(11, tight_layout=True)
+        ax = cam0_fy.add_subplot(111)
+        ax.set_ylim(0,x)
+        ax.invert_xaxis()
+        ax.plot(cam0_nx,axis,'-')
+        plt.gcf().set_size_inches(inchs,inchs)
+        plt.savefig("cam0y.png")
+        self.img_cam0_y.set_from_file("cam0y.png")
+        
+        plt.close()
+        cam0_fx = plt.figure(12, tight_layout=True)
+        ax2 = cam0_fx.add_subplot(111)
+        ax2.set_xlim(0,x)
+        ax2.plot(axis,cam0_ny,'-')
+        plt.gcf().set_size_inches(inchs,inchs)
+        plt.savefig("cam0x.png")
+        self.img_cam0_x.set_from_file("cam0x.png")
 
-
-
-
-
-
-
-
+        #--------------------------------------------------
+        plt.close()
+        cam1_fy = plt.figure(dpi=30, tight_layout=True)
+        ax = cam1_fy.add_subplot(111)
+        ax.set_ylim(0,x)
+        ax.plot(cam1_nx,axis,'-')
+        plt.gcf().set_size_inches(inchs,inchs)
+        plt.savefig("cam1y.png")
+        self.img_cam1_y.set_from_file("cam1y.png")
+        
+        plt.close()
+        cam1_fx = plt.figure(dpi=30, tight_layout=True)
+        ax2 = cam1_fx.add_subplot(111)
+        ax2.set_xlim(0,x)
+        ax2.plot(axis,cam1_ny,'-')
+        plt.gcf().set_size_inches(inchs,inchs)
+        plt.savefig("cam1x.png")
+        self.img_cam1_x.set_from_file("cam1x.png")
+        
+        #--------------------------------------------------
+        plt.close()
+        cam2_fy = plt.figure(dpi=30, tight_layout=True)
+        ax = cam2_fy.add_subplot(111)
+        ax.set_ylim(0,x)
+        ax.invert_xaxis()
+        ax.plot(cam2_nx,axis,'-')
+        plt.gcf().set_size_inches(inchs,inchs)
+        plt.savefig("cam2y.png")
+        self.img_cam2_y.set_from_file("cam2y.png")
+        
+        
+        plt.close()
+        cam2_fx = plt.figure(dpi=30, tight_layout=True)
+        ax2 = cam2_fx.add_subplot(111)
+        ax2.set_xlim(0,x)
+        ax2.invert_yaxis()
+        ax2.plot(axis,cam2_ny,'-')
+        plt.gcf().set_size_inches(inchs,inchs)
+        plt.savefig("cam2x.png")
+        self.img_cam2_x.set_from_file("cam2x.png")
+        #--------------------------------------------------
+        plt.close()
+        cam3_fy = plt.figure(dpi=30, tight_layout=True)
+        ax = cam3_fy.add_subplot(111)
+        ax.set_ylim(0,x)
+        ax.plot(cam3_nx,axis,'-')
+        plt.gcf().set_size_inches(inchs,inchs)
+        plt.savefig("cam3y.png")
+        self.img_cam3_y.set_from_file("cam3y.png")
+        
+        plt.close()
+        cam3_fx = plt.figure(dpi=30, tight_layout=True)
+        ax2 = cam3_fx.add_subplot(111)
+        ax2.set_xlim(0,x)
+        ax2.invert_yaxis()
+        ax2.plot(axis,cam3_ny,'-')
+        plt.gcf().set_size_inches(inchs,inchs)
+        plt.savefig("cam3x.png")
+        self.img_cam3_x.set_from_file("cam3x.png")
+        
 
 ################
 #        self.button_apply_subap.connect("clicked", self._cb_subap, "subap")
