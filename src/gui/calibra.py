@@ -256,6 +256,7 @@ class Go:
         plt.gcf().set_size_inches(inchs,inchs)
         plt.Axes(cam0_fy, [0., 0., 1., 1.])
         plt.gca().set_axis_off()
+        plt.gca().set_title("sat: %.2f%%"%((c0/int_max)*100.))
         plt.savefig("cam0y.png")
         self.img_cam0_y.set_from_file("cam0y.png")
         
@@ -279,6 +280,7 @@ class Go:
         plt.gcf().set_size_inches(inchs,inchs)
         plt.Axes(cam1_fy, [0., 0., 1., 1.])
         plt.gca().set_axis_off()
+        plt.gca().set_title("sat: %.2f%%"%((c1/int_max)*100.))
         plt.savefig("cam1y.png")
         self.img_cam1_y.set_from_file("cam1y.png")
         
@@ -303,6 +305,7 @@ class Go:
         plt.gcf().set_size_inches(inchs,inchs)
         plt.Axes(cam2_fy, [0., 0., 1., 1.])
         plt.gca().set_axis_off()
+        plt.gca().set_title("sat: %.2f%%"%((c2/int_max)*100.))
         plt.savefig("cam2y.png")
         self.img_cam2_y.set_from_file("cam2y.png")
         
@@ -327,6 +330,7 @@ class Go:
         plt.gcf().set_size_inches(inchs,inchs)
         plt.Axes(cam3_fy, [0., 0., 1., 1.])
         plt.gca().set_axis_off()
+        plt.gca().set_title("sat: %.2f%%"%((c3/int_max)*100.))
         plt.savefig("cam3y.png")
         self.img_cam3_y.set_from_file("cam3y.png")
         
