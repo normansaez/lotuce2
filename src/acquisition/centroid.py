@@ -19,6 +19,12 @@ print len(streams)
 print "###"
 x0 = np.array([])
 x1 = np.array([])
+x2 = np.array([])
+x3 = np.array([])
+y0 = np.array([])
+y1 = np.array([])
+y2 = np.array([])
+y3 = np.array([])
 for stream in streams:
     print stream[0]
     print type(stream[0])
@@ -27,8 +33,28 @@ for stream in streams:
 #    fitsname = 'centroid.fits'#options.directory+"/img_%s.fits" % (str(count).zfill(3))
 #    FITS.Write(data, fitsname, writeMode='w')
     x0 = np.append(x0,data[0])
+    y0 = np.append(x0,data[1])
+
     x1 = np.append(x1,data[2])
-print x0
-print x1
-print "-----"
+    y1 = np.append(x1,data[3])
+
+    x2 = np.append(x2,data[4])
+    y2 = np.append(x2,data[5])
+
+    x3 = np.append(x3,data[6])
+    y3 = np.append(x3,data[7])
+
 print np.cov(x0,x1)[0][1]
+print np.cov(x0,x2)[0][1]
+print np.cov(x0,x3)[0][1]
+print np.cov(x1,x2)[0][1]
+print np.cov(x1,x3)[0][1]
+print np.cov(x2,x3)[0][1]
+
+print np.cov(y0,y1)[0][1]
+print np.cov(y0,y2)[0][1]
+print np.cov(y0,y3)[0][1]
+print np.cov(y1,y2)[0][1]
+print np.cov(y1,y3)[0][1]
+print np.cov(y2,y3)[0][1]
+
