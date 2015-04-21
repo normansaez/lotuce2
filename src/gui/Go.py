@@ -13,8 +13,6 @@ from gi.repository import GObject
 
 from darcaravis import DarcAravis
 
-#signal.signal(signal.SIGINT, receive_signal)
-
 class Go:
 
 
@@ -25,7 +23,8 @@ class Go:
         self.window = self.builder.get_object ("window1")
         self.window.set_events(self.window.get_events())
         
-        self.DarcAravis = DarcAravis()
+        self.DarcAravis = None
+        self.darc_running = False
 
         self.configfile=path+'/../../conf/config.cfg'
         self.config = None
@@ -82,102 +81,86 @@ class Go:
             self.button_play.set_label("Play")
 
         if self.label.get_text() == 'Calibration' and widget.get_active():
-            print "Check if DARC is already running"
-            print "do nothing. "
-            #
-            # START DARC
-            #
-            cmd = 'python /opt/darc/bin/darccontrol -o /home/lotuce2/lotuce2/conf/configMantaFULL.py --prefix=all'
-            print cmd
-#            process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
-            #
-            # Wait until DARC start, and then show GUI
-#            time.sleep(30)
-            cmd = 'python /home/lotuce2/lotuce2/src/gui/calibra.py'
-            print cmd
-#            process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
+            try:
+                self.DarcAravis = DarcAravis()
+                self.darc_running = True
+            except:
+                pass
 
+            if not self.darc_running:
+                #
+                # START DARC
+                #
+                cmd = 'darccontrol -o %s --prefix=%s' % (self.config.get('bbb','cfgdarcCAL'), self.DarcAravis.get_darc_prefix())
+                print cmd
+                #process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
+                cmd = 'python %s' % (self.config.get('bbb','calGUI'))
+                print cmd
+                #process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
+            else:
+                cmd = 'python %s' % (self.config.get('bbb','calGUI'))
+                print cmd
+                #process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
+                    
         if self.label.get_text() == 'Adquisition' and widget.get_active():
-            cmd = 'darcmagic stop -c  --prefix=all'
-            print cmd
-#            process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
-#            process.wait()
+            if self.darc_running:
+                cmd = 'darcmagic stop -c  --prefix=%s' % (self.DarcAravis.get_darc_prefix())
+                print cmd
+                #process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
+                #process.wait()
 
-            cmd = "ps aux|grep calibra|awk '{print $2}'|xargs kill -9"
-            print cmd
-#            process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
-            cmd = 'python /opt/darc/bin/darccontrol -o /home/lotuce2/lotuce2/conf/configManta.py --prefix=all'
-            print cmd
-#            process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
-            #
-#            time.sleep(30)
-            cmd = "python /home/lotuce2/lotuce2/src/gui/acquisition.py"
-            print cmd
-#            process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
+                cmd = "ps aux|grep Calibra|awk '{print $2}'|xargs kill -9"
+                print cmd
+                #process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
 
-#            for i in range(0,4):
-#                camera = 'cam%d' % i
-#                print "\n\nReading configuration for %s ... " % camera
-#                offset_x = self.config.get(camera, 'offset_x')
-#                offset_y = self.config.get(camera, 'offset_y')
-#                trigger = self.config.get(camera, 'trigger')
-#                exptime = self.config.get(camera, 'exptime')
-#                print "OffsetX: %s" % offset_x 
-#                print "OffsetY: %s" % offset_y 
-#                print "Trigger: %s" % trigger
-#                print "exptime: %s" % exptime
-#                print "\nReading current configuration from HW : %s" % camera
-#                self.DarcAravis.get(i, 'OffsetX') 
-#                self.DarcAravis.get(i, 'OffsetY') 
-#                self.DarcAravis.get(i, 'ExposureTimeAbs')
-#                self.DarcAravis.get(i, 'TriggerSource') 
-#                print "\nSET configuration readed from file, for  %s" % camera
-#                self.DarcAravis.set(i, 'OffsetX', offset_x) 
-#                self.DarcAravis.set(i, 'OffsetY', offset_y) 
-#                self.DarcAravis.set(i, 'ExposureTimeAbs', exptime)
-#                if trigger.__contains__('True'):
-#                    value = 'Line1'
-#                else:
-#                    value = 'Freerun'
-#                self.DarcAravis.set(i, 'TriggerSource', value) 
-#                #
-#                # Seting up BBB
-#                # 
-#                import os
-#                freq = self.config.get('bbb', 'frequency')
-#                os.system('/bin/set_frecuency %s' % freq)
-#                #
-#                #
-#                #
-#                prefix =    self.config.get('bbb', 'prefix')
-#                directory = self.config.get('bbb', 'image_path')
-#                time = self.config.get('bbb', 'adquisition_time')
-#                #
-#                #
-#                #
-#                script = self.config.get('bbb', 'adquisition_script')
-#                daemon = self.config.get('bbb', 'daemon')
-#
-#                cmd = "python %s -d %s -t %s" %  (script, directory, time)
-#                proc_daemon = Process(target=self.daemon, args=(cmd,)) 
-#                proc_daemon.start()
-#
-#                cmd = "python %s -d %s -t %s" %  (script, directory, time)
-#                proc_grab = Process(target=self.grab, args=(cmd,)) 
-#                proc_grab.start()
-#                
-#                self.proc_grab.join()
-#                proc_grab.join()
-#                if proc_grab.is_alive() is False:
-#                    self.proc_daem.terminate()
-#                    proc_daemon.terminate()
+                cmd = 'darccontrol -o %s --prefix=%s' % (self.config.get('bbb','cfgdarcACQ'), self.DarcAravis.get_darc_prefix())
+                print cmd
+                #process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
+                #
+                #time.sleep(30)
+                cmd = "python %s" % (self.config.get('bbb','acqGUI'))
+                print cmd
+                #process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
 
-#            if data == "pause":
-#                self.button_play.set_active(False)
-#                self.proc_grab.terminate()
-#                self.proc_daemon.terminate()
-#                self.proc_daem.terminate()
-            
+                for i in range(0,4):
+                    camera = 'cam%d' % i
+                    print "\n\nReading configuration for %s ... " % camera
+                    offset_x = self.config.getint(camera, 'offset_x')
+                    offset_y = self.config.getint(camera, 'offset_y')
+                    trigger = self.config.get(camera, 'trigger')
+                    exptime = self.config.getint(camera, 'exptime')
+                    print "OffsetX: %d" % offset_x 
+                    print "OffsetY: %d" % offset_y 
+                    print "Trigger: %s" % trigger
+                    print "exptime: %d" % exptime
+                    print "\nReading current configuration from HW : %s" % camera
+#                    self.DarcAravis.get(i, 'OffsetX') 
+#                    self.DarcAravis.get(i, 'OffsetY') 
+#                    self.DarcAravis.get(i, 'ExposureTimeAbs')
+#                    self.DarcAravis.get(i, 'TriggerSource') 
+                    print "\nSET configuration readed from file, for  %s" % camera
+#                    self.DarcAravis.set(i, 'OffsetX', offset_x) 
+#                    self.DarcAravis.set(i, 'OffsetY', offset_y) 
+#                    self.DarcAravis.set(i, 'ExposureTimeAbs', exptime)
+#                    if trigger.__contains__('True'):
+#                        value = 'Line1'
+#                    else:
+#                        value = 'Freerun'
+#                    self.DarcAravis.set(i, 'TriggerSource', value) 
+                    #
+                    # Seting up BBB
+                    # 
+                    freq = self.config.get('bbb', 'frequency')
+                    os.system('/bin/set_frecuency %s' % freq)
+                    #
+                    #
+                    #
+
+                    cmd = "python %s -d %s -t %s" %  (self.config.get('bbb','daemon'), self.config.get('bbb','storepath'), 60) #XXX: to be fixed !!!
+                    print cmd
+                    cmd = "python %s -d %s -t %s" %  (self.config.get('bbb','capture'), self.config.get('bbb','storepath'), 60) #XXX time to be fixed !!
+                    print cmd
+
 
     def _callback(self, widget, data=None):
         '''
