@@ -58,7 +58,7 @@ def get_mask_spot(radio=5, kernel=20):
     mask = mask*1
     return mask
 
-class Go:
+class Calibra:
 
 
     def __init__( self ):
@@ -80,10 +80,6 @@ class Go:
         if self.window:
             self.window.connect("destroy", Gtk.main_quit)
 
-
-        self.counter = 0
-        GObject.timeout_add_seconds(1, self._cb_timeout)
-
         self.button_apply_subap = self.builder.get_object("apply_subap_button")
         self.button_apply_refresh = self.builder.get_object("refresh_button")
         self.button_apply_offset = self.builder.get_object("offset_step_button")
@@ -95,7 +91,9 @@ class Go:
         self.label_subap = self.builder.get_object("subap_label")
         self.label_refresh = self.builder.get_object("refresh_label")
         self.label_offset = self.builder.get_object("offset_step_label")
-################ fully test
+        #
+        #Create Gtk.Images
+        #
         self.img_cam0 = self.builder.get_object("image_cam0")
         self.img_cam1 = self.builder.get_object("image_cam1")
         self.img_cam2 = self.builder.get_object("image_cam2")
@@ -108,13 +106,76 @@ class Go:
         self.img_cam1_y = self.builder.get_object("image_cam1_y")
         self.img_cam2_y = self.builder.get_object("image_cam2_y")
         self.img_cam3_y = self.builder.get_object("image_cam3_y")
-#TODO: remove all of this shit from init to somewere else        
-        d=darc.Control('all')
+
+        #
+        #Create Gtk.ToggleButtons (cross)
+        #
+        #Toggle button to connect to cam0
+        self.togglebutton_cam0 = self.builder.get_object ("togglebutton0")
+        self.togglebutton_cam0.connect("toggled", self._cb_camera_choosen, "0")
+
+        #Toggle button to connect to cam1
+        self.togglebutton_cam1 = self.builder.get_object ("togglebutton1")
+        self.togglebutton_cam1.connect("toggled", self._cb_camera_choosen, "1")
+
+        #Toggle button to connect to cam2
+        self.togglebutton_cam2 = self.builder.get_object ("togglebutton2")
+        self.togglebutton_cam2.connect("toggled", self._cb_camera_choosen, "2")
+
+        #Toggle button to connect to cam3
+        self.togglebutton_cam3 = self.builder.get_object ("togglebutton3")
+        self.togglebutton_cam3.connect("toggled", self._cb_camera_choosen, "3")
+        
+        #Default cam0:
+        self.togglebutton_cam0.set_active(True)
+
+        #cross to put available offset
+        # up = up
+        # do = down
+        # le = left
+        # ri = right
+        self.button_up = self.builder.get_object("button_up")
+        self.button_do = self.builder.get_object("button_do")
+        self.button_le = self.builder.get_object("button_le")
+        self.button_ri = self.builder.get_object("button_ri")
+        
+        self.button_up.connect("clicked", self._cb_offset_cross, "up")
+        self.button_do.connect("clicked", self._cb_offset_cross, "do")
+        self.button_le.connect("clicked", self._cb_offset_cross, "le")
+        self.button_ri.connect("clicked", self._cb_offset_cross, "ri")
+
+        self.button_apply_offset.connect("clicked", self._cb_offset_step, "step")
+        dic = { 
+            "on_buttonQuit_clicked" : self.quit,
+        }
+        
+        self.builder.connect_signals( dic )
+        self.data_builder()
+
+    def data_builder(self):
+        '''
+        Get data to made images to be shown
+        '''
+        #
+        # Reading data from file
+        #
+        height = self.config.getint('bbb', 'height'))
+        subap =  self.config.getint('bbb', 'subap'))
+        radio =  self.config.getint('bbb', 'radio'))
+        kernel = self.config.getint('bbb', 'kernel'))
+        inchs =  self.config.getint('bbb', 'inchs'))
+        int_max = (2**self.config.getint('bbb', 'cam_bits') - 1. )# 0 to 2^(camera bits). As start from 0, it is needed get one value less
+        #
+        # Get darc instance
+        #
+        d=darc.Control(self.config.get('bbb', 'prefix'))
         #takes camera pixels (x,y)
         pxlx =d.Get("npxlx")[0]
         pxly =d.Get("npxly")[0]
-
-        streamBlock = d.GetStreamBlock('%srtcPxlBuf'%'all',1)#,block=1,flysave=options.directory+'/img.fits')
+        #
+        # Getting raw data from cameras
+        #
+        streamBlock = d.GetStreamBlock('%srtcPxlBuf'%'all',1)
         streams = streamBlock['%srtcPxlBuf'%'all']
         stream = streams[0]
         data = stream[0].reshape((4*pxly,pxlx))
@@ -144,12 +205,6 @@ class Go:
         cam2 = data[xi_cam2:xf_cam2,yi_cam2:yf_cam2]
         cam3 = data[xi_cam3:xf_cam3,yi_cam3:yf_cam3]
 
-#        weight = 120
-        height = 30
-        subap = 60
-        radio = 5
-        kernel = 20
-        inchs = 2
         #get mask
         mask = get_mask_spot(radio,kernel)
 
@@ -208,7 +263,6 @@ class Go:
         self.img_cam3.set_from_file("cam3.png")
         
         #profiles
-        int_max = (2**12 - 1. )# 0 to 2^(camera bits). As start from 0, it is needed get one value less
         x = len(cam0)
         cam0_nx = np.array([])
         cam0_ny = np.array([])
@@ -348,51 +402,9 @@ class Go:
         self.img_cam3_x.set_from_file("cam3x.png")
         
 
-################
-        #Toggle button to connect to cam0
-        self.togglebutton_cam0 = self.builder.get_object ("togglebutton0")
-        self.togglebutton_cam0.connect("toggled", self.callback, "0")
-
-        #Toggle button to connect to cam1
-        self.togglebutton_cam1 = self.builder.get_object ("togglebutton1")
-        self.togglebutton_cam1.connect("toggled", self.callback, "1")
-
-        #Toggle button to connect to cam2
-        self.togglebutton_cam2 = self.builder.get_object ("togglebutton2")
-        self.togglebutton_cam2.connect("toggled", self.callback, "2")
-
-        #Toggle button to connect to cam3
-        self.togglebutton_cam3 = self.builder.get_object ("togglebutton3")
-        self.togglebutton_cam3.connect("toggled", self.callback, "3")
-        
-        #Default cam0:
-        self.togglebutton_cam0.set_active(True)
-
-        #cross to put available offset
-        # up = up
-        # do = down
-        # le = left
-        # ri = right
-        self.button_up = self.builder.get_object("button_up")
-        self.button_do = self.builder.get_object("button_do")
-        self.button_le = self.builder.get_object("button_le")
-        self.button_ri = self.builder.get_object("button_ri")
-        
-        self.button_up.connect("clicked", self.offset_callback, "up")
-        self.button_do.connect("clicked", self.offset_callback, "do")
-        self.button_le.connect("clicked", self.offset_callback, "le")
-        self.button_ri.connect("clicked", self.offset_callback, "ri")
-
-        self.button_apply_offset.connect("clicked", self.step_callback, "step")
-        dic = { 
-            "on_buttonQuit_clicked" : self.quit,
-        }
-        
-        self.builder.connect_signals( dic )
-
-    def step_callback(self, widget, data=None):
+    def _cb_offset_step(self, widget, data=None):
         '''
-        step_callback
+        _cb_offset_step
         '''
         step = self.entry_offset.get_text()
         print "step %s" % step
@@ -403,45 +415,24 @@ class Go:
         self.label_offset.set_text("%s" % str(step))
         self.entry_offset.set_text("")
 
-    def offset_callback(self, widget, data=None):
+    def _cb_offset_cross(self, widget, data=None):
         '''
-        offset callback
-
         The offset is taking as reference darcplot gui.  Therefore the offset
         cross follows that darcplot axis references.
         '''
-#        print "offset: %s" % (data)
-#        offset_y = self.DarcAravis.get(self.camera, 'OffsetY')
-#        offset_x = self.DarcAravis.get(self.camera, 'OffsetX')
-#        print "before apply step(%d)\noffset(%d,%d)" % (self.__step, offset_x, offset_y)
-
         if data == 'up':
             val = offset_y + self.__step
             print "to be applied: %d" % val
-            self.DarcAravis.set(self.camera, 'OffsetY', val)
         if data == 'do':
             val = offset_y - self.__step
             print "to be applied: %d" % val
-            self.DarcAravis.set(self.camera, 'OffsetY', val)
         if data == 'le':
             val = offset_x + self.__step
             print "to be applied: %d" % val
-            self.DarcAravis.set(self.camera, 'OffsetX', val)
         if data == 'ri':
             val = offset_x - self.__step
             print "to be applied: %d" % val
-            self.DarcAravis.set(self.camera, 'OffsetX', val)
 
-        if data == 'first try':
-            x = self.DarcAravis.get(self.camera, 'Width')
-            y = self.DarcAravis.get(self.camera, 'Height')
-            offsetX = int((656 - x )/2.0)
-            offsetY = int((492 - y)/2.0)
-            self.DarcAravis.set(self.camera, 'OffsetX', offsetX)
-            self.DarcAravis.set(self.camera, 'OffsetY', offsetY)
-
-        offset_y = self.DarcAravis.get(self.camera, 'OffsetY')
-        offset_x = self.DarcAravis.get(self.camera, 'OffsetX')
         if data =='up' or data =='do' or data == 'first try':
             self.offset_y.set_text("%d pixel(s)"% int(offset_y))
         if data =='le' or data =='ri' or data == 'first try':
@@ -450,9 +441,9 @@ class Go:
         
 
 
-    def callback(self, widget, data=None):
+    def _cb_camera_choosen(self, widget, data=None):
         '''
-        callback
+        _cb_camera_choosen
         '''
         print "%s: %s" % (data, ("disconnecting", "connecting")[widget.get_active()])
         #CONN
@@ -481,44 +472,6 @@ class Go:
                 self.togglebutton_cam2.set_active(False)
 #                self.togglebutton_cam3.set_active(False)
 
-#            self.camera = int(data)
-#            offset_y = self.DarcAravis.get(self.camera, 'OffsetY')
-#            self.offset_y.set_text("%d pixel(s)"% int(offset_y)) 
-#            offset_x = self.DarcAravis.get(self.camera, 'OffsetX')
-#            self.offset_x.set_text("%d pixel(s)"% int(offset_x))
-
-
-#        if widget.get_active() is False:
-#            print "OFF"
-
-    def _cb_timeout(self):
-        self.counter += 1 
-        self.label_refresh.set_text(str(self.counter))
-        print "pase"
-
-    def _cb_stop( self, button):
-        print "Stop was clicked"
-
-    def _cb_play(self, widget, data=None):
-        print "%s: %s" % (data, ("disconnecting", "connecting")[widget.get_active()])
-
-    def _callback(self, widget, data=None):
-        '''
-        callback
-        '''
-        print "%s: %s" % (data, ("disconnecting", "connecting")[widget.get_active()])
-        image = Gtk.Image()
-        image.set_from_stock(Gtk.STOCK_MEDIA_PLAY, Gtk.IconSize.BUTTON)
-        self.button_play.set_image(image)
-        self.button_play.set_label("Play")
-        self.button_play.set_active(False)
-        if self.button_mode.get_active():
-            self.label.set_text("Adquisition")
-            self.m_label.set_text("Push to change from\nAdquisition --> Calibration")
-        if not self.button_mode.get_active():
-            self.label.set_text("Calibration")
-            self.m_label.set_text("Push to change from\nCalibration --> Adquisition")
-
 
     def quit(self, widget):
         '''
@@ -528,6 +481,6 @@ class Go:
 
 if __name__ == '__main__':
 
-    Go = Go()
-    Go.window.show()
+    Calibra = Calibra()
+    Calibra.window.show()
     Gtk.main()
