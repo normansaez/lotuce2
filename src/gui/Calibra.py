@@ -159,11 +159,11 @@ class Calibra:
         #
         # Reading data from file
         #
-        height = self.config.getint('bbb', 'height'))
-        subap =  self.config.getint('bbb', 'subap'))
-        radio =  self.config.getint('bbb', 'radio'))
-        kernel = self.config.getint('bbb', 'kernel'))
-        inchs =  self.config.getint('bbb', 'inchs'))
+        height = self.config.getint('bbb', 'height')
+        subap =  self.config.getint('bbb', 'subap')
+        radio =  self.config.getint('bbb', 'radio')
+        kernel = self.config.getint('bbb', 'kernel')
+        inchs =  self.config.getint('bbb', 'inchs')
         int_max = (2**self.config.getint('bbb', 'cam_bits') - 1. )# 0 to 2^(camera bits). As start from 0, it is needed get one value less
         #
         # Get darc instance
