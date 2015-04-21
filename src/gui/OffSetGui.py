@@ -13,7 +13,7 @@ class OffSetGui:
         path, fil = os.path.split(os.path.abspath(__file__))
 
         self.builder = Gtk.Builder()
-        self.builder.add_from_file(path+"/offset.glade")
+        self.builder.add_from_file(path+"/glade/offset.glade")
         self.window = self.builder.get_object ("window1")
         self.window.set_events(self.window.get_events())
         

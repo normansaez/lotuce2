@@ -21,7 +21,7 @@ class Go:
     def __init__( self ):
         path, fil = os.path.split(os.path.abspath(os.path.realpath(__file__)))
         self.builder = Gtk.Builder()
-        self.builder.add_from_file(path+"/Go.glade")
+        self.builder.add_from_file(path+"/glade/Go.glade")
         self.window = self.builder.get_object ("window1")
         self.window.set_events(self.window.get_events())
         
