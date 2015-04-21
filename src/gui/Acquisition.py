@@ -25,7 +25,7 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 
 
-class Go:
+class Acquisition:
 
 
     def __init__( self ):
@@ -372,6 +372,6 @@ class Go:
 
 if __name__ == '__main__':
 
-    Go = Go()
-    Go.window.show()
+    Acquisition = Acquisition()
+    Acquisition.window.show()
     Gtk.main()
