@@ -82,6 +82,8 @@ class Go:
             self.button_play.set_label("Play")
 
         if self.label.get_text() == 'Calibration' and widget.get_active():
+            print "Check if DARC is already running"
+            print "do nothing. "
             #
             # START DARC
             #
