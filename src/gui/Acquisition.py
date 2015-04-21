@@ -47,10 +47,6 @@ class Acquisition:
         if self.window:
             self.window.connect("destroy", Gtk.main_quit)
 
-
-        self.counter = 0
-        GObject.timeout_add_seconds(1, self._cb_timeout)
-
         self.button_apply_subap = self.builder.get_object("apply_subap_button")
         self.button_apply_refresh = self.builder.get_object("refresh_button")
         self.button_apply_offset = self.builder.get_object("offset_step_button")
