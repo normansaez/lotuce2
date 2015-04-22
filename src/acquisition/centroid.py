@@ -85,4 +85,4 @@ for i in range(cov_x):
     covariances.write(' ')
     covariances.write(cov_y[i])
     covariances.write(' \n')
-
+covariances.close()
