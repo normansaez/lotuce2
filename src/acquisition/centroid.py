@@ -77,4 +77,12 @@ ax.xaxis.grid(True)
 ax.yaxis.grid(True)
 ax.legend(loc='center left', bbox_to_anchor=(0.75, 0.92))
 plt.savefig('covx.png')
-plt.show()
+#plt.show()
+
+covariances = open('covariances.txt','w')
+for i in range(cov_x):
+    covariances.write(cov_x[i])
+    covariances.write(' ')
+    covariances.write(cov_y[i])
+    covariances.write(' \n')
+
