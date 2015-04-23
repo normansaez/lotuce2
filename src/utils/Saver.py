@@ -46,6 +46,8 @@ class Saver:
         self.finalise=0
         self.info=numpy.zeros((8,),numpy.int32)
         self.cov_counter = 0
+        self.cent_counter = 0
+        self.fitsname = None
         self.x0 = numpy.array([])
         self.x1 = numpy.array([])
         self.x2 = numpy.array([])
@@ -161,8 +163,16 @@ class Saver:
         try:
             mydata = data.reshape((4*pxly,pxlx))
         except:
-            fitsname = self.name.split('.fits')[0]+'_cent_'+str(fno)+'.txt'
-            text_file = open(fitsname,'a') # normal open file
+            if self.cent_counter == 0:
+                self.fitsname = self.name.split('.fits')[0]+'_cent_'+str(fno)+'.txt'
+                self.cent_counter = 1
+            else:
+                if self.cent_counter <= 300:
+                    self.cent_counter += 1
+                else:
+                    self.cent_counter = 0    
+            print self.cent_counter
+            text_file = open(self.fitsname,'a') # normal open file
     
             self.x0 = numpy.append(self.x0,data[0])
             self.y0 = numpy.append(self.x0,data[1])
@@ -176,9 +186,10 @@ class Saver:
             self.x3 = numpy.append(self.x3,data[6])
             self.y3 = numpy.append(self.x3,data[7])
 
-            text_file.write('%f %f %f %f %f %f %f %f\n'% (data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]))
+            text_file.write('%f %f %f %f %f %f %f %f %f\n'% (ftime, data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]))
             text_file.close()
-            if self.cov_counter == 2: 
+            if self.cov_counter == 100:
+#                print self.cov_counter
                 fitsname_c = self.name.split('.fits')[0]+'_covs.txt'
                 text_file_c = open(fitsname_c,'a') # normal open file
                 x0x1 = numpy.cov(self.x0, self.x1)[0][1] 
@@ -204,8 +215,9 @@ class Saver:
                 self.y2 = numpy.array([])
                 self.y3 = numpy.array([])
              
-                text_file_c.write('%f %f %f %f %f %f %f %f %f %f %f %f\n'% (x0x1,x0x2,x0x3,x1x2,x1x3,x2x3,y0y1,y0y2,y0y3,y1y2,y1y3,y2y3))
+                text_file_c.write('%f %f %f %f %f %f %f %f %f %f %f %f %f\n'% (ftime, x0x1,x0x2,x0x3,x1x2,x1x3,x2x3,y0y1,y0y2,y0y3,y1y2,y1y3,y2y3))
                 text_file_c.close()
+                self.cov_counter = 0
             self.cov_counter += 1 
             return        
         #

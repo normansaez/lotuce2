@@ -15,7 +15,7 @@ d=darc.Control(prefix)
 #takes camera pixels (x,y)
 pxlx =d.Get("npxlx")[0]
 pxly =d.Get("npxly")[0]
-streamBlock = d.GetStreamBlock('%srtcCentBuf'%prefix,5,block=1,flysave='/home/lotuce2/lotuce2/src/acquisition/img.fits')
+streamBlock = d.GetStreamBlock('%srtcCentBuf'%prefix,500,block=1,flysave='/home/lotuce2/lotuce2/src/acquisition/img.fits')
 streams = streamBlock['%srtcCentBuf'%prefix]
 print len(streams)
 print "###"
