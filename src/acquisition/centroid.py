@@ -15,7 +15,7 @@ d=darc.Control(prefix)
 #takes camera pixels (x,y)
 pxlx =d.Get("npxlx")[0]
 pxly =d.Get("npxly")[0]
-streamBlock = d.GetStreamBlock('%srtcCentBuf'%prefix,5)#,block=1,flysave=options.directory+'/img.fits')
+streamBlock = d.GetStreamBlock('%srtcCentBuf'%prefix,5,block=1,flysave='/home/lotuce2/lotuce2/src/acquisition/img.fits')
 streams = streamBlock['%srtcCentBuf'%prefix]
 print len(streams)
 print "###"
@@ -46,45 +46,45 @@ for stream in streams:
     x3 = np.append(x3,data[6])
     y3 = np.append(x3,data[7])
 
-cov_x = np.array([])
-cov_x = np.append(cov_x, np.cov(x0,x1)[0][1]) 
-cov_x = np.append(cov_x, np.cov(x0,x2)[0][1])
-cov_x = np.append(cov_x, np.cov(x0,x3)[0][1])
-cov_x = np.append(cov_x, np.cov(x1,x2)[0][1])
-cov_x = np.append(cov_x, np.cov(x1,x3)[0][1])
-cov_x = np.append(cov_x, np.cov(x2,x3)[0][1])
-
-cov_y = np.array([])
-cov_y = np.append(cov_y, np.cov(y0,y1)[0][1]) 
-cov_y = np.append(cov_y, np.cov(y0,y2)[0][1])
-cov_y = np.append(cov_y, np.cov(y0,y3)[0][1])
-cov_y = np.append(cov_y, np.cov(y1,y2)[0][1])
-cov_y = np.append(cov_y, np.cov(y1,y3)[0][1])
-cov_y = np.append(cov_y, np.cov(y2,y3)[0][1])
-
-
-baselines = [2,10,15,20,50,120]
-
-#fig = plt.figure()
-#ax = plt.subplot(111)
-#ax.plot(baselines, cov_x,'ro-',label=r'$COV(X_{i},X_{i+1})$')
-#ax.plot(baselines, cov_y,'bo-',label=r'$COV(Y_{i},Y_{i+1})$')
-#x = ax.get_position()
-#plt.title(r'COV(X,Y) v/s Baseline')
-#plt.ylabel(r'$COV(XY_{i},XY_{i+1})$')
-#plt.xlabel(r'baseline')
-#ax.xaxis.grid(True)
-#ax.yaxis.grid(True)
-#ax.legend(loc='center left', bbox_to_anchor=(0.75, 0.92))
-#plt.savefig('covx.png')
-#plt.show()
-
-covariances = open('covariances.txt','w')
-for i in range(0, len(cov_x)):
-    covariances.write(str(cov_x[i]))
-    covariances.write(' ')
-    covariances.write(str(cov_y[i]))
-    covariances.write(' ')
-covariances.write('\n')
-covariances.close()
-
+#cov_x = np.array([])
+#cov_x = np.append(cov_x, np.cov(x0,x1)[0][1]) 
+#cov_x = np.append(cov_x, np.cov(x0,x2)[0][1])
+#cov_x = np.append(cov_x, np.cov(x0,x3)[0][1])
+#cov_x = np.append(cov_x, np.cov(x1,x2)[0][1])
+#cov_x = np.append(cov_x, np.cov(x1,x3)[0][1])
+#cov_x = np.append(cov_x, np.cov(x2,x3)[0][1])
+#
+#cov_y = np.array([])
+#cov_y = np.append(cov_y, np.cov(y0,y1)[0][1]) 
+#cov_y = np.append(cov_y, np.cov(y0,y2)[0][1])
+#cov_y = np.append(cov_y, np.cov(y0,y3)[0][1])
+#cov_y = np.append(cov_y, np.cov(y1,y2)[0][1])
+#cov_y = np.append(cov_y, np.cov(y1,y3)[0][1])
+#cov_y = np.append(cov_y, np.cov(y2,y3)[0][1])
+#
+#
+#baselines = [2,10,15,20,50,120]
+#
+##fig = plt.figure()
+##ax = plt.subplot(111)
+##ax.plot(baselines, cov_x,'ro-',label=r'$COV(X_{i},X_{i+1})$')
+##ax.plot(baselines, cov_y,'bo-',label=r'$COV(Y_{i},Y_{i+1})$')
+##x = ax.get_position()
+##plt.title(r'COV(X,Y) v/s Baseline')
+##plt.ylabel(r'$COV(XY_{i},XY_{i+1})$')
+##plt.xlabel(r'baseline')
+##ax.xaxis.grid(True)
+##ax.yaxis.grid(True)
+##ax.legend(loc='center left', bbox_to_anchor=(0.75, 0.92))
+##plt.savefig('covx.png')
+##plt.show()
+#
+#covariances = open('covariances.txt','w')
+#for i in range(0, len(cov_x)):
+#    covariances.write(str(cov_x[i]))
+#    covariances.write(' ')
+#    covariances.write(str(cov_y[i]))
+#    covariances.write(' ')
+#covariances.write('\n')
+#covariances.close()
+#

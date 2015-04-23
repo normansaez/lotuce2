@@ -45,23 +45,32 @@ class Saver:
         self.initialised=0
         self.finalise=0
         self.info=numpy.zeros((8,),numpy.int32)
+        self.cov_counter = 0
+        self.x0 = numpy.array([])
+        self.x1 = numpy.array([])
+        self.x2 = numpy.array([])
+        self.x3 = numpy.array([])
+        self.y0 = numpy.array([])
+        self.y1 = numpy.array([])
+        self.y2 = numpy.array([])
+        self.y3 = numpy.array([])
 
     def write(self,data,ftime,fno):
-        def aio_callback(rt, errno):
-            '''
-            call back for Async write
-            '''
-            if rt > 0:
-                pass
-                #print "Wrote %d bytes" % rt
-            else:
-                print "Got error: %d" % errno
+#        def aio_callback(rt, errno):
+#            '''
+#            call back for Async write
+#            '''
+#            if rt > 0:
+#                pass
+#                #print "Wrote %d bytes" % rt
+#            else:
+#                print "Got error: %d" % errno
 
         # local vars ?
         pxly = 200
         pxlx = 200
 
-        threshold = 2000
+#        threshold = 2000
 
         #
         # camera coordinates according windows size.
@@ -94,7 +103,7 @@ class Saver:
         #
         # area to search intensity (mean) taking account centroid
         #
-        width = 3#5
+#        width = 3#5
 
         #
         #Getting centroid: Now is hardcoded to save time
@@ -148,8 +157,57 @@ class Saver:
         #
         # Reshape data to be analized
         #
-        mydata = data.reshape((4*pxly,pxlx))
-        
+        mydata = None
+        try:
+            mydata = data.reshape((4*pxly,pxlx))
+        except:
+            fitsname = self.name.split('.fits')[0]+'_cent_'+str(fno)+'.txt'
+            text_file = open(fitsname,'a') # normal open file
+    
+            self.x0 = numpy.append(self.x0,data[0])
+            self.y0 = numpy.append(self.x0,data[1])
+
+            self.x1 = numpy.append(self.x1,data[2])
+            self.y1 = numpy.append(self.x1,data[3])
+
+            self.x2 = numpy.append(self.x2,data[4])
+            self.y2 = numpy.append(self.x2,data[5])
+
+            self.x3 = numpy.append(self.x3,data[6])
+            self.y3 = numpy.append(self.x3,data[7])
+
+            text_file.write('%f %f %f %f %f %f %f %f\n'% (data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]))
+            text_file.close()
+            if self.cov_counter == 2: 
+                fitsname_c = self.name.split('.fits')[0]+'_covs.txt'
+                text_file_c = open(fitsname_c,'a') # normal open file
+                x0x1 = numpy.cov(self.x0, self.x1)[0][1] 
+                x0x2 = numpy.cov(self.x0, self.x2)[0][1]
+                x0x3 = numpy.cov(self.x0, self.x3)[0][1]
+                x1x2 = numpy.cov(self.x1, self.x2)[0][1]
+                x1x3 = numpy.cov(self.x1, self.x3)[0][1]
+                x2x3 = numpy.cov(self.x2, self.x3)[0][1]
+                      
+                y0y1 = numpy.cov(self.y0, self.y1)[0][1] 
+                y0y2 = numpy.cov(self.y0, self.y2)[0][1]
+                y0y3 = numpy.cov(self.y0, self.y3)[0][1]
+                y1y2 = numpy.cov(self.y1, self.y2)[0][1]
+                y1y3 = numpy.cov(self.y1, self.y3)[0][1]
+                y2y3 = numpy.cov(self.y2, self.y3)[0][1]
+
+                self.x0 = numpy.array([])
+                self.x1 = numpy.array([])
+                self.x2 = numpy.array([])
+                self.x3 = numpy.array([])
+                self.y0 = numpy.array([])
+                self.y1 = numpy.array([])
+                self.y2 = numpy.array([])
+                self.y3 = numpy.array([])
+             
+                text_file_c.write('%f %f %f %f %f %f %f %f %f %f %f %f\n'% (x0x1,x0x2,x0x3,x1x2,x1x3,x2x3,y0y1,y0y2,y0y3,y1y2,y1y3,y2y3))
+                text_file_c.close()
+            self.cov_counter += 1 
+            return        
         #
         # Checking bits for cameras, and getting patterns
         #
