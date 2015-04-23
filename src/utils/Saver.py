@@ -175,16 +175,16 @@ class Saver:
             text_file = open(self.fitsname,'a') # normal open file
     
             self.x0 = numpy.append(self.x0,data[0])
-            self.y0 = numpy.append(self.x0,data[1])
+            self.y0 = numpy.append(self.y0,data[1])
 
             self.x1 = numpy.append(self.x1,data[2])
-            self.y1 = numpy.append(self.x1,data[3])
+            self.y1 = numpy.append(self.y1,data[3])
 
             self.x2 = numpy.append(self.x2,data[4])
-            self.y2 = numpy.append(self.x2,data[5])
+            self.y2 = numpy.append(self.y2,data[5])
 
             self.x3 = numpy.append(self.x3,data[6])
-            self.y3 = numpy.append(self.x3,data[7])
+            self.y3 = numpy.append(self.y3,data[7])
 
             text_file.write('%f %f %f %f %f %f %f %f %f\n'% (ftime, data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]))
             text_file.close()

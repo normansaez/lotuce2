@@ -21,6 +21,7 @@ def move_files(filenames, dst):
 
 def signal_handler(signal, frame):
     print('You pressed Ctrl+C!')
+    sys.exit(0)
 
 if __name__ == '__main__':
 
