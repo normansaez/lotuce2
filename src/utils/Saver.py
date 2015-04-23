@@ -171,7 +171,7 @@ class Saver:
                     self.cent_counter += 1
                 else:
                     self.cent_counter = 0    
-            print self.cent_counter
+#            print self.cent_counter
             text_file = open(self.fitsname,'a') # normal open file
     
             self.x0 = numpy.append(self.x0,data[0])

@@ -24,7 +24,7 @@ def signal_handler(signal, frame):
 
 if __name__ == '__main__':
 
-    src_dirname = '/home/lotuce2/sata-acquisition/2015_02_19.6/'
+    src_dirname = '/home/lotuce2/lotuce2/src/acquisition/2015_04_23.13/'
     dst_dirname = os.path.split(os.path.abspath(__file__))[0]
     filenames = []
     sts = mp.Queue()
