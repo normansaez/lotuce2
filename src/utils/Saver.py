@@ -26,6 +26,7 @@ import string
 from math import floor
 import profilesaver
 import pyaio
+from pymongo import MongoClient
 
 def bit_check(x, y, img, threshold, width):
     intensity = img[y-width:y+width,x-width:x+width].mean()
@@ -56,6 +57,8 @@ class Saver:
         self.y1 = numpy.array([])
         self.y2 = numpy.array([])
         self.y3 = numpy.array([])
+        client = MongoClient('localhost:27017')
+        self.db = client.lotuce2
 
     def write(self,data,ftime,fno):
 #        def aio_callback(rt, errno):
@@ -150,7 +153,7 @@ class Saver:
         #
         # Getting string names
         #
-        fitsname = self.name.split('.fits')[0]+'_profile_'+str(fno)+'.fits'
+#        fitsname = self.name.split('.fits')[0]+'_profile_'+str(fno)+'.fits'
 #        fitsname_c0 = self.name.split('.fits')[0]+'_cent_cam0_'+str(fno)+'.fits'
 #        fitsname_c1 = self.name.split('.fits')[0]+'_cent_cam1_'+str(fno)+'.fits'
 #        fitsname_c2 = self.name.split('.fits')[0]+'_cent_cam2_'+str(fno)+'.fits'
@@ -164,7 +167,7 @@ class Saver:
             mydata = data.reshape((4*pxly,pxlx))
         except:
             if self.cent_counter == 0:
-                self.fitsname = self.name.split('.fits')[0]+'_cent_'+str(fno)+'.txt'
+#                self.fitsname = self.name.split('.fits')[0]+'_cent_'+str(fno)+'.txt'
                 self.cent_counter = 1
             else:
                 if self.cent_counter <= 300:
@@ -172,7 +175,7 @@ class Saver:
                 else:
                     self.cent_counter = 0    
 #            print self.cent_counter
-            text_file = open(self.fitsname,'a') # normal open file
+#            text_file = open(self.fitsname,'a') # normal open file
     
             self.x0 = numpy.append(self.x0,data[0])
             self.y0 = numpy.append(self.y0,data[1])
@@ -185,13 +188,13 @@ class Saver:
 
             self.x3 = numpy.append(self.x3,data[6])
             self.y3 = numpy.append(self.y3,data[7])
-
-            text_file.write('%f %f %f %f %f %f %f %f %f\n'% (ftime, data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]))
-            text_file.close()
+            self.db.centroid.insert({"timestamp":ftime,"x0":data[0],"y0":data[1],"x1":data[2],"y1":data[3],"x2":data[4],"y2":data[5],"x3":data[6],"y3":data[7]})
+#            text_file.write('%f %f %f %f %f %f %f %f %f\n'% (ftime, data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]))
+#            text_file.close()
             if self.cov_counter == 100:
 #                print self.cov_counter
-                fitsname_c = self.name.split('.fits')[0]+'_covs.txt'
-                text_file_c = open(fitsname_c,'a') # normal open file
+#                fitsname_c = self.name.split('.fits')[0]+'_covs.txt'
+#                text_file_c = open(fitsname_c,'a') # normal open file
                 x0x1 = numpy.cov(self.x0, self.x1)[0][1] 
                 x0x2 = numpy.cov(self.x0, self.x2)[0][1]
                 x0x3 = numpy.cov(self.x0, self.x3)[0][1]
@@ -215,8 +218,9 @@ class Saver:
                 self.y2 = numpy.array([])
                 self.y3 = numpy.array([])
              
-                text_file_c.write('%f %f %f %f %f %f %f %f %f %f %f %f %f\n'% (ftime, x0x1,x0x2,x0x3,x1x2,x1x3,x2x3,y0y1,y0y2,y0y3,y1y2,y1y3,y2y3))
-                text_file_c.close()
+#                text_file_c.write('%f %f %f %f %f %f %f %f %f %f %f %f %f\n'% (ftime, x0x1,x0x2,x0x3,x1x2,x1x3,x2x3,y0y1,y0y2,y0y3,y1y2,y1y3,y2y3))
+#                text_file_c.close()
+                self.db.cov.insert({"timestamp":ftime,"x0x1":x0x1,"x0x2":x0x2,"x0x3":x0x3,"x1x2":x1x2,"x1x3":x1x3,"x2x3":x2x3,"y0y1":y0y1,"y0y2":y0y2,"y0y3":y0y3,"y1y2":y1y2,"y1y3":y1y3,"y2y3":y2y3})
                 self.cov_counter = 0
             self.cov_counter += 1 
             return        
@@ -301,8 +305,8 @@ class Saver:
         #fd1 = os.open(fitsname, os.O_WRONLY| os.O_CREAT | os.O_TRUNC | os.O_NONBLOCK)
         #pyaio.aio_write(fd1, b'%s'%str(myprofile), len(myprofile), aio_callback)
         #FITS.Write(myprofile, fitsname, writeMode='w')
-        profilesaver.saver(myprofile, fitsname)
-
+#        profilesaver.saver(myprofile, fitsname)
+        self.db.profiles.insert({"timestamp":ftime,"profile":myprofile})
         #XXX
         # Centroids: Calculating before store them
         # Classic way to calculate.
