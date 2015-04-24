@@ -25,8 +25,12 @@ import string
 #from skimage.measure import label
 from math import floor
 import profilesaver
-import pyaio
+#import pyaio
+
+#import pickle
+import cPickle as pickle
 from pymongo import MongoClient
+from bson.binary import Binary
 
 def bit_check(x, y, img, threshold, width):
     intensity = img[y-width:y+width,x-width:x+width].mean()
@@ -188,7 +192,14 @@ class Saver:
 
             self.x3 = numpy.append(self.x3,data[6])
             self.y3 = numpy.append(self.y3,data[7])
-            self.db.centroid.insert({"timestamp":ftime,"x0":data[0],"y0":data[1],"x1":data[2],"y1":data[3],"x2":data[4],"y2":data[5],"x3":data[6],"y3":data[7]})
+            self.db.centroid.insert({"timestamp":ftime,"x0":Binary(pickle.dumps(data[0], protocol=2))
+                                                      ,"y0":Binary(pickle.dumps(data[1], protocol=2))  
+                                                      ,"x1":Binary(pickle.dumps(data[2], protocol=2))
+                                                      ,"y1":Binary(pickle.dumps(data[3], protocol=2))
+                                                      ,"x2":Binary(pickle.dumps(data[4], protocol=2))
+                                                      ,"y2":Binary(pickle.dumps(data[5], protocol=2))
+                                                      ,"x3":Binary(pickle.dumps(data[6], protocol=2))
+                                                      ,"y3":Binary(pickle.dumps(data[7], protocol=2))})
 #            text_file.write('%f %f %f %f %f %f %f %f %f\n'% (ftime, data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]))
 #            text_file.close()
             if self.cov_counter == 100:
@@ -220,7 +231,18 @@ class Saver:
              
 #                text_file_c.write('%f %f %f %f %f %f %f %f %f %f %f %f %f\n'% (ftime, x0x1,x0x2,x0x3,x1x2,x1x3,x2x3,y0y1,y0y2,y0y3,y1y2,y1y3,y2y3))
 #                text_file_c.close()
-                self.db.cov.insert({"timestamp":ftime,"x0x1":x0x1,"x0x2":x0x2,"x0x3":x0x3,"x1x2":x1x2,"x1x3":x1x3,"x2x3":x2x3,"y0y1":y0y1,"y0y2":y0y2,"y0y3":y0y3,"y1y2":y1y2,"y1y3":y1y3,"y2y3":y2y3})
+                self.db.cov.insert({"timestamp":ftime,"x0x1":Binary(pickle.dumps(x0x1, protocol=2))
+                                                     ,"x0x2":Binary(pickle.dumps(x0x2, protocol=2))
+                                                     ,"x0x3":Binary(pickle.dumps(x0x3, protocol=2))
+                                                     ,"x1x2":Binary(pickle.dumps(x1x2, protocol=2))
+                                                     ,"x1x3":Binary(pickle.dumps(x1x3, protocol=2))
+                                                     ,"x2x3":Binary(pickle.dumps(x2x3, protocol=2))
+                                                     ,"y0y1":Binary(pickle.dumps(y0y1, protocol=2))
+                                                     ,"y0y2":Binary(pickle.dumps(y0y2, protocol=2))
+                                                     ,"y0y3":Binary(pickle.dumps(y0y3, protocol=2))
+                                                     ,"y1y2":Binary(pickle.dumps(y1y2, protocol=2))
+                                                     ,"y1y3":Binary(pickle.dumps(y1y3, protocol=2))
+                                                     ,"y2y3":Binary(pickle.dumps(y2y3, protocol=2))})
                 self.cov_counter = 0
             self.cov_counter += 1 
             return        
@@ -306,7 +328,7 @@ class Saver:
         #pyaio.aio_write(fd1, b'%s'%str(myprofile), len(myprofile), aio_callback)
         #FITS.Write(myprofile, fitsname, writeMode='w')
 #        profilesaver.saver(myprofile, fitsname)
-        self.db.profiles.insert({"timestamp":ftime,"profile":myprofile})
+        self.db.profiles.insert({"timestamp":ftime,"profile":Binary(pickle.dumps(myprofile, protocol=2))})
         #XXX
         # Centroids: Calculating before store them
         # Classic way to calculate.
