@@ -31,4 +31,4 @@ if __name__ == '__main__':
     print gen_time
     ttt = time.mktime(gen_time.timetuple())
     result = list(db.profiles.find({"timestamp": {"$gte": ttt}}))
-    print len(result)
+    print result[0]['timestamp']
