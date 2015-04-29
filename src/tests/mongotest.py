@@ -24,14 +24,14 @@ if __name__ == '__main__':
     print ts0
     print ts1
 
-    sec = 15
+    sec = 15*60
 #    gen_time = datetime.datetime.today() - datetime.timedelta(sec=sec) 
-    gen_time = ts1 - datetime.timedelta(seconds=sec) 
+    gen_time =  datetime.datetime.today() - datetime.timedelta(seconds=sec)#ts1 - datetime.timedelta(seconds=sec) 
 #    dummy_id = ObjectId.from_datetime(gen_time)
     print gen_time
     ttt = time.mktime(gen_time.timetuple())
     result = list(db.profiles.find({"timestamp": {"$gte": ttt}}))
-    print result[0]['timestamp']
+#print result[0]
     centro = db.centroid.find_one(sort=[('timestamp',1)])
     print centro
     ftime = time.mktime(datetime.datetime.today().timetuple())
@@ -52,5 +52,5 @@ if __name__ == '__main__':
                                          ,"y2":float(data[5])
                                          ,"x3":float(data[6])
                                          ,"y3":float(data[7])})
-    print db.profiles.find_one(sort=[("timestamp", -1 )])
+    print db.centroid.find_one(sort=[("timestamp", -1 )])
      
