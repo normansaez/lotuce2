@@ -192,7 +192,8 @@ class Saver:
 
             self.x3 = numpy.append(self.x3,data[6])
             self.y3 = numpy.append(self.y3,data[7])
-            self.db.centroid.insert({"timestamp":ftime,"x0":float(data[0])
+            self.db.centroid.insert({"timestamp":ftime,"fno":int(fno)
+                                                      ,"x0":float(data[0])
                                                       ,"y0":float(data[1])  
                                                       ,"x1":float(data[2])
                                                       ,"y1":float(data[3])
@@ -231,7 +232,8 @@ class Saver:
              
 #                text_file_c.write('%f %f %f %f %f %f %f %f %f %f %f %f %f\n'% (ftime, x0x1,x0x2,x0x3,x1x2,x1x3,x2x3,y0y1,y0y2,y0y3,y1y2,y1y3,y2y3))
 #                text_file_c.close()
-                self.db.cov.insert({"timestamp":ftime,"x0x1":float(x0x1)
+                self.db.cov.insert({"timestamp":ftime,"fno":int(fno)
+                                                     ,"x0x1":float(x0x1)
                                                      ,"x0x2":float(x0x2)
                                                      ,"x0x3":float(x0x3)
                                                      ,"x1x2":float(x1x2)
@@ -328,7 +330,7 @@ class Saver:
         #pyaio.aio_write(fd1, b'%s'%str(myprofile), len(myprofile), aio_callback)
         #FITS.Write(myprofile, fitsname, writeMode='w')
 #        profilesaver.saver(myprofile, fitsname)
-        self.db.profiles.insert({"timestamp":ftime,"profile":Binary(pickle.dumps(myprofile, protocol=2))})
+        self.db.profiles.insert({"timestamp":ftime,"fno":int(fno),"profile":Binary(pickle.dumps(myprofile, protocol=2))})
         #XXX
         # Centroids: Calculating before store them
         # Classic way to calculate.
