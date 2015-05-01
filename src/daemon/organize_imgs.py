@@ -1,11 +1,20 @@
 import time
 import os
-import shutil
 import multiprocessing as mp
 import datetime
 import glob
 import signal
 import sys
+import argparse 
+
+parse = argparse.ArgumentParser()
+#parse.add_argument('-c', '--camera', dest='camera', type='str', help='Camera num: 0,1,2,3 etc', default="0")
+parse.add_argument('-p', '--prefix', dest='prefix', type=str, help='Camera prefix: default all', default="all")
+#parse.add_argument('-e', '--exptime', dest='exptime', type=int, help='Value for ExposureTimeAbs', default=1000)
+parse.add_argument('-d', '--directory', dest='directory', type=str, help='directory to be store the images', default=None)
+parse.add_argument('-t', '--adquisition_time', dest='adquisition_time', nargs='*', type=int, help='Image adquisition_time in seconds', default=[1])
+(options, unknown) = parse.parse_known_args()
+
 
 def move_files(filenames, dst):
     t0 = datetime.datetime.utcnow() 
