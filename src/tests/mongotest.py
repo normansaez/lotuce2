@@ -15,7 +15,8 @@ if __name__ == '__main__':
     # db.profiles.ensure_index('timestamp')
     # db.centroid.ensure_index('timestamp')
     # db.cov.ensure_index('timestamp')
-    
+#mongo modifications
+
 #    one = db.profiles.find_one(sort=[("timestamp", 1 )])
 #    last = db.profiles.find_one(sort=[("timestamp", -1 )])
     #y = pickle.loads( one['profile'] )
