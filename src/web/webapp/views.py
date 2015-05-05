@@ -11,7 +11,7 @@ DIRNAME = os.path.dirname(__file__)
 path = os.path.normpath(os.path.join(DIRNAME, '../media/tux.png'))
 
 def home(request):
-    resp = """<img src="/media/tux.png" alt="tux">""" 
+    resp = """   <img src="/media/tux.png" alt="tux">""" 
     return HttpResponse(resp)
 
 #def index(request):
