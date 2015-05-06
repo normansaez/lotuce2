@@ -91,36 +91,37 @@ class Go:
                 #
                 # START DARC
                 #
-                cmd = 'darccontrol -o %s --prefix=%s' % (self.config.get('bbb','cfgdarcCAL'), self.DarcAravis.get_darc_prefix())
+                cmd = 'darccontrol -o %s --prefix=%s' % (self.config.get('bbb','cfgdarcCAL'), 'all')#self.DarcAravis.get_darc_prefix())
                 print cmd
-                #process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
+                process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
+                print cmd
                 cmd = 'python %s' % (self.config.get('bbb','calGUI'))
                 print cmd
-                #process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
+                process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
             else:
                 cmd = 'python %s' % (self.config.get('bbb','calGUI'))
                 print cmd
-                #process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
+                process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
                     
         if self.label.get_text() == 'Adquisition' and widget.get_active():
             if self.darc_running:
                 cmd = 'darcmagic stop -c  --prefix=%s' % (self.DarcAravis.get_darc_prefix())
                 print cmd
-                #process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
-                #process.wait()
+                process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
+                process.wait()
 
                 cmd = "ps aux|grep Calibra|awk '{print $2}'|xargs kill -9"
                 print cmd
-                #process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
+                process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
 
                 cmd = 'darccontrol -o %s --prefix=%s' % (self.config.get('bbb','cfgdarcACQ'), self.DarcAravis.get_darc_prefix())
                 print cmd
-                #process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
+                process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
                 #
-                #time.sleep(30)
+                time.sleep(30)
                 cmd = "python %s" % (self.config.get('bbb','acqGUI'))
                 print cmd
-                #process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
+                process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
 
                 for i in range(0,4):
                     camera = 'cam%d' % i
