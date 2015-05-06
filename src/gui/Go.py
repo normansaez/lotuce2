@@ -95,10 +95,12 @@ class Go:
                 print cmd
                 process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
                 print cmd
+                time.time(30)
                 cmd = 'python %s' % (self.config.get('bbb','calGUI'))
                 print cmd
                 process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
             else:
+                time.time(30)
                 cmd = 'python %s' % (self.config.get('bbb','calGUI'))
                 print cmd
                 process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
