@@ -12,6 +12,7 @@ from gi.repository import Gtk
 from gi.repository import GObject
 
 from darcaravis import DarcAravis
+import os
 
 class Go:
 
@@ -58,14 +59,14 @@ class Go:
         print "Stop was clicked"
         cmd = "ps aux|grep calibra|awk '{print $2}'|xargs kill -9"
         print cmd
-#        process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
+        process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
         cmd = "ps aux|grep acquisition|awk '{print $2}'|xargs kill -9"
         print cmd
-#        process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
+        process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
         cmd = 'darcmagic stop -c  --prefix=all'
         print cmd
-#        process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
-#        process.wait()
+        process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
+        process.wait()
 
 
     def _cb_play(self, widget, data=None):
@@ -95,12 +96,12 @@ class Go:
                 print cmd
                 process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
                 print cmd
-                time.time(30)
+                time.sleep(30)
                 cmd = 'python %s' % (self.config.get('bbb','calGUI'))
                 print cmd
                 process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
             else:
-                time.time(30)
+                time.sleep(30)
                 cmd = 'python %s' % (self.config.get('bbb','calGUI'))
                 print cmd
                 process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
@@ -116,7 +117,7 @@ class Go:
                 print cmd
                 process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
 
-                cmd = 'darccontrol -o %s --prefix=%s' % (self.config.get('bbb','cfgdarcACQ'), self.DarcAravis.get_darc_prefix())
+                cmd = 'darccontrol -o %s --prefix=%s' % (self.config.get('bbb','cfgdarcACQ'),'all')#self.DarcAravis.get_darc_prefix())
                 print cmd
                 process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
                 #
