@@ -65,13 +65,16 @@ class Go(GObject.GObject):
         if not self.darc_running:
             cmd = 'darccontrol -o %s --prefix=%s' % (filename, prefix)
             self._cmd(cmd)
-            time.sleep(10)
+            time.sleep(20)
+
     def _darc_stop(self):
         cmd = "ps aux|grep Acquisition.py|awk '{print $2}'|xargs kill -9"
         self._cmd(cmd, wait=True)
         cmd = "ps aux|grep Calibra.py|awk '{print $2}'|xargs kill -9"
         self._cmd(cmd, wait=True)
         cmd = 'darcmagic stop -c  --prefix=all'
+        self._cmd(cmd, wait=True)
+        cmd = "ps aux|grep darcmain|awk '{print $2}'|xargs kill -9"
         self._cmd(cmd, wait=True)
 
     def _darc_cal(self):
@@ -81,35 +84,38 @@ class Go(GObject.GObject):
 
     def _darc_acq(self):
         print "Acquiring ..."
+        if self.DarcAravis is None:
+            self.DarcAravis = DarcAravis()
+        for i in range(0,4):
+            camera = 'cam%d' % i
+            print "\n\nReading configuration for %s ... " % camera
+            offset_x = self.config.getint(camera, 'offset_x')
+            offset_y = self.config.getint(camera, 'offset_y')
+            trigger = self.config.get(camera, 'trigger')
+            exptime = self.config.getint(camera, 'exptime')
+            print "OffsetX: %d" % offset_x 
+            print "OffsetY: %d" % offset_y 
+            print "Trigger: %s" % trigger
+            print "exptime: %d" % exptime
+            print "\nReading current configuration from HW : %s" % camera
+            self.DarcAravis.get(i, 'OffsetX') 
+            self.DarcAravis.get(i, 'OffsetY') 
+            self.DarcAravis.get(i, 'ExposureTimeAbs')
+            self.DarcAravis.get(i, 'TriggerSource') 
+            print "\nSET configuration readed from file, for  %s" % camera
+            self.DarcAravis.set(i, 'OffsetX', offset_x) 
+            self.DarcAravis.set(i, 'OffsetY', offset_y) 
+            self.DarcAravis.set(i, 'ExposureTimeAbs', exptime)
+            if trigger.__contains__('True'):
+                value = 'Line1'
+            else:
+                value = 'Freerun'
+            self.DarcAravis.set(i, 'TriggerSource', value) 
+            freq = self.config.get('bbb', 'frequency')
+            cmd = '/bin/set_frecuency %s' % freq
+            self._cmd(cmd)
         cmd = "python %s" % (self.config.get('bbb','acqGUI'))
         self._cmd(cmd)
-#        for i in range(0,4):
-#            camera = 'cam%d' % i
-#            print "\n\nReading configuration for %s ... " % camera
-#            offset_x = self.config.getint(camera, 'offset_x')
-#            offset_y = self.config.getint(camera, 'offset_y')
-#            trigger = self.config.get(camera, 'trigger')
-#            exptime = self.config.getint(camera, 'exptime')
-#            print "OffsetX: %d" % offset_x 
-#            print "OffsetY: %d" % offset_y 
-#            print "Trigger: %s" % trigger
-#            print "exptime: %d" % exptime
-#            print "\nReading current configuration from HW : %s" % camera
-#            self.DarcAravis.get(i, 'OffsetX') 
-#            self.DarcAravis.get(i, 'OffsetY') 
-#            self.DarcAravis.get(i, 'ExposureTimeAbs')
-#            self.DarcAravis.get(i, 'TriggerSource') 
-#            print "\nSET configuration readed from file, for  %s" % camera
-#            self.DarcAravis.set(i, 'OffsetX', offset_x) 
-#            self.DarcAravis.set(i, 'OffsetY', offset_y) 
-#            self.DarcAravis.set(i, 'ExposureTimeAbs', exptime)
-#            if trigger.__contains__('True'):
-#                value = 'Line1'
-#            else:
-#                value = 'Freerun'
-#            self.DarcAravis.set(i, 'TriggerSource', value) 
-#            freq = self.config.get('bbb', 'frequency')
-#            os.system('/bin/set_frecuency %s' % freq)
 
     def _cb_counter(self):
         self.counter += 1
