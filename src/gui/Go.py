@@ -31,7 +31,7 @@ class Go:
         self.config.read(self.configfile)
 
         if self.window:
-            self.window.connect("destroy", Gtk.main_quit)
+            self.window.connect("destroy", self.quit)#Gtk.main_quit)
 
 
 
