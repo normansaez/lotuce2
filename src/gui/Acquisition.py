@@ -25,11 +25,13 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 
 
-class Acquisition:
+class Acquisition(GObject.GObject):
 
 
-    def __init__( self ):
-        GObject.threads_init()
+    def __init__(self):
+        GObject.GObject.__init__(self)
+        self.counter = 0
+        GObject.timeout_add_seconds(30, self._cb_counter)
         path, fil = os.path.split(os.path.abspath(os.path.realpath(__file__)))
         self.builder = Gtk.Builder()
         self.builder.add_from_file(path+"/glade/acquisition.glade")
@@ -289,6 +291,12 @@ class Acquisition:
         print "after apply: offset(%d,%d)" % (offset_x, offset_y)
         
 
+
+    def _cb_counter(self):
+        self.counter += 1
+#        self.data_builder()
+        print self.counter
+        return True
 
     def quit(self, widget):
         '''
