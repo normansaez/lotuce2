@@ -11,8 +11,12 @@ from gi.repository import GObject
 
 from darcaravis import DarcAravis
 
-class Go:
-    def __init__( self ):
+class Go(GObject.GObject):
+    def __init__(self):
+        GObject.GObject.__init__(self)
+        self.counter = 0
+        GObject.timeout_add_seconds(1, self._cb_counter)
+
         path, fil = os.path.split(os.path.abspath(os.path.realpath(__file__)))
         self.builder = Gtk.Builder()
         self.builder.add_from_file(path+"/glade/Go.glade")
@@ -46,8 +50,6 @@ class Go:
         }
         
         self.builder.connect_signals( dic )
-        self.proc_grab = None
-        self.proc_daem = None
 
     def _cmd(self, cmd, wait=False):
         print cmd
@@ -62,8 +64,7 @@ class Go:
             self.darc_running = True
         except:
             print "DARC is already running"
-            self.darc_running = False
-
+        self.darc_running = False
         if not self.darc_running:
             cmd = 'darccontrol -o %s --prefix=%s' % (filename, prefix)
             self._cmd(cmd)
@@ -113,6 +114,10 @@ class Go:
 #            self.DarcAravis.set(i, 'TriggerSource', value) 
 #            freq = self.config.get('bbb', 'frequency')
 #            os.system('/bin/set_frecuency %s' % freq)
+
+    def _cb_counter(self):
+        self.counter += 1
+        return True
 
     def _cb_play(self, widget, data=None):
         print "%s: %s" % (data, ("STOP", "PLAY")[widget.get_active()])
