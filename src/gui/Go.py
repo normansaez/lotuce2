@@ -2,17 +2,14 @@
 import os
 import sys
 import time
-import signal
 import ConfigParser
 
-from multiprocessing import Process
 from subprocess import Popen, PIPE
 
 from gi.repository import Gtk
 from gi.repository import GObject
 
 from darcaravis import DarcAravis
-import os
 
 class Go:
     def __init__( self ):
