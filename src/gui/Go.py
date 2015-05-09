@@ -76,6 +76,8 @@ class Go(GObject.GObject):
         self._cmd(cmd, wait=True)
         cmd = "ps aux|grep darcmain|awk '{print $2}'|xargs kill -9"
         self._cmd(cmd, wait=True)
+        cmd = "ps aux|grep darccontrol|awk '{print $2}'|xargs kill -9"
+        self._cmd(cmd, wait=True)
 
     def _darc_cal(self):
         print "Calibrating ..."
@@ -110,10 +112,10 @@ class Go(GObject.GObject):
                 value = 'Line1'
             else:
                 value = 'Freerun'
-            self.DarcAravis.set(i, 'TriggerSource', value) 
-            freq = self.config.get('bbb', 'frequency')
-            cmd = '/bin/set_frecuency %s' % freq
-            self._cmd(cmd)
+#            self.DarcAravis.set(i, 'TriggerSource', value) 
+        freq = self.config.get('bbb', 'frequency')
+        cmd = '/bin/set_frecuency %s' % freq
+        self._cmd(cmd)
         cmd = "python %s" % (self.config.get('bbb','acqGUI'))
         self._cmd(cmd)
 
