@@ -38,14 +38,13 @@ class Go:
 
 
         self.button_play = self.builder.get_object("play")
-        self.button_mode = self.builder.get_object("mode")
-        self.button_stop = self.builder.get_object("stop")
-        self.label = self.builder.get_object("label")
-        self.m_label = self.builder.get_object("m_label")
-        
+        self.calibration = self.builder.get_object("calibration")
+        self.acquisition = self.builder.get_object("acquisition")
+       
+        self.calibration.set_active(True)
         self.button_play.connect("clicked", self._cb_play, "play")
-        self.button_mode.connect("clicked", self._callback, "mode")
-        self.button_stop.connect("clicked", self._cb_stop)
+        self.calibration.connect("clicked", self._cb_check_cal, "calibration")
+        self.acquisition.connect("clicked", self._cb_check_acq, "acquisition")
 
         dic = { 
             "on_buttonQuit_clicked" : self.quit,
@@ -55,139 +54,114 @@ class Go:
         self.proc_grab = None
         self.proc_daem = None
 
-    def _cb_stop( self, button):
-        print "Stop was clicked"
-        cmd = "ps aux|grep calibra|awk '{print $2}'|xargs kill -9"
+    def _cmd(self, cmd, wait=False):
         print cmd
         process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
-        cmd = "ps aux|grep acquisition|awk '{print $2}'|xargs kill -9"
-        print cmd
-        process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
-        cmd = 'darcmagic stop -c  --prefix=all'
-        print cmd
-        process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
-        process.wait()
+        if wait is True:
+            process.wait()
+        return
 
+    def _darc_start(self, filename, prefix):
+        try:
+            self.DarcAravis = DarcAravis()
+            self.darc_running = True
+        except:
+            print "DARC is already running"
+
+        if not self.darc_running:
+            cmd = 'darccontrol -o %s --prefix=%s' % (filename, prefix)
+            self._cmd(cmd)
+            time.sleep(30)
+
+    def _darc_stop(self):
+        cmd = "ps aux|grep calibra|awk '{print $2}'|xargs kill -9"
+        self._cmd(cmd, wait=True)
+        cmd = "ps aux|grep acquisition|awk '{print $2}'|xargs kill -9"
+        self._cmd(cmd, wait=True)
+        cmd = 'darcmagic stop -c  --prefix=all'
+        self._cmd(cmd, wait=True)
+
+    def _darc_cal(self):
+        print "Calibrating ..."
+        cmd = "python %s" % (self.config.get('bbb','calGUI'))
+        self._cmd(cmd)
+
+    def _darc_acq(self):
+        print "Acquiring ..."
+        cmd = "python %s" % (self.config.get('bbb','acqGUI'))
+        self._cmd(cmd)
+#        for i in range(0,4):
+#            camera = 'cam%d' % i
+#            print "\n\nReading configuration for %s ... " % camera
+#            offset_x = self.config.getint(camera, 'offset_x')
+#            offset_y = self.config.getint(camera, 'offset_y')
+#            trigger = self.config.get(camera, 'trigger')
+#            exptime = self.config.getint(camera, 'exptime')
+#            print "OffsetX: %d" % offset_x 
+#            print "OffsetY: %d" % offset_y 
+#            print "Trigger: %s" % trigger
+#            print "exptime: %d" % exptime
+#            print "\nReading current configuration from HW : %s" % camera
+#            self.DarcAravis.get(i, 'OffsetX') 
+#            self.DarcAravis.get(i, 'OffsetY') 
+#            self.DarcAravis.get(i, 'ExposureTimeAbs')
+#            self.DarcAravis.get(i, 'TriggerSource') 
+#            print "\nSET configuration readed from file, for  %s" % camera
+#            self.DarcAravis.set(i, 'OffsetX', offset_x) 
+#            self.DarcAravis.set(i, 'OffsetY', offset_y) 
+#            self.DarcAravis.set(i, 'ExposureTimeAbs', exptime)
+#            if trigger.__contains__('True'):
+#                value = 'Line1'
+#            else:
+#                value = 'Freerun'
+#            self.DarcAravis.set(i, 'TriggerSource', value) 
+#            freq = self.config.get('bbb', 'frequency')
+#            os.system('/bin/set_frecuency %s' % freq)
 
     def _cb_play(self, widget, data=None):
-        print "%s: %s" % (data, ("disconnecting", "connecting")[widget.get_active()])
+        print "%s: %s" % (data, ("STOP", "PLAY")[widget.get_active()])
         image=Gtk.Image()
+        #This happend when PLAY is pressed
         if widget.get_active() is True:
-            image.set_from_stock(Gtk.STOCK_MEDIA_PAUSE, Gtk.IconSize.BUTTON)
+            image.set_from_stock(Gtk.STOCK_MEDIA_STOP, Gtk.IconSize.BUTTON)
             self.button_play.set_image(image)
-            self.button_play.set_label("Pause")
+            self.button_play.set_label("Stop")
+            self.calibration.set_sensitive(False)
+            self.acquisition.set_sensitive(False)
+            if self.calibration.get_active() is True:
+                filename = self.config.get('bbb','cfgdarcCAL')
+                prefix   = self.config.get('bbb','prefix')
+                self._darc_start(filename, prefix)
+                self._darc_cal()
+            if self.acquisition.get_active() is True:
+                filename = self.config.get('bbb','cfgdarcACQ')
+                prefix   = self.config.get('bbb','prefix')
+                self._darc_start(filename, prefix)
+                self._darc_acq()
         else:
+            #This happend when STOP is pressed
             image.set_from_stock(Gtk.STOCK_MEDIA_PLAY, Gtk.IconSize.BUTTON)
             self.button_play.set_image(image)
             self.button_play.set_label("Play")
+            self._darc_stop()
+            self.calibration.set_sensitive(True)
+            self.acquisition.set_sensitive(True)
+            
+    def _cb_check_cal(self, widget, data=None):
+        self.calibration.set_active(True)
+        if self.acquisition.get_active() is True:
+            self.acquisition.set_active(False)
 
-        if self.label.get_text() == 'Calibration' and widget.get_active():
-            try:
-                self.DarcAravis = DarcAravis()
-                self.darc_running = True
-            except:
-                pass
-
-            if not self.darc_running:
-                #
-                # START DARC
-                #
-                cmd = 'darccontrol -o %s --prefix=%s' % (self.config.get('bbb','cfgdarcCAL'), 'all')#self.DarcAravis.get_darc_prefix())
-                print cmd
-                process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
-                print cmd
-                time.sleep(30)
-                cmd = 'python %s' % (self.config.get('bbb','calGUI'))
-                print cmd
-                process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
-            else:
-                time.sleep(30)
-                cmd = 'python %s' % (self.config.get('bbb','calGUI'))
-                print cmd
-                process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
-                    
-        if self.label.get_text() == 'Adquisition' and widget.get_active():
-            if self.darc_running:
-                cmd = 'darcmagic stop -c  --prefix=%s' % (self.DarcAravis.get_darc_prefix())
-                print cmd
-                process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
-                process.wait()
-
-                cmd = "ps aux|grep Calibra|awk '{print $2}'|xargs kill -9"
-                print cmd
-                process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
-
-                cmd = 'darccontrol -o %s --prefix=%s' % (self.config.get('bbb','cfgdarcACQ'),'all')#self.DarcAravis.get_darc_prefix())
-                print cmd
-                process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
-                #
-                time.sleep(30)
-                cmd = "python %s" % (self.config.get('bbb','acqGUI'))
-                print cmd
-                process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
-
-                for i in range(0,4):
-                    camera = 'cam%d' % i
-                    print "\n\nReading configuration for %s ... " % camera
-                    offset_x = self.config.getint(camera, 'offset_x')
-                    offset_y = self.config.getint(camera, 'offset_y')
-                    trigger = self.config.get(camera, 'trigger')
-                    exptime = self.config.getint(camera, 'exptime')
-                    print "OffsetX: %d" % offset_x 
-                    print "OffsetY: %d" % offset_y 
-                    print "Trigger: %s" % trigger
-                    print "exptime: %d" % exptime
-                    print "\nReading current configuration from HW : %s" % camera
-#                    self.DarcAravis.get(i, 'OffsetX') 
-#                    self.DarcAravis.get(i, 'OffsetY') 
-#                    self.DarcAravis.get(i, 'ExposureTimeAbs')
-#                    self.DarcAravis.get(i, 'TriggerSource') 
-                    print "\nSET configuration readed from file, for  %s" % camera
-#                    self.DarcAravis.set(i, 'OffsetX', offset_x) 
-#                    self.DarcAravis.set(i, 'OffsetY', offset_y) 
-#                    self.DarcAravis.set(i, 'ExposureTimeAbs', exptime)
-#                    if trigger.__contains__('True'):
-#                        value = 'Line1'
-#                    else:
-#                        value = 'Freerun'
-#                    self.DarcAravis.set(i, 'TriggerSource', value) 
-                    #
-                    # Seting up BBB
-                    # 
-                    freq = self.config.get('bbb', 'frequency')
-                    os.system('/bin/set_frecuency %s' % freq)
-                    #
-                    #
-                    #
-
-                    cmd = "python %s -d %s -t %s" %  (self.config.get('bbb','daemon'), self.config.get('bbb','storepath'), 60) #XXX: to be fixed !!!
-                    print cmd
-                    cmd = "python %s -d %s -t %s" %  (self.config.get('bbb','capture'), self.config.get('bbb','storepath'), 60) #XXX time to be fixed !!
-                    print cmd
-
-
-    def _callback(self, widget, data=None):
-        '''
-        callback
-        '''
-        print "%s: %s" % (data, ("disconnecting", "connecting")[widget.get_active()])
-        image = Gtk.Image()
-        image.set_from_stock(Gtk.STOCK_MEDIA_PLAY, Gtk.IconSize.BUTTON)
-        self.button_play.set_image(image)
-        self.button_play.set_label("Play")
-        self.button_play.set_active(False)
-        if self.button_mode.get_active():
-            self.label.set_text("Adquisition")
-            self.m_label.set_text("Push to change from\nAdquisition --> Calibration")
-        if not self.button_mode.get_active():
-            self.label.set_text("Calibration")
-            self.m_label.set_text("Push to change from\nCalibration --> Adquisition")
-
-
+    def _cb_check_acq(self, widget, data=None):
+        self.acquisition.set_active(True)
+        if self.calibration.get_active() is True:
+            self.calibration.set_active(False)
+        
     def quit(self, widget):
         '''
         quit
         '''
+        self._darc_stop()
         sys.exit(0)
 
 if __name__ == '__main__':

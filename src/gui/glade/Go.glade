@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.16.1 -->
 <interface>
-  <!-- interface-requires gtk+ 3.0 -->
+  <requires lib="gtk+" version="3.0"/>
   <object class="GtkWindow" id="window1">
     <property name="can_focus">False</property>
     <property name="window_position">center</property>
@@ -10,33 +11,22 @@
         <property name="can_focus">False</property>
         <property name="row_spacing">1</property>
         <property name="column_spacing">1</property>
-        <child>
-          <object class="GtkLabel" id="label">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="label" translatable="yes">Calibration</property>
-            <attributes>
-              <attribute name="weight" value="bold"/>
-            </attributes>
-          </object>
-          <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">0</property>
-            <property name="width">1</property>
-            <property name="height">1</property>
-          </packing>
-        </child>
+        <property name="row_homogeneous">True</property>
+        <property name="column_homogeneous">True</property>
         <child>
           <object class="GtkToggleButton" id="play">
             <property name="label">gtk-media-play</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="receives_default">True</property>
+            <property name="halign">baseline</property>
+            <property name="valign">baseline</property>
             <property name="margin_left">10</property>
             <property name="margin_right">10</property>
             <property name="margin_top">10</property>
             <property name="margin_bottom">10</property>
             <property name="hexpand">True</property>
+            <property name="vexpand">True</property>
             <property name="border_width">10</property>
             <property name="use_stock">True</property>
             <property name="image_position">top</property>
@@ -50,37 +40,30 @@
           </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="m_label">
+          <object class="GtkLabel" id="label1">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="label" translatable="yes">Push to change from:
-Calibration --&gt; Adquisition</property>
-            <attributes>
-              <attribute name="style" value="italic"/>
-            </attributes>
+            <property name="xpad">30</property>
+            <property name="ypad">30</property>
+            <property name="label" translatable="yes">Mode</property>
           </object>
           <packing>
-            <property name="left_attach">1</property>
+            <property name="left_attach">0</property>
             <property name="top_attach">2</property>
             <property name="width">1</property>
             <property name="height">1</property>
           </packing>
         </child>
         <child>
-          <object class="GtkToggleButton" id="mode">
-            <property name="label">gtk-convert</property>
+          <object class="GtkCheckButton" id="acquisition">
+            <property name="label" translatable="yes">Acquisition</property>
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="receives_default">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">False</property>
             <property name="margin_left">10</property>
             <property name="margin_right">10</property>
-            <property name="margin_top">10</property>
-            <property name="margin_bottom">10</property>
-            <property name="hexpand">True</property>
-            <property name="border_width">10</property>
-            <property name="use_stock">True</property>
-            <property name="image_position">top</property>
-            <property name="always_show_image">True</property>
+            <property name="xalign">0</property>
+            <property name="draw_indicator">True</property>
           </object>
           <packing>
             <property name="left_attach">2</property>
@@ -90,40 +73,22 @@ Calibration --&gt; Adquisition</property>
           </packing>
         </child>
         <child>
-          <object class="GtkButton" id="stop">
-            <property name="label">gtk-media-stop</property>
+          <object class="GtkCheckButton" id="calibration">
+            <property name="label" translatable="yes">Calibration</property>
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="receives_default">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">False</property>
             <property name="margin_left">10</property>
             <property name="margin_right">10</property>
-            <property name="margin_top">10</property>
-            <property name="margin_bottom">20</property>
-            <property name="use_stock">True</property>
-            <property name="image_position">top</property>
-            <property name="always_show_image">True</property>
+            <property name="xalign">0</property>
+            <property name="draw_indicator">True</property>
           </object>
           <packing>
             <property name="left_attach">1</property>
-            <property name="top_attach">4</property>
+            <property name="top_attach">2</property>
             <property name="width">1</property>
             <property name="height">1</property>
           </packing>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
         </child>
         <child>
           <placeholder/>
