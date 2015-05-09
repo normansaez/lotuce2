@@ -58,11 +58,13 @@ def get_mask_spot(radio=5, kernel=20):
     mask = mask*1
     return mask
 
-class Calibra:
+class Calibra(GObject.GObject):
 
 
-    def __init__( self ):
-        GObject.threads_init()
+    def __init__(self):
+        GObject.GObject.__init__(self)
+        self.counter = 0
+        GObject.timeout_add_seconds(5, self._cb_counter)
         path, fil = os.path.split(os.path.abspath(os.path.realpath(__file__)))
         self.builder = Gtk.Builder()
         self.builder.add_from_file(path+"/glade/calibra.glade")
@@ -401,6 +403,11 @@ class Calibra:
         plt.savefig("cam3x.png")
         self.img_cam3_x.set_from_file("cam3x.png")
         
+    def _cb_counter(self):
+        self.counter += 1
+        self.data_builder()
+        print self.counter
+        return True
 
     def _cb_offset_step(self, widget, data=None):
         '''
