@@ -34,8 +34,6 @@ class Go(GObject.GObject):
         if self.window:
             self.window.connect("destroy", self.quit)#Gtk.main_quit)
 
-
-
         self.button_play = self.builder.get_object("play")
         self.calibration = self.builder.get_object("calibration")
         self.acquisition = self.builder.get_object("acquisition")
@@ -50,7 +48,6 @@ class Go(GObject.GObject):
         }
         
         self.builder.connect_signals( dic )
-
     def _cmd(self, cmd, wait=False):
         print cmd
         process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
@@ -68,8 +65,7 @@ class Go(GObject.GObject):
         if not self.darc_running:
             cmd = 'darccontrol -o %s --prefix=%s' % (filename, prefix)
             self._cmd(cmd)
-            time.sleep(30)
-
+            time.sleep(10)
     def _darc_stop(self):
         cmd = "ps aux|grep Acquisition.py|awk '{print $2}'|xargs kill -9"
         self._cmd(cmd, wait=True)
