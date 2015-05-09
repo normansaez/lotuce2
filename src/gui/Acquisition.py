@@ -19,7 +19,7 @@ class Acquisition(GObject.GObject):
     def __init__(self):
         GObject.GObject.__init__(self)
         self.counter = 0
-        GObject.timeout_add_seconds(30, self._cb_counter)
+        GObject.timeout_add_seconds(1, self._cb_counter)
         path, fil = os.path.split(os.path.abspath(os.path.realpath(__file__)))
         self.builder = Gtk.Builder()
         self.builder.add_from_file(path+"/glade/acquisition.glade")
@@ -51,6 +51,7 @@ class Acquisition(GObject.GObject):
         }
         
         self.builder.connect_signals( dic )
+        self.data_builder()
 
 
     def data_builder(self):
@@ -208,10 +209,11 @@ class Acquisition(GObject.GObject):
         plt.xlabel(r'baseline')
         ax.xaxis.grid(True)
         ax.yaxis.grid(True)
-        ax.legend(loc='center left', bbox_to_anchor=(0.75, 0.92))
+#        ax.legend(loc='center left', bbox_to_anchor=(0.75, 0.92))
         plt.gcf().set_size_inches(inchs,inchs)
         plt.savefig('covx.png')
         self.img_cov.set_from_file("covx.png")
+        plt.close()
 
     def _cb_refresh(self, widget, data=None):
         '''

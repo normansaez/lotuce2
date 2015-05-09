@@ -71,7 +71,7 @@ class Calibra(GObject.GObject):
         self.window = self.builder.get_object ("window1")
         self.window.set_events(self.window.get_events())
         
-        self.DarcAravis = DarcAravis()
+#        self.DarcAravis = DarcAravis()
 
         self.configfile=path+'/../../conf/config.cfg'
         self.config = None
@@ -152,7 +152,7 @@ class Calibra(GObject.GObject):
         }
         
         self.builder.connect_signals( dic )
-        self.data_builder()
+#        self.data_builder()
 
     def data_builder(self):
         '''
