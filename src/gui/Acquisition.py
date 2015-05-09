@@ -66,7 +66,15 @@ class Acquisition(GObject.GObject):
         self.img_cam2 = self.builder.get_object("image_cam2")
         self.img_cam3 = self.builder.get_object("image_cam3")
         self.img_cov = self.builder.get_object("image_cov")
-#TODO: remove all to other place 
+
+        dic = { 
+            "on_buttonQuit_clicked" : self.quit,
+        }
+        
+        self.builder.connect_signals( dic )
+
+
+    def data_builder(self):
         d=darc.Control('all')
         #takes camera pixels (x,y)
         pxlx =d.Get("npxlx")[0]
@@ -226,12 +234,6 @@ class Acquisition(GObject.GObject):
         plt.savefig('covx.png')
         self.img_cov.set_from_file("covx.png")
 
-        dic = { 
-            "on_buttonQuit_clicked" : self.quit,
-        }
-        
-        self.builder.connect_signals( dic )
-
     def step_callback(self, widget, data=None):
         '''
         step_callback
@@ -294,7 +296,7 @@ class Acquisition(GObject.GObject):
 
     def _cb_counter(self):
         self.counter += 1
-#        self.data_builder()
+        self.data_builder()
         print self.counter
         return True
 
