@@ -15,8 +15,6 @@ from darcaravis import DarcAravis
 import os
 
 class Go:
-
-
     def __init__( self ):
         path, fil = os.path.split(os.path.abspath(os.path.realpath(__file__)))
         self.builder = Gtk.Builder()
@@ -67,6 +65,7 @@ class Go:
             self.darc_running = True
         except:
             print "DARC is already running"
+            self.darc_running = False
 
         if not self.darc_running:
             cmd = 'darccontrol -o %s --prefix=%s' % (filename, prefix)
@@ -74,9 +73,9 @@ class Go:
             time.sleep(30)
 
     def _darc_stop(self):
-        cmd = "ps aux|grep calibra|awk '{print $2}'|xargs kill -9"
+        cmd = "ps aux|grep Acquisition.py|awk '{print $2}'|xargs kill -9"
         self._cmd(cmd, wait=True)
-        cmd = "ps aux|grep acquisition|awk '{print $2}'|xargs kill -9"
+        cmd = "ps aux|grep Calibra.py|awk '{print $2}'|xargs kill -9"
         self._cmd(cmd, wait=True)
         cmd = 'darcmagic stop -c  --prefix=all'
         self._cmd(cmd, wait=True)
