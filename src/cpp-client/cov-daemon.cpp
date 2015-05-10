@@ -6,7 +6,7 @@ int main(){
     int myvar = 1;
     while(true){
         printf("%d -> %d\n", counter, myvar);
-        usleep(1e6);//micro secs
+        usleep(1e6);//1e6 micro secs = 1sec
         counter += 1;
     }
     return 0;
