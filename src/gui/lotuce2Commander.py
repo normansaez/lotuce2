@@ -12,7 +12,6 @@ from scipy.stats import norm
 #DARC stuff
 _prefix = 'all'
 d_obj = darc.Control(_prefix)
-global counter
 
 int_max = (2**12 - 1. )# 0 to 2^(camera bits). As start from 0, it is needed get one value less
 # funcs
