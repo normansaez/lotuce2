@@ -13,6 +13,8 @@ from scipy.stats import norm
 _prefix = 'all'
 d_obj = darc.Control(_prefix)
 
+        # create a simple window with a label
+
 int_max = (2**12 - 1. )# 0 to 2^(camera bits). As start from 0, it is needed get one value less
 # funcs
 def update_profile():
