@@ -4,8 +4,6 @@ import gtk, gobject
 
 class Acquisition:
     def __init__(self, timeout):
-
-        # create a simple window with a label
         self.window = gtk.Window()
         self.window.connect('destroy', lambda wid: gtk.main_quit())
         self.window.connect('delete_event', lambda a1,a2:gtk.main_quit())
