@@ -100,7 +100,7 @@ class Acquisition:
 
         # register a periodic timer
         self.counter = 0
-        gobject.timeout_add_seconds(timeout, self.callback)
+        gobject.timeout_add_seconds(timeout, self._cb_timer)
         #
         #Fill with DARC content
         #
@@ -122,9 +122,149 @@ class Acquisition:
         plot_cam2.p.loadFunc("/home/lotuce2/lotuce2/src/gui/xmlcfg/cam2.xml")
         plot_cam3.p.loadFunc("/home/lotuce2/lotuce2/src/gui/xmlcfg/cam3.xml")
 
-    def callback(self):
+    def data_builder(self):
+        _prefix = 'all'
+        d_obj = darc.Control(_prefix)
+        
+        int_max = (2**12 - 1. )# 0 to 2^(camera bits). As start from 0, it is needed get one value less
+        pxlx =d_obj.Get("npxlx")[0]
+        pxly =d_obj.Get("npxly")[0]
+        print "x: %d" % pxlx
+        print "y: %d" % pxly
+        stream=d_obj.GetStream('%srtcPxlBuf'% _prefix)
+        mydata = stream[0].reshape((4*pxly,pxlx))
+
+        xi_cam0 = 0*pxly
+        xf_cam0 = 1*pxly
+        yi_cam0 = 0*pxlx
+        yf_cam0 = 1*pxlx
+        
+        xi_cam1 = 1*pxly
+        xf_cam1 = 2*pxly
+        yi_cam1 = 0*pxlx
+        yf_cam1 = 1*pxlx
+        
+        xi_cam2 = 2*pxly
+        xf_cam2 = 3*pxly
+        yi_cam2 = 0*pxlx
+        yf_cam2 = 1*pxlx
+        
+        xi_cam3 = 3*pxly
+        xf_cam3 = 4*pxly
+        yi_cam3 = 0*pxlx
+        yf_cam3 = 1*pxlx
+        
+        #data per camera:
+        cam0 = mydata[xi_cam0:xf_cam0,yi_cam0:yf_cam0]
+        cam1 = mydata[xi_cam1:xf_cam1,yi_cam1:yf_cam1]
+        cam2 = mydata[xi_cam2:xf_cam2,yi_cam2:yf_cam2]
+        cam3 = mydata[xi_cam3:xf_cam3,yi_cam3:yf_cam3]
+
+        x = len(cam0)
+        cam0_nx = np.array([])
+        cam0_ny = np.array([])
+        cam1_nx = np.array([])
+        cam1_ny = np.array([])
+        cam2_nx = np.array([])
+        cam2_ny = np.array([])
+        cam3_nx = np.array([])
+        cam3_ny = np.array([])
+        
+        c0 = cam0.max()
+        c1 = cam1.max()
+        c2 = cam2.max()
+        c3 = cam3.max()
+         
+        for i in range(0,x):
+            cam0_nx = np.append(cam0_nx, cam0[i,].sum())
+            cam0_ny = np.append(cam0_ny, cam0[:,i].sum())
+            cam1_nx = np.append(cam1_nx, cam1[i,].sum())
+            cam1_ny = np.append(cam1_ny, cam1[:,i].sum())
+            cam2_nx = np.append(cam2_nx, cam2[i,].sum())
+            cam2_ny = np.append(cam2_ny, cam2[:,i].sum())
+            cam3_nx = np.append(cam3_nx, cam3[i,].sum())
+            cam3_ny = np.append(cam3_ny, cam3[:,i].sum())
+        axis = range(0,x)
+        #normalize according cameras:
+        cam0_nx = cam0_nx/int_max
+        cam0_ny = cam0_ny/int_max
+        
+        cam1_nx = cam1_nx/int_max
+        cam1_ny = cam1_ny/int_max
+        
+        cam2_nx = cam2_nx/int_max
+        cam2_ny = cam2_ny/int_max
+        
+        cam3_nx = cam3_nx/int_max
+        cam3_ny = cam3_ny/int_max
+        
+        #cam0_fx = Figure(figsize=(5,4), dpi=30)
+        cam0_fx = Figure(dpi=30, tight_layout=True)
+        ax = cam0_fx.add_subplot(111)
+        #ax.set_xlim(0,1)
+        ax.set_ylim(0,x)
+        ax.invert_xaxis()
+        ax.plot(cam0_nx,axis,'-')
+        #mu, std = norm.fit(cam0_nx)
+        #p = norm.pdf(axis, mu, std)
+        #ax.plot(axis, p, 'k', linewidth=2)
+        
+        #cam0_fy = Figure(figsize=(5,4), dpi=30)
+        cam0_fy = Figure(dpi=30, tight_layout=True)
+        ax2 = cam0_fy.add_subplot(111)
+        ax2.set_xlim(0,x)
+        #ax2.set_ylim(0,1)
+        ax2.plot(axis,cam0_ny,'-')
+        #--------------------------------------------------
+        #cam1_fx = Figure(figsize=(5,4), dpi=30)
+        cam1_fx = Figure(dpi=30, tight_layout=True)
+        ax = cam1_fx.add_subplot(111)
+        #ax.set_xlim(0,1)
+        ax.set_ylim(0,x)
+        ax.plot(cam1_nx,axis,'-')
+        
+        #cam1_fy = Figure(figsize=(5,4), dpi=30)
+        cam1_fy = Figure(dpi=30, tight_layout=True)
+        ax2 = cam1_fy.add_subplot(111)
+        ax2.set_xlim(0,x)
+        #ax2.set_ylim(0,1)
+        ax2.plot(axis,cam1_ny,'-')
+        #--------------------------------------------------
+        #cam2_fx = Figure(figsize=(5,4), dpi=30)
+        cam2_fx = Figure(dpi=30, tight_layout=True)
+        ax = cam2_fx.add_subplot(111)
+        #ax.set_xlim(0,1)
+        ax.set_ylim(0,x)
+        ax.invert_xaxis()
+        ax.plot(cam2_nx,axis,'-')
+        
+        #cam2_fy = Figure(figsize=(5,4), dpi=30)
+        cam2_fy = Figure(dpi=30, tight_layout=True)
+        ax2 = cam2_fy.add_subplot(111)
+        ax2.set_xlim(0,x)
+        #ax2.set_ylim(0,1)
+        ax2.invert_yaxis()
+        ax2.plot(axis,cam2_ny,'-')
+        #--------------------------------------------------
+        #cam3_fx = Figure(figsize=(5,4), dpi=30)
+        cam3_fx = Figure(dpi=30, tight_layout=True)
+        ax = cam3_fx.add_subplot(111)
+        #ax.set_xlim(0,1)
+        ax.set_ylim(0,x)
+        ax.plot(cam3_nx,axis,'-')
+        
+        #cam3_fy = Figure(figsize=(5,4), dpi=30)
+        cam3_fy = Figure(dpi=30, tight_layout=True)
+        ax2 = cam3_fy.add_subplot(111)
+        ax2.set_xlim(0,x)
+        #ax2.set_ylim(0,1)
+        ax2.invert_yaxis()
+        ax2.plot(axis,cam3_ny,'-')
+
+    def _cb_timer(self):
         self.counter += 1
         print self.counter
+#        self.data_builder()
         return True
 
 if __name__ == '__main__':
