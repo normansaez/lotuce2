@@ -93,15 +93,6 @@ class Acquisition:
         vbox.pack_start(hbox3,True)
         vbox.pack_start(hbox4,True)
         #
-        # Fill window with vbox content 
-        #
-        self.window.add(vbox)
-        self.window.show_all()
-
-        # register a periodic timer
-        self.counter = 0
-        gobject.timeout_add_seconds(timeout, self._cb_timer)
-        #
         #Fill with DARC content
         #
         self.darc_reader()
@@ -111,6 +102,15 @@ class Acquisition:
         #
         #self.data_builder()
 
+        #
+        # Fill window with vbox content 
+        #
+        self.window.add(vbox)
+        self.window.show_all()
+
+        # register a periodic timer
+        self.counter = 0
+        gobject.timeout_add_seconds(timeout, self._cb_timer)
     def darc_reader(self):
         import plot
         _prefix = 'all'
