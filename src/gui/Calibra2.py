@@ -49,7 +49,8 @@ class Acquisition:
         #
         # Profiles frames: 2 per camera x,y
         #
-        self.frame_c0px=gtk.Frame()
+#        self.frame_c0px=gtk.Frame()
+        self.image_c0px=gtk.Image()
         self.frame_c0py=gtk.Frame()
         
         self.frame_c1px=gtk.Frame()
@@ -75,7 +76,8 @@ class Acquisition:
         hbox1.pack_start(self.frame_c1py,True)
         hbox1.pack_start(frame_label_cam1,True)
         #
-        hbox2.pack_start(self.frame_c0px,True)
+#        hbox2.pack_start(self.frame_c0px,True)
+        hbox2.pack_start(self.image_c0px,True)
         hbox2.pack_start(self.frame_cam0,True)
         hbox2.pack_start(self.frame_cam1,True)
         hbox2.pack_start(self.frame_c1px,True)
@@ -276,12 +278,10 @@ class Acquisition:
         #fill up profiles
         self.canvas_c0_fx = FigureCanvas(cam0_fx)  # a gtk.DrawingArea
         self.canvas_c0_fy = FigureCanvas(cam0_fy)  # a gtk.DrawingArea
-        if self.flag == 1:
-            self.frame_c0px.add(self.canvas_c0_fx)
-            self.frame_c0py.add(self.canvas_c0_fy)
-            self.flag = 0
+        self.image_c0px.set_from_pixbuf(self.canvas_c0_fx)
+#        self.frame_c0py.add(self.canvas_c0_fy)
         self.canvas_c0_fx.draw()
-        self.canvas_c0_fy.draw()
+#        self.canvas_c0_fy.draw()
             
         print "Finish draw"
         
