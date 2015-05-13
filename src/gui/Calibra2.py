@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
-import gtk, gobject
+import os
+import gtk
+import gobject
 
 class Acquisition:
     def __init__(self, timeout):
@@ -102,7 +104,7 @@ class Acquisition:
         #
         #Fill with DARC content
         #
-        #self.darc_reader()
+        self.darc_reader()
 
         #
         #Fill with calculate profiles and plots
@@ -110,16 +112,19 @@ class Acquisition:
         #self.data_builder()
 
     def darc_reader(self):
+        import plot
+        _prefix = 'all'
+        configdir = "/opt/darc/conf"
         path, fil = os.path.split(os.path.abspath(os.path.realpath(__file__)))
         plot_cam0 = plot.DarcReader([], prefix=_prefix, dec=125, configdir=configdir, withScroll=1, window=self.frame_cam0, showPlots=0)
-        plot_cam1 = plot.DarcReader([], prefix=_prefix, dec=125, configdir=configdir, withScroll=1, window=self.frame_cam1, showPlots=0)
-        plot_cam2 = plot.DarcReader([], prefix=_prefix, dec=125, configdir=configdir, withScroll=1, window=self.frame_cam2, showPlots=0)
-        plot_cam3 = plot.DarcReader([], prefix=_prefix, dec=125, configdir=configdir, withScroll=1, window=self.frame_cam3, showPlots=0)
+#        plot_cam1 = plot.DarcReader([], prefix=_prefix, dec=125, configdir=configdir, withScroll=1, window=self.frame_cam1, showPlots=0)
+#        plot_cam2 = plot.DarcReader([], prefix=_prefix, dec=125, configdir=configdir, withScroll=1, window=self.frame_cam2, showPlots=0)
+#        plot_cam3 = plot.DarcReader([], prefix=_prefix, dec=125, configdir=configdir, withScroll=1, window=self.frame_cam3, showPlots=0)
 
         plot_cam0.p.loadFunc(path+"/xmlcfg/cam0.xml")
-        plot_cam1.p.loadFunc(path+"/xmlcfg/cam1.xml")
-        plot_cam2.p.loadFunc(path+"/xmlcfg/cam2.xml")
-        plot_cam3.p.loadFunc(path+"/xmlcfg/cam3.xml")
+#        plot_cam1.p.loadFunc(path+"/xmlcfg/cam1.xml")
+#        plot_cam2.p.loadFunc(path+"/xmlcfg/cam2.xml")
+#        plot_cam3.p.loadFunc(path+"/xmlcfg/cam3.xml")
 
     def data_builder(self):
         _prefix = 'all'
