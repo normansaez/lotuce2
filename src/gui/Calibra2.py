@@ -5,8 +5,11 @@ import gtk
 import darc
 import gobject
 import numpy as np
+import matplotlib
+matplotlib.use('GTKAgg')
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_gtkagg import FigureCanvasGTKAgg as FigureCanvas
+#from matplotlib.backends.backend_gtkagg import FigureCanvasGTKAgg as FigureCanvas
+from matplotlib.backends.backend_gtk import FigureCanvasGTK as FigureCanvas
 
 class Acquisition:
     def __init__(self, timeout):
@@ -50,7 +53,7 @@ class Acquisition:
         # Profiles frames: 2 per camera x,y
         #
 #        self.frame_c0px=gtk.Frame()
-        self.image_c0px=gtk.Image()
+#        self.image_c0px=gtk.Image()
         self.frame_c0py=gtk.Frame()
         
         self.frame_c1px=gtk.Frame()
@@ -76,8 +79,16 @@ class Acquisition:
         hbox1.pack_start(self.frame_c1py,True)
         hbox1.pack_start(frame_label_cam1,True)
         #
+        #
+        #Fill with calculate profiles and plots
+        #
+        self.canvas_c0px = None
+        self.data_builder()
 #        hbox2.pack_start(self.frame_c0px,True)
-        hbox2.pack_start(self.image_c0px,True)
+#        hbox2.pack_start(self.image_c0px,True)
+        hbox2.pack_start(self.canvas_c0px,True)
+        print "in>",
+        print id(self.canvas_c0px)
         hbox2.pack_start(self.frame_cam0,True)
         hbox2.pack_start(self.frame_cam1,True)
         hbox2.pack_start(self.frame_c1px,True)
@@ -101,14 +112,13 @@ class Acquisition:
         #
         #Fill with DARC content
         #
-        self.flag =  1
         self.counter = 0
         self.darc_reader()
 
         #
         #Fill with calculate profiles and plots
         #
-        self.data_builder()
+#        self.data_builder()
 
         #
         # Fill window with vbox content 
@@ -141,8 +151,6 @@ class Acquisition:
         int_max = (2**12 - 1. )# 0 to 2^(camera bits). As start from 0, it is needed get one value less
         pxlx =d_obj.Get("npxlx")[0]
         pxly =d_obj.Get("npxly")[0]
-        print "x: %d" % pxlx
-        print "y: %d" % pxly
         stream=d_obj.GetStream('%srtcPxlBuf'% _prefix)
         mydata = stream[0].reshape((1*pxly,pxlx))
 #        mydata = stream[0].reshape((4*pxly,pxlx))
@@ -276,15 +284,14 @@ class Acquisition:
 #        ax2.plot(axis,cam3_ny,'-')
 
         #fill up profiles
-        self.canvas_c0_fx = FigureCanvas(cam0_fx)  # a gtk.DrawingArea
-        self.canvas_c0_fy = FigureCanvas(cam0_fy)  # a gtk.DrawingArea
-        self.image_c0px.set_from_pixbuf(self.canvas_c0_fx)
+        self.canvas_c0px = FigureCanvas(cam0_fx)  # a gtk.DrawingArea
+        canvas_c0_fy = FigureCanvas(cam0_fy)  # a gtk.DrawingArea
+#        self.image_c0px.set_from_pixbuf(self.canvas_c0_fx)
 #        self.frame_c0py.add(self.canvas_c0_fy)
-        self.canvas_c0_fx.draw()
+        print "bd>",
+        print id(self.canvas_c0px)
 #        self.canvas_c0_fy.draw()
             
-        print "Finish draw"
-        
 #        canvas_c1_fx = FigureCanvas(cam1_fx)  # a gtk.DrawingArea
 #        canvas_c1_fy = FigureCanvas(cam1_fy)  # a gtk.DrawingArea
 #        self.frame_c1px.add(canvas_c1_fx)
@@ -303,7 +310,10 @@ class Acquisition:
     def _cb_timer(self):
         self.counter += 1
         print self.counter
-        self.data_builder()
+        print "cb>",
+        print id(self.canvas_c0px)
+        self.canvas_c0px.draw()
+#        self.data_builder()
         return True
 
 if __name__ == '__main__':
