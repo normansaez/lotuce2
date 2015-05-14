@@ -6,10 +6,12 @@ int main(){
     int pxlx = 5;
     // DATA
     int data[pxlx*pxly];
-    for (int i=0;i<pxly*pxlx;i++){
-//        printf("%d\n", i);
+    int pfx[pxly];
+    int pfy[pxlx];
+
+    for (int i=0;i<pxly*pxlx;i++)
         data[i] = i;
-    }
+
 
     int index = 0;
     int col = 0;
@@ -24,12 +26,21 @@ int main(){
             col += 1;
             if (col >= pxlx){
                 printf("x>%d\n",px);
+                pfx[j] = px;
                 col = 0;
                 px = 0;
             }
             index += 1;
-        printf("  %d<y\n",py);
         }
+        printf("  %d<y\n",py);
+        pfy[i] = py;
     }
+    printf("---\n");
+    for (int i=0;i<pxlx;i++)
+        printf("pfy: %d\n",pfy[i]);
+    printf("---\n");
+    for (int j=0;j<pxly;j++)
+        printf("pfx: %d\n",pfx[j]);
+
     return 0;
 }
