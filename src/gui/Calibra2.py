@@ -5,11 +5,8 @@ import gtk
 import darc
 import gobject
 import numpy as np
-import matplotlib
-matplotlib.use('GTKAgg')
 from matplotlib.figure import Figure
-#from matplotlib.backends.backend_gtkagg import FigureCanvasGTKAgg as FigureCanvas
-from matplotlib.backends.backend_gtk import FigureCanvasGTK as FigureCanvas
+from matplotlib.backends.backend_gtkagg import FigureCanvasGTKAgg as FigureCanvas
 
 class Acquisition:
     def __init__(self, timeout):
@@ -36,7 +33,6 @@ class Acquisition:
         #   | -    | c2px | c3px | -    |  -> hbox4
         #
         hbox1=gtk.HBox()
-#        hbox1.set_orientation(gtk.ORIENTATION_VERTICAL)
         hbox2=gtk.HBox()
         hbox3=gtk.HBox()
         hbox4=gtk.HBox()
@@ -103,8 +99,14 @@ class Acquisition:
         #
         #Fill with DARC content
         #
+        self.flag =  1
         self.counter = 0
         self.darc_reader()
+
+        #
+        #Fill with calculate profiles and plots
+        #
+        self.data_builder()
 
         #
         # Fill window with vbox content 
@@ -121,16 +123,11 @@ class Acquisition:
         configdir = "/opt/darc/conf"
         path, fil = os.path.split(os.path.abspath(os.path.realpath(__file__)))
         plot_cam0 = plot.DarcReader([], prefix=_prefix, dec=125, configdir=configdir, withScroll=1, window=self.frame_cam0, showPlots=0)
-        plot_c0px = plot.DarcReader([], prefix=_prefix, dec=125, configdir=configdir, withScroll=1, window=self.frame_c0px, showPlots=0)
-        plot_c0py = plot.DarcReader([], prefix=_prefix, dec=125, configdir=configdir, withScroll=1, window=self.frame_c0py, showPlots=0)
 #        plot_cam1 = plot.DarcReader([], prefix=_prefix, dec=125, configdir=configdir, withScroll=1, window=self.frame_cam1, showPlots=0)
 #        plot_cam2 = plot.DarcReader([], prefix=_prefix, dec=125, configdir=configdir, withScroll=1, window=self.frame_cam2, showPlots=0)
 #        plot_cam3 = plot.DarcReader([], prefix=_prefix, dec=125, configdir=configdir, withScroll=1, window=self.frame_cam3, showPlots=0)
 
         plot_cam0.p.loadFunc(path+"/xmlcfg/cam0.xml")
-        plot_c0px.p.loadFunc(path+"/xmlcfg/p0x.xml")
-        plot_c0py.p.loadFunc(path+"/xmlcfg/p0x.xml")
-        print type(plot_c0py.p)
 #        plot_cam1.p.loadFunc(path+"/xmlcfg/cam1.xml")
 #        plot_cam2.p.loadFunc(path+"/xmlcfg/cam2.xml")
 #        plot_cam3.p.loadFunc(path+"/xmlcfg/cam3.xml")
@@ -142,6 +139,8 @@ class Acquisition:
         int_max = (2**12 - 1. )# 0 to 2^(camera bits). As start from 0, it is needed get one value less
         pxlx =d_obj.Get("npxlx")[0]
         pxly =d_obj.Get("npxly")[0]
+        print "x: %d" % pxlx
+        print "y: %d" % pxly
         stream=d_obj.GetStream('%srtcPxlBuf'% _prefix)
         mydata = stream[0].reshape((1*pxly,pxlx))
 #        mydata = stream[0].reshape((4*pxly,pxlx))
@@ -275,14 +274,17 @@ class Acquisition:
 #        ax2.plot(axis,cam3_ny,'-')
 
         #fill up profiles
-#        self.canvas_c0px = FigureCanvas(cam0_fx)  # a gtk.DrawingArea
-#        canvas_c0_fy = FigureCanvas(cam0_fy)  # a gtk.DrawingArea
-#        self.image_c0px.set_from_pixbuf(self.canvas_c0_fx)
-#        self.frame_c0py.add(self.canvas_c0_fy)
-#        print "bd>",
-#        print id(self.canvas_c0px)
-#        self.canvas_c0_fy.draw()
+        self.canvas_c0_fx = FigureCanvas(cam0_fx)  # a gtk.DrawingArea
+        self.canvas_c0_fy = FigureCanvas(cam0_fy)  # a gtk.DrawingArea
+        if self.flag == 1:
+            self.frame_c0px.add(self.canvas_c0_fx)
+            self.frame_c0py.add(self.canvas_c0_fy)
+            self.flag = 0
+        self.canvas_c0_fx.draw()
+        self.canvas_c0_fy.draw()
             
+        print "Finish draw"
+        
 #        canvas_c1_fx = FigureCanvas(cam1_fx)  # a gtk.DrawingArea
 #        canvas_c1_fy = FigureCanvas(cam1_fy)  # a gtk.DrawingArea
 #        self.frame_c1px.add(canvas_c1_fx)
@@ -301,6 +303,7 @@ class Acquisition:
     def _cb_timer(self):
         self.counter += 1
         print self.counter
+        self.data_builder()
         return True
 
 if __name__ == '__main__':
