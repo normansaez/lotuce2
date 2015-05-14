@@ -78,16 +78,7 @@ class Acquisition:
         hbox1.pack_start(self.frame_c1py,True)
         hbox1.pack_start(frame_label_cam1,True)
         #
-        #
-        #Fill with calculate profiles and plots
-        #
-#        self.canvas_c0px = None
-#        self.data_builder()
         hbox2.pack_start(self.frame_c0px,True)
-#        hbox2.pack_start(self.image_c0px,True)
-#        hbox2.pack_start(self.canvas_c0px,True)
-#        print "in>",
-#        print id(self.canvas_c0px)
         hbox2.pack_start(self.frame_cam0,True)
         hbox2.pack_start(self.frame_cam1,True)
         hbox2.pack_start(self.frame_c1px,True)
@@ -115,11 +106,6 @@ class Acquisition:
         self.darc_reader()
 
         #
-        #Fill with calculate profiles and plots
-        #
-#        self.data_builder()
-
-        #
         # Fill window with vbox content 
         #
         self.window.add(vbox)
@@ -134,13 +120,15 @@ class Acquisition:
         configdir = "/opt/darc/conf"
         path, fil = os.path.split(os.path.abspath(os.path.realpath(__file__)))
         plot_cam0 = plot.DarcReader([], prefix=_prefix, dec=125, configdir=configdir, withScroll=1, window=self.frame_cam0, showPlots=0)
-        plot_px_cam0 = plot.DarcReader([], prefix=_prefix, dec=125, configdir=configdir, withScroll=1, window=self.frame_c0px, showPlots=0)
+        plot_c0px = plot.DarcReader([], prefix=_prefix, dec=125, configdir=configdir, withScroll=1, window=self.frame_c0px, showPlots=0)
+        plot_c0py = plot.DarcReader([], prefix=_prefix, dec=125, configdir=configdir, withScroll=1, window=self.frame_c0py, showPlots=0)
 #        plot_cam1 = plot.DarcReader([], prefix=_prefix, dec=125, configdir=configdir, withScroll=1, window=self.frame_cam1, showPlots=0)
 #        plot_cam2 = plot.DarcReader([], prefix=_prefix, dec=125, configdir=configdir, withScroll=1, window=self.frame_cam2, showPlots=0)
 #        plot_cam3 = plot.DarcReader([], prefix=_prefix, dec=125, configdir=configdir, withScroll=1, window=self.frame_cam3, showPlots=0)
 
         plot_cam0.p.loadFunc(path+"/xmlcfg/cam0.xml")
-        plot_px_cam0.p.loadFunc(path+"/xmlcfg/p0x.xml")
+        plot_c0px.p.loadFunc(path+"/xmlcfg/p0x.xml")
+        plot_c0py.p.loadFunc(path+"/xmlcfg/p0x.xml")
 #        plot_cam1.p.loadFunc(path+"/xmlcfg/cam1.xml")
 #        plot_cam2.p.loadFunc(path+"/xmlcfg/cam2.xml")
 #        plot_cam3.p.loadFunc(path+"/xmlcfg/cam3.xml")
@@ -311,10 +299,6 @@ class Acquisition:
     def _cb_timer(self):
         self.counter += 1
         print self.counter
-        print "cb>",
-#        print id(self.canvas_c0px)
-#        self.canvas_c0px.draw()
-#        self.data_builder()
         return True
 
 if __name__ == '__main__':
