@@ -52,8 +52,7 @@ class Acquisition:
         #
         # Profiles frames: 2 per camera x,y
         #
-#        self.frame_c0px=gtk.Frame()
-#        self.image_c0px=gtk.Image()
+        self.frame_c0px=gtk.Frame()
         self.frame_c0py=gtk.Frame()
         
         self.frame_c1px=gtk.Frame()
@@ -82,13 +81,13 @@ class Acquisition:
         #
         #Fill with calculate profiles and plots
         #
-        self.canvas_c0px = None
-        self.data_builder()
-#        hbox2.pack_start(self.frame_c0px,True)
+#        self.canvas_c0px = None
+#        self.data_builder()
+        hbox2.pack_start(self.frame_c0px,True)
 #        hbox2.pack_start(self.image_c0px,True)
-        hbox2.pack_start(self.canvas_c0px,True)
-        print "in>",
-        print id(self.canvas_c0px)
+#        hbox2.pack_start(self.canvas_c0px,True)
+#        print "in>",
+#        print id(self.canvas_c0px)
         hbox2.pack_start(self.frame_cam0,True)
         hbox2.pack_start(self.frame_cam1,True)
         hbox2.pack_start(self.frame_c1px,True)
@@ -135,11 +134,13 @@ class Acquisition:
         configdir = "/opt/darc/conf"
         path, fil = os.path.split(os.path.abspath(os.path.realpath(__file__)))
         plot_cam0 = plot.DarcReader([], prefix=_prefix, dec=125, configdir=configdir, withScroll=1, window=self.frame_cam0, showPlots=0)
+        plot_px_cam0 = plot.DarcReader([], prefix=_prefix, dec=125, configdir=configdir, withScroll=1, window=self.frame_c0px, showPlots=0)
 #        plot_cam1 = plot.DarcReader([], prefix=_prefix, dec=125, configdir=configdir, withScroll=1, window=self.frame_cam1, showPlots=0)
 #        plot_cam2 = plot.DarcReader([], prefix=_prefix, dec=125, configdir=configdir, withScroll=1, window=self.frame_cam2, showPlots=0)
 #        plot_cam3 = plot.DarcReader([], prefix=_prefix, dec=125, configdir=configdir, withScroll=1, window=self.frame_cam3, showPlots=0)
 
         plot_cam0.p.loadFunc(path+"/xmlcfg/cam0.xml")
+        plot_px_cam0.p.loadFunc(path+"/xmlcfg/p0x.xml")
 #        plot_cam1.p.loadFunc(path+"/xmlcfg/cam1.xml")
 #        plot_cam2.p.loadFunc(path+"/xmlcfg/cam2.xml")
 #        plot_cam3.p.loadFunc(path+"/xmlcfg/cam3.xml")
@@ -284,12 +285,12 @@ class Acquisition:
 #        ax2.plot(axis,cam3_ny,'-')
 
         #fill up profiles
-        self.canvas_c0px = FigureCanvas(cam0_fx)  # a gtk.DrawingArea
-        canvas_c0_fy = FigureCanvas(cam0_fy)  # a gtk.DrawingArea
+#        self.canvas_c0px = FigureCanvas(cam0_fx)  # a gtk.DrawingArea
+#        canvas_c0_fy = FigureCanvas(cam0_fy)  # a gtk.DrawingArea
 #        self.image_c0px.set_from_pixbuf(self.canvas_c0_fx)
 #        self.frame_c0py.add(self.canvas_c0_fy)
-        print "bd>",
-        print id(self.canvas_c0px)
+#        print "bd>",
+#        print id(self.canvas_c0px)
 #        self.canvas_c0_fy.draw()
             
 #        canvas_c1_fx = FigureCanvas(cam1_fx)  # a gtk.DrawingArea
@@ -311,8 +312,8 @@ class Acquisition:
         self.counter += 1
         print self.counter
         print "cb>",
-        print id(self.canvas_c0px)
-        self.canvas_c0px.draw()
+#        print id(self.canvas_c0px)
+#        self.canvas_c0px.draw()
 #        self.data_builder()
         return True
 
