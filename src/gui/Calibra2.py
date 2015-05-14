@@ -36,6 +36,7 @@ class Acquisition:
         #   | -    | c2px | c3px | -    |  -> hbox4
         #
         hbox1=gtk.HBox()
+#        hbox1.set_orientation(gtk.ORIENTATION_VERTICAL)
         hbox2=gtk.HBox()
         hbox3=gtk.HBox()
         hbox4=gtk.HBox()
@@ -129,6 +130,7 @@ class Acquisition:
         plot_cam0.p.loadFunc(path+"/xmlcfg/cam0.xml")
         plot_c0px.p.loadFunc(path+"/xmlcfg/p0x.xml")
         plot_c0py.p.loadFunc(path+"/xmlcfg/p0x.xml")
+        print type(plot_c0py.p)
 #        plot_cam1.p.loadFunc(path+"/xmlcfg/cam1.xml")
 #        plot_cam2.p.loadFunc(path+"/xmlcfg/cam2.xml")
 #        plot_cam3.p.loadFunc(path+"/xmlcfg/cam3.xml")
