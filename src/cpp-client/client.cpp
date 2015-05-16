@@ -1,10 +1,13 @@
-//#include <iostream.h>
 #include <control.hh>
+//#include <controlSK.cc>
+#include <darc.h>
+//#include <stdio.h>
+//#include <stdlib.h>
+#include <iostream>
 
 int main(int argc, char** argv)
 {
 
-printf("test\n");
 //  try {
 //    // Initialise the ORB.
 //    CORBA::ORB_var orb = CORBA::ORB_init(argc, argv);
@@ -60,7 +63,7 @@ printf("test\n");
 //  catch(...) {
 //    cerr << "Caught unknown exception." << endl;
 //  }
-
+    std::cout << "hola\n";
   return 0;
 }
 
