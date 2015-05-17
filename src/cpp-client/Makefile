@@ -16,5 +16,6 @@ install:
 	@echo "Installing"
 clean:
 	@echo "Cleaning"
+	rm -fr *.o
 	rm -fr cov-daemon
 	rm -fr client
