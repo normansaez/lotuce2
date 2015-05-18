@@ -13,6 +13,8 @@ int main(int argc, char** argv)
         CORBA::ORB_var orb = CORBA::ORB_init(argc, argv);
         CORBA::Object_var obj = orb->resolve_initial_references("RootPOA");
         RTC::Control_var controlref = RTC::Control::_narrow(obj);
+
+
     }
     catch(CORBA::COMM_FAILURE& ex) {
         cerr << "Caught system exception COMM_FAILURE -- unable to contact the "
