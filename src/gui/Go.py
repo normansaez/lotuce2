@@ -83,6 +83,26 @@ class Go(GObject.GObject):
         print "Calibrating ..."
         cmd = "python %s" % (self.config.get('bbb','calGUI'))
         self._cmd(cmd)
+        print "Seeting up ..."
+        if self.DarcAravis is None:
+            self.DarcAravis = DarcAravis()
+        for i in range(0,4):
+            camera = 'cam%d' % i
+            print "\n\nReading configuration for %s ... " % camera
+            trigger = self.config.get(camera, 'trigger')
+            print "Trigger: %s" % trigger
+            print "\nReading current configuration from HW : %s" % camera
+            self.DarcAravis.get(i, 'TriggerSource') 
+            print "\nSET configuration readed from file, for  %s" % camera
+            if trigger.__contains__('True'):
+                value = 'Line1'
+            else:
+                value = 'Freerun'
+            self.DarcAravis.set(i, 'TriggerSource', value) 
+        for i in range(0,4):
+            camera = 'cam%d' % i
+            exptime = self.config.get(camera, 'exptime')
+            self.DarcAravis.set(i, 'ExposureTimeAbs', exptime)
 
     def _darc_acq(self):
         print "Acquiring ..."
