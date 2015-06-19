@@ -89,15 +89,16 @@ class Go(GObject.GObject):
         for i in range(0,4):
             camera = 'cam%d' % i
             print "\n\nReading configuration for %s ... " % camera
-            trigger = self.config.get(camera, 'trigger')
+            trigger = self.config.getboolean(camera, 'trigger')
             print "Trigger: %s" % trigger
             print "\nReading current configuration from HW : %s" % camera
             self.DarcAravis.get(i, 'TriggerSource') 
             print "\nSET configuration readed from file, for  %s" % camera
-            if trigger.__contains__('True'):
+            if trigger is True:
                 value = 'Line1'
             else:
                 value = 'Freerun'
+            print value
 #            self.DarcAravis.set(i, 'TriggerSource', value) 
         for i in range(0,4):
             camera = 'cam%d' % i
