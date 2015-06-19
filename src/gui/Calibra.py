@@ -80,6 +80,7 @@ class Calibra(GObject.GObject):
         
         self.__step = "--"
         self.__subap_size = "--"
+        self.__refresh_step = "--"
         if self.window:
             self.window.connect("destroy", Gtk.main_quit)
 
@@ -153,6 +154,7 @@ class Calibra(GObject.GObject):
 
         self.button_apply_offset.connect("clicked", self._cb_offset_step, "step")
         self.button_apply_subap.connect("clicked", self._cb_subap_size, "size")
+        self.button_apply_refresh.connect("clicked", self._cb_refresh_step, "step")
         dic = { 
             "on_buttonQuit_clicked" : self.quit,
         }
@@ -427,6 +429,19 @@ class Calibra(GObject.GObject):
         print "self.__subap_size %d" % self.__subap_size
         self.label_subap.set_text("%s" % str(size))
         self.entry_subap.set_text("")
+
+    def _cb_refresh_step(self, widget, data=None):
+        '''
+        _cb_refresh_step
+        '''
+        ref = self.entry_refresh.get_text()
+        print "ref %s" % ref
+        if ref == "":
+            ref = "10"
+        self.__refresh_step = int(ref)
+        print "self.__refresh_step %d" % self.__refresh_step
+        self.label_refresh.set_text("%s" % str(ref))
+        self.entry_refresh.set_text("")
 
     def _cb_offset_step(self, widget, data=None):
         '''
