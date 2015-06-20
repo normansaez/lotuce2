@@ -99,10 +99,13 @@ class Go(GObject.GObject):
             else:
                 value = 'Freerun'
             print value
-#            self.DarcAravis.set(i, 'TriggerSource', value) 
+            self.DarcAravis.set(i, 'TriggerSource', value) 
+#            exptime = self.config.get(camera, 'exptime')
+#            self.DarcAravis.set(i, 'ExposureTimeAbs', exptime)
         for i in range(0,4):
             camera = 'cam%d' % i
             exptime = self.config.get(camera, 'exptime')
+            print "\n\n\n %s => exptime : %s" % (camera, exptime)
 #            self.DarcAravis.set(i, 'ExposureTimeAbs', exptime)
 
     def _darc_acq(self):
