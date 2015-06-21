@@ -24,6 +24,7 @@ import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 
+import random
 def get_square(cx, cy, side, color='red'):
     verts = [
         (cx-side, cy-side), # left, bottom
@@ -170,7 +171,15 @@ class Calibra(GObject.GObject):
         # Reading data from file
         #
         height = self.config.getint('bbb', 'height')
-        subap =  self.config.getint('bbb', 'subap')
+        if type(self.__subap_size) is str:
+            subap =  self.config.getint('bbb', 'subap')
+            self.__subap_size = int(subap)
+            print "from file self.__subap_size %d" % self.__subap_size
+            self.label_subap.set_text("%s" % str(subap))
+            self.entry_subap.set_text("")
+        else:
+            subap =  self.__subap_size
+            print "from GUI"
         radio =  self.config.getint('bbb', 'radio')
         kernel = self.config.getint('bbb', 'kernel')
         inchs =  self.config.getint('bbb', 'inchs')
@@ -178,17 +187,19 @@ class Calibra(GObject.GObject):
         #
         # Get darc instance
         #
-        d=darc.Control(self.config.get('bbb', 'prefix'))
+#        d=darc.Control(self.config.get('bbb', 'prefix'))
         #takes camera pixels (x,y)
-        pxlx =d.Get("npxlx")[0]
-        pxly =d.Get("npxly")[0]
+        pxlx =656#d.Get("npxlx")[0]
+        pxly =492#d.Get("npxly")[0]
         #
         # Getting raw data from cameras
         #
-        streamBlock = d.GetStreamBlock('%srtcPxlBuf'%'all',1)
-        streams = streamBlock['%srtcPxlBuf'%'all']
-        stream = streams[0]
-        data = stream[0].reshape((4*pxly,pxlx))
+#        streamBlock = d.GetStreamBlock('%srtcPxlBuf'%'all',1)
+#        streams = streamBlock['%srtcPxlBuf'%'all']
+#        stream = streams[0]
+#        data = stream[0].reshape((4*pxly,pxlx))
+        stream = np.zeros(pxly*4*pxlx)
+        data = stream.reshape((4*pxly,pxlx))
         xi_cam0 = 0*pxly
         xf_cam0 = 1*pxly
         yi_cam0 = 0*pxlx
@@ -214,7 +225,28 @@ class Calibra(GObject.GObject):
         cam1 = data[xi_cam1:xf_cam1,yi_cam1:yf_cam1]
         cam2 = data[xi_cam2:xf_cam2,yi_cam2:yf_cam2]
         cam3 = data[xi_cam3:xf_cam3,yi_cam3:yf_cam3]
+        x = 328
+        y = 246
+        for i in range(0,25):
+            cam0[x+i,y] = 1000 + random.randint(1000,4000)
+            cam0[x-i,y] = 1000 + random.randint(1000,4000) 
+            cam0[x,y+i] = 1000 + random.randint(1000,4000)
+            cam0[x,y-i] = 1000 + random.randint(1000,4000)
 
+            cam1[x+i,y] = 1000 + random.randint(1000,4000)
+            cam1[x-i,y] = 1000 + random.randint(1000,4000)
+            cam1[x,y+i] = 1000 + random.randint(1000,4000)
+            cam1[x,y-i] = 1000 + random.randint(1000,4000)
+
+            cam2[x+i,y] = 1000 + random.randint(1000,4000)
+            cam2[x-i,y] = 1000 + random.randint(1000,4000)
+            cam2[x,y+i] = 1000 + random.randint(1000,4000)
+            cam2[x,y-i] = 1000 + random.randint(1000,4000)
+
+            cam3[x+i,y] = 1000 + random.randint(1000,4000)
+            cam3[x-i,y] = 1000 + random.randint(1000,4000)
+            cam3[x,y+i] = 1000 + random.randint(1000,4000)
+            cam3[x,y-i] = 1000 + random.randint(1000,4000)
         #get mask
         mask = get_mask_spot(radio,kernel)
 
@@ -223,8 +255,8 @@ class Calibra(GObject.GObject):
         plt.figure(1, frameon=False)
         patch = get_square(cx,cy,subap)
         plt.gca().add_patch(patch)
-        patch = get_square(cx,cy,height,color='green')
-        plt.gca().add_patch(patch)
+#        patch = get_square(cx,cy,height,color='green')
+#        plt.gca().add_patch(patch)
         plt.gcf().set_size_inches(inchs,inchs)
         plt.Axes(plt.figure(1), [0., 0., 1., 1.])
         plt.gca().set_axis_off()
@@ -235,8 +267,8 @@ class Calibra(GObject.GObject):
         cy, cx = get_centroid(cam1, mask)
         patch = get_square(cx,cy,subap)
         plt.gca().add_patch(patch)
-        patch = get_square(cx,cy,height,color='green')
-        plt.gca().add_patch(patch)
+#        patch = get_square(cx,cy,height,color='green')
+#        plt.gca().add_patch(patch)
         plt.Axes(plt.figure(2), [0., 0., 1., 1.])
         plt.gcf().set_size_inches(inchs,inchs)
         plt.gca().set_axis_off()
@@ -247,8 +279,8 @@ class Calibra(GObject.GObject):
         cy, cx = get_centroid(cam2, mask)
         patch = get_square(cx,cy,subap)
         plt.gca().add_patch(patch)
-        patch = get_square(cx,cy,height,color='green')
-        plt.gca().add_patch(patch)
+#        patch = get_square(cx,cy,height,color='green')
+#        plt.gca().add_patch(patch)
         plt.Axes(plt.figure(3), [0., 0., 1., 1.])
         plt.gcf().set_size_inches(inchs,inchs)
         plt.gca().set_axis_off()
@@ -259,8 +291,8 @@ class Calibra(GObject.GObject):
         cy, cx = get_centroid(cam3, mask)
         patch = get_square(cx,cy,subap)
         plt.gca().add_patch(patch)
-        patch = get_square(cx,cy,height,color='green')
-        plt.gca().add_patch(patch)
+#        patch = get_square(cx,cy,height,color='green')
+#        plt.gca().add_patch(patch)
         plt.Axes(plt.figure(4), [0., 0., 1., 1.])
         plt.gcf().set_size_inches(inchs,inchs)
         plt.gca().set_axis_off()
