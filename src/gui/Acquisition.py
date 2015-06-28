@@ -63,7 +63,7 @@ class Acquisition(GObject.GObject):
         streamBlock = d.GetStreamBlock('%srtcPxlBuf'%'all',1)#,block=1,flysave=options.directory+'/img.fits')
         streams = streamBlock['%srtcPxlBuf'%'all']
         stream = streams[0]
-        data = stream[0].reshape((4*pxly,pxlx))
+        data = stream[0].reshape((1*pxly,pxlx))
         xi_cam0 = 0*pxly
         xf_cam0 = 1*pxly
         yi_cam0 = 0*pxlx

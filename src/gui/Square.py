@@ -24,7 +24,8 @@ import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 
-def get_square(cx, cy, side, color='red'):
+import random
+def get_square(cx, cy, side, color='green'):
     verts = [
         (cx-side, cy-side), # left, bottom
         (cx-side, cy+side), # left, top
@@ -54,6 +55,14 @@ def get_centroid(img, mask):
 def get_mask_spot(radio=5, kernel=20):
     # syntetic img to be convolved
     y,x = np.ogrid[-kernel: kernel+1, -kernel: kernel+1]
+    mask = x**2+y**2 <= np.pi*radio**2
+    mask = mask*1
+    return mask
+
+def get_spot(radio=5, pxlx=492, pxly=492):
+    # syntetic img to be convolved
+    radio = random.randint(1,10)
+    y,x = np.ogrid[-pxlx/2:pxlx/2, -pxly/2: pxly/2]
     mask = x**2+y**2 <= np.pi*radio**2
     mask = mask*1
     return mask
@@ -199,43 +208,71 @@ class Calibra(GObject.GObject):
         #
         # Get darc instance
         #
-        d=darc.Control(self.config.get('bbb', 'prefix'))
+#        d=darc.Control(self.config.get('bbb', 'prefix'))
         #takes camera pixels (x,y)
-        pxlx =d.Get("npxlx")[0]
-        pxly =d.Get("npxly")[0]
+        pxlx =656 #d.Get("npxlx")[0]
+        pxly =492 #d.Get("npxly")[0]
         #
         # Getting raw data from cameras
         #
-        streamBlock = d.GetStreamBlock('%srtcPxlBuf'%'all',1)
-        streams = streamBlock['%srtcPxlBuf'%'all']
-        stream = streams[0]
-        data = stream[0].reshape((4*pxly,pxlx))
-        xi_cam0 = 0*pxly
-        xf_cam0 = 1*pxly
-        yi_cam0 = 0*pxlx
-        yf_cam0 = 1*pxlx
-    
-        xi_cam1 = 1*pxly
-        xf_cam1 = 2*pxly
-        yi_cam1 = 0*pxlx
-        yf_cam1 = 1*pxlx
-    
-        xi_cam2 = 2*pxly
-        xf_cam2 = 3*pxly
-        yi_cam2 = 0*pxlx
-        yf_cam2 = 1*pxlx
-    
-        xi_cam3 = 3*pxly
-        xf_cam3 = 4*pxly
-        yi_cam3 = 0*pxlx
-        yf_cam3 = 1*pxlx
-    
-        #data per camera:
-        cam0 = data[xi_cam0:xf_cam0,yi_cam0:yf_cam0]
-        cam1 = data[xi_cam1:xf_cam1,yi_cam1:yf_cam1]
-        cam2 = data[xi_cam2:xf_cam2,yi_cam2:yf_cam2]
-        cam3 = data[xi_cam3:xf_cam3,yi_cam3:yf_cam3]
-
+#        streamBlock = d.GetStreamBlock('%srtcPxlBuf'%'all',1)
+#        streams = streamBlock['%srtcPxlBuf'%'all']
+#        stream = streams[0]
+#        data = stream[0].reshape((4*pxly,pxlx))
+#        stream = np.zeros(pxly*4*pxlx)
+#        data = stream.reshape((4*pxly,pxlx))
+#        xi_cam0 = 0*pxly
+#        xf_cam0 = 1*pxly
+#        yi_cam0 = 0*pxlx
+#        yf_cam0 = 1*pxlx
+#    
+#        xi_cam1 = 1*pxly
+#        xf_cam1 = 2*pxly
+#        yi_cam1 = 0*pxlx
+#        yf_cam1 = 1*pxlx
+#    
+#        xi_cam2 = 2*pxly
+#        xf_cam2 = 3*pxly
+#        yi_cam2 = 0*pxlx
+#        yf_cam2 = 1*pxlx
+#    
+#        xi_cam3 = 3*pxly
+#        xf_cam3 = 4*pxly
+#        yi_cam3 = 0*pxlx
+#        yf_cam3 = 1*pxlx
+#    
+#        #data per camera:
+#        cam0 = data[xi_cam0:xf_cam0,yi_cam0:yf_cam0]
+#        cam1 = data[xi_cam1:xf_cam1,yi_cam1:yf_cam1]
+#        cam2 = data[xi_cam2:xf_cam2,yi_cam2:yf_cam2]
+#        cam3 = data[xi_cam3:xf_cam3,yi_cam3:yf_cam3]
+#        x = 328 + random.randint(1, 100) 
+#        y = 246 + random.randint(100, 130)
+#        for i in range(0,25):
+#            cam0[x+i,y] = 1000 + random.randint(2000,3095)
+#            cam0[x-i,y] = 1000 + random.randint(2000,3095) 
+#            cam0[x,y+i] = 1000 + random.randint(2000,3095)
+#            cam0[x,y-i] = 1000 + random.randint(2000,3095)
+#
+#            cam1[x+i,y] = 1000 + random.randint(2000,3095)
+#            cam1[x-i,y] = 1000 + random.randint(2000,3095)
+#            cam1[x,y+i] = 1000 + random.randint(2000,3095)
+#            cam1[x,y-i] = 1000 + random.randint(2000,3095)
+#
+#            cam2[x+i,y] = 1000 + random.randint(2000,3095)
+#            cam2[x-i,y] = 1000 + random.randint(2000,3095)
+#            cam2[x,y+i] = 1000 + random.randint(2000,3095)
+#            cam2[x,y-i] = 1000 + random.randint(2000,3095)
+#
+#            cam3[x+i,y] = 1000 + random.randint(2000,3095)
+#            cam3[x-i,y] = 1000 + random.randint(2000,3095)
+#            cam3[x,y+i] = 1000 + random.randint(2000,3095)
+#            cam3[x,y-i] = 1000 + random.randint(2000,3095)
+        #
+        cam0 = get_spot()
+        cam1 = get_spot()
+        cam2 = get_spot()
+        cam3 = get_spot()
         #get mask
         mask = get_mask_spot(radio,kernel)
 
@@ -500,7 +537,6 @@ class Calibra(GObject.GObject):
         The offset is taking as reference darcplot gui.  Therefore the offset
         cross follows that darcplot axis references.
         '''
-        #XXX Get offset from someplace
         camera = self.label_camera.get_text()
         print "using %s" % camera
         if type(self.__step) is str:
