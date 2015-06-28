@@ -25,7 +25,7 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 
 import random
-def get_square(cx, cy, side, color='red'):
+def get_square(cx, cy, side, color='green'):
     verts = [
         (cx-side, cy-side), # left, bottom
         (cx-side, cy+side), # left, top
@@ -59,13 +59,21 @@ def get_mask_spot(radio=5, kernel=20):
     mask = mask*1
     return mask
 
+def get_spot(radio=5, pxlx=492, pxly=492):
+    # syntetic img to be convolved
+    radio = random.randint(3,7)
+    y,x = np.ogrid[-pxlx/2:pxlx/2, -pxly/2: pxly/2]
+    mask = x**2+y**2 <= np.pi*radio**2
+    mask = mask*1
+    return mask
+
 class Calibra(GObject.GObject):
 
 
     def __init__(self):
         GObject.GObject.__init__(self)
         self.counter = 0
-        GObject.timeout_add_seconds(30, self._cb_counter)
+        GObject.timeout_add_seconds(15, self._cb_counter)
         path, fil = os.path.split(os.path.abspath(os.path.realpath(__file__)))
         self.builder = Gtk.Builder()
         self.builder.add_from_file(path+"/glade/calibra.glade")
@@ -79,9 +87,9 @@ class Calibra(GObject.GObject):
         self.config = ConfigParser.ConfigParser()
         self.config.read(self.configfile)
         
-        self.__step = "--"
-        self.__subap_size = "--"
-        self.__refresh_step = "--"
+        self.__step = self.config.getint('bbb','offset_step')
+        self.__subap_size = self.config.getint('bbb', 'subap')
+        self.__refresh_step = self.config.getint('bbb','refresh_step')
         if self.window:
             self.window.connect("destroy", Gtk.main_quit)
 
@@ -161,7 +169,17 @@ class Calibra(GObject.GObject):
         }
         
         self.builder.connect_signals( dic )
-#        self.data_builder()
+
+        self.cent_cam0 = (0,0)
+        self.cent_cam1 = (0,0)
+        self.cent_cam2 = (0,0)
+        self.cent_cam3 = (0,0)
+
+        self.label_subap.set_text(str(self.__subap_size))
+        self.label_refresh.set_text(str(self.__refresh_step))
+        self.label_offset.set_text(str(self.__step))
+        self.data_builder()
+        
 
     def data_builder(self):
         '''
@@ -189,8 +207,8 @@ class Calibra(GObject.GObject):
         #
 #        d=darc.Control(self.config.get('bbb', 'prefix'))
         #takes camera pixels (x,y)
-        pxlx =656#d.Get("npxlx")[0]
-        pxly =492#d.Get("npxly")[0]
+        pxlx =656 #d.Get("npxlx")[0]
+        pxly =492 #d.Get("npxly")[0]
         #
         # Getting raw data from cameras
         #
@@ -198,106 +216,112 @@ class Calibra(GObject.GObject):
 #        streams = streamBlock['%srtcPxlBuf'%'all']
 #        stream = streams[0]
 #        data = stream[0].reshape((4*pxly,pxlx))
-        stream = np.zeros(pxly*4*pxlx)
-        data = stream.reshape((4*pxly,pxlx))
-        xi_cam0 = 0*pxly
-        xf_cam0 = 1*pxly
-        yi_cam0 = 0*pxlx
-        yf_cam0 = 1*pxlx
-    
-        xi_cam1 = 1*pxly
-        xf_cam1 = 2*pxly
-        yi_cam1 = 0*pxlx
-        yf_cam1 = 1*pxlx
-    
-        xi_cam2 = 2*pxly
-        xf_cam2 = 3*pxly
-        yi_cam2 = 0*pxlx
-        yf_cam2 = 1*pxlx
-    
-        xi_cam3 = 3*pxly
-        xf_cam3 = 4*pxly
-        yi_cam3 = 0*pxlx
-        yf_cam3 = 1*pxlx
-    
-        #data per camera:
-        cam0 = data[xi_cam0:xf_cam0,yi_cam0:yf_cam0]
-        cam1 = data[xi_cam1:xf_cam1,yi_cam1:yf_cam1]
-        cam2 = data[xi_cam2:xf_cam2,yi_cam2:yf_cam2]
-        cam3 = data[xi_cam3:xf_cam3,yi_cam3:yf_cam3]
-        x = 328
-        y = 246
-        for i in range(0,25):
-            cam0[x+i,y] = 1000 + random.randint(1000,4000)
-            cam0[x-i,y] = 1000 + random.randint(1000,4000) 
-            cam0[x,y+i] = 1000 + random.randint(1000,4000)
-            cam0[x,y-i] = 1000 + random.randint(1000,4000)
-
-            cam1[x+i,y] = 1000 + random.randint(1000,4000)
-            cam1[x-i,y] = 1000 + random.randint(1000,4000)
-            cam1[x,y+i] = 1000 + random.randint(1000,4000)
-            cam1[x,y-i] = 1000 + random.randint(1000,4000)
-
-            cam2[x+i,y] = 1000 + random.randint(1000,4000)
-            cam2[x-i,y] = 1000 + random.randint(1000,4000)
-            cam2[x,y+i] = 1000 + random.randint(1000,4000)
-            cam2[x,y-i] = 1000 + random.randint(1000,4000)
-
-            cam3[x+i,y] = 1000 + random.randint(1000,4000)
-            cam3[x-i,y] = 1000 + random.randint(1000,4000)
-            cam3[x,y+i] = 1000 + random.randint(1000,4000)
-            cam3[x,y-i] = 1000 + random.randint(1000,4000)
+#        stream = np.zeros(pxly*4*pxlx)
+#        data = stream.reshape((4*pxly,pxlx))
+#        xi_cam0 = 0*pxly
+#        xf_cam0 = 1*pxly
+#        yi_cam0 = 0*pxlx
+#        yf_cam0 = 1*pxlx
+#    
+#        xi_cam1 = 1*pxly
+#        xf_cam1 = 2*pxly
+#        yi_cam1 = 0*pxlx
+#        yf_cam1 = 1*pxlx
+#    
+#        xi_cam2 = 2*pxly
+#        xf_cam2 = 3*pxly
+#        yi_cam2 = 0*pxlx
+#        yf_cam2 = 1*pxlx
+#    
+#        xi_cam3 = 3*pxly
+#        xf_cam3 = 4*pxly
+#        yi_cam3 = 0*pxlx
+#        yf_cam3 = 1*pxlx
+#    
+#        #data per camera:
+#        cam0 = data[xi_cam0:xf_cam0,yi_cam0:yf_cam0]
+#        cam1 = data[xi_cam1:xf_cam1,yi_cam1:yf_cam1]
+#        cam2 = data[xi_cam2:xf_cam2,yi_cam2:yf_cam2]
+#        cam3 = data[xi_cam3:xf_cam3,yi_cam3:yf_cam3]
+#        x = 328 + random.randint(1, 100) 
+#        y = 246 + random.randint(100, 130)
+#        for i in range(0,25):
+#            cam0[x+i,y] = 1000 + random.randint(2000,3095)
+#            cam0[x-i,y] = 1000 + random.randint(2000,3095) 
+#            cam0[x,y+i] = 1000 + random.randint(2000,3095)
+#            cam0[x,y-i] = 1000 + random.randint(2000,3095)
+#
+#            cam1[x+i,y] = 1000 + random.randint(2000,3095)
+#            cam1[x-i,y] = 1000 + random.randint(2000,3095)
+#            cam1[x,y+i] = 1000 + random.randint(2000,3095)
+#            cam1[x,y-i] = 1000 + random.randint(2000,3095)
+#
+#            cam2[x+i,y] = 1000 + random.randint(2000,3095)
+#            cam2[x-i,y] = 1000 + random.randint(2000,3095)
+#            cam2[x,y+i] = 1000 + random.randint(2000,3095)
+#            cam2[x,y-i] = 1000 + random.randint(2000,3095)
+#
+#            cam3[x+i,y] = 1000 + random.randint(2000,3095)
+#            cam3[x-i,y] = 1000 + random.randint(2000,3095)
+#            cam3[x,y+i] = 1000 + random.randint(2000,3095)
+#            cam3[x,y-i] = 1000 + random.randint(2000,3095)
+        #
+        cam0 = get_spot()
+        cam1 = get_spot()
+        cam2 = get_spot()
+        cam3 = get_spot()
         #get mask
         mask = get_mask_spot(radio,kernel)
 
         cy, cx = get_centroid(cam0, mask)
-        
+
+        self.cent_cam0 = (cx, cy) 
+
         plt.figure(1, frameon=False)
         patch = get_square(cx,cy,subap)
         plt.gca().add_patch(patch)
-#        patch = get_square(cx,cy,height,color='green')
-#        plt.gca().add_patch(patch)
         plt.gcf().set_size_inches(inchs,inchs)
         plt.Axes(plt.figure(1), [0., 0., 1., 1.])
         plt.gca().set_axis_off()
-        imshow(cam0, aspect='normal', cmap = cm.Greys_r)
+        imshow(cam0, aspect='auto', cmap = cm.Greys_r)
         plt.savefig("cam0.png")
+        plt.close()
 
         plt.figure(2, frameon=False)
         cy, cx = get_centroid(cam1, mask)
+        self.cent_cam1 = (cx, cy) 
         patch = get_square(cx,cy,subap)
         plt.gca().add_patch(patch)
-#        patch = get_square(cx,cy,height,color='green')
-#        plt.gca().add_patch(patch)
         plt.Axes(plt.figure(2), [0., 0., 1., 1.])
         plt.gcf().set_size_inches(inchs,inchs)
         plt.gca().set_axis_off()
-        imshow(cam1, aspect='normal', cmap = cm.Greys_r)
+        imshow(cam1, aspect='auto', cmap = cm.Greys_r)
         plt.savefig("cam1.png")
+        plt.close()
 
         plt.figure(3, frameon=False)
         cy, cx = get_centroid(cam2, mask)
+        self.cent_cam2 = (cx, cy) 
         patch = get_square(cx,cy,subap)
         plt.gca().add_patch(patch)
-#        patch = get_square(cx,cy,height,color='green')
-#        plt.gca().add_patch(patch)
         plt.Axes(plt.figure(3), [0., 0., 1., 1.])
         plt.gcf().set_size_inches(inchs,inchs)
         plt.gca().set_axis_off()
-        imshow(cam2, aspect='normal', cmap = cm.Greys_r)
+        imshow(cam2, aspect='auto', cmap = cm.Greys_r)
         plt.savefig("cam2.png")
+        plt.close()
 
         plt.figure(4, frameon=False)
         cy, cx = get_centroid(cam3, mask)
+        self.cent_cam3 = (cx, cy) 
         patch = get_square(cx,cy,subap)
         plt.gca().add_patch(patch)
-#        patch = get_square(cx,cy,height,color='green')
-#        plt.gca().add_patch(patch)
         plt.Axes(plt.figure(4), [0., 0., 1., 1.])
         plt.gcf().set_size_inches(inchs,inchs)
         plt.gca().set_axis_off()
-        imshow(cam3, aspect='normal', cmap = cm.Greys_r)
+        imshow(cam3, aspect='auto', cmap = cm.Greys_r)
         plt.savefig("cam3.png")
+        plt.close()
         
         self.img_cam0.set_from_file("cam0.png")
         self.img_cam1.set_from_file("cam1.png")
@@ -447,6 +471,11 @@ class Calibra(GObject.GObject):
         self.counter += 1
         self.data_builder()
         print self.counter
+        print "cents"
+        print self.cent_cam0
+        print self.cent_cam1
+        print self.cent_cam2
+        print self.cent_cam3
         return True
 
     def _cb_subap_size(self, widget, data=None):
@@ -493,10 +522,9 @@ class Calibra(GObject.GObject):
         The offset is taking as reference darcplot gui.  Therefore the offset
         cross follows that darcplot axis references.
         '''
-        #XXX Get offset from someplace
         camera = self.label_camera.get_text()
         print "using %s" % camera
-        offset_x = 0
+        offset_x = 0 
         offset_y = 0
         if type(self.__step) is str:
             print "I'm string, but not anymore"
