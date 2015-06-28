@@ -61,7 +61,7 @@ def get_mask_spot(radio=5, kernel=20):
 
 def get_spot(radio=5, pxlx=492, pxly=492):
     # syntetic img to be convolved
-    radio = random.randint(3,7)
+    radio = random.randint(1,10)
     y,x = np.ogrid[-pxlx/2:pxlx/2, -pxly/2: pxly/2]
     mask = x**2+y**2 <= np.pi*radio**2
     mask = mask*1
@@ -73,7 +73,7 @@ class Calibra(GObject.GObject):
     def __init__(self):
         GObject.GObject.__init__(self)
         self.counter = 0
-        GObject.timeout_add_seconds(15, self._cb_counter)
+        GObject.timeout_add_seconds(20, self._cb_counter)
         path, fil = os.path.split(os.path.abspath(os.path.realpath(__file__)))
         self.builder = Gtk.Builder()
         self.builder.add_from_file(path+"/glade/calibra.glade")
@@ -524,30 +524,41 @@ class Calibra(GObject.GObject):
         '''
         camera = self.label_camera.get_text()
         print "using %s" % camera
-        offset_x = 0 
-        offset_y = 0
         if type(self.__step) is str:
             print "I'm string, but not anymore"
             self.__step = int(10)
+        x = 0
+        y = 0
         if data == 'up':
-            val = offset_y + self.__step
-            print "to be applied: %d" % val
+            y = self.__step
         if data == 'do':
-            val = offset_y - self.__step
-            print "to be applied: %d" % val
-        if data == 'le':
-            val = offset_x - self.__step
-            print "to be applied: %d" % val
-        if data == 'ri':
-            val = offset_x + self.__step
-            print "to be applied: %d" % val
+            y = - self.__step
 
-        if data =='up' or data =='do':
-            self.label_offset_y.set_text("%d)"% int(val))
-        if data =='le' or data =='ri':
-            self.label_offset_x.set_text("(%d "% int(val))
-#        print "after apply: offset(%d,%d)" % (offset_x, offset_y)
-        
+
+        if data == 'le':
+            x = - self.__step
+        if data == 'ri':
+            x = self.__step
+
+        if camera.__contains__('cam0'):
+            self.cent_cam0 = (self.cent_cam0[0] + x, self.cent_cam0[1] + y)
+            self.label_offset_x.set_text("(%d "% self.cent_cam0[0])
+            self.label_offset_y.set_text("%d)"% self.cent_cam0[1])
+
+        if camera.__contains__('cam1'):
+            self.cent_cam1 = (self.cent_cam1[0] + x, self.cent_cam1[1] + y)
+            self.label_offset_x.set_text("(%d "% self.cent_cam1[0])
+            self.label_offset_y.set_text("%d)"% self.cent_cam1[1])
+
+        if camera.__contains__('cam2'):
+            self.cent_cam2 = (self.cent_cam2[0] + x, self.cent_cam2[1] + y)
+            self.label_offset_x.set_text("(%d "% self.cent_cam2[0])
+            self.label_offset_y.set_text("%d)"% self.cent_cam2[1])
+
+        if camera.__contains__('cam3'):
+            self.cent_cam3 = (self.cent_cam3[0] + x, self.cent_cam3[1] + y)
+            self.label_offset_x.set_text("(%d "% self.cent_cam3[0])
+            self.label_offset_y.set_text("%d)"% self.cent_cam3[1])
 
 
     def _cb_camera_choosen(self, widget, data=None):
