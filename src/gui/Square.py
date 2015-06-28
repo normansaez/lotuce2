@@ -73,7 +73,6 @@ class Calibra(GObject.GObject):
     def __init__(self):
         GObject.GObject.__init__(self)
         self.counter = 0
-        GObject.timeout_add_seconds(15, self._cb_counter)
         path, fil = os.path.split(os.path.abspath(os.path.realpath(__file__)))
         self.builder = Gtk.Builder()
         self.builder.add_from_file(path+"/glade/calibra.glade")
@@ -90,6 +89,9 @@ class Calibra(GObject.GObject):
         self.__step = self.config.getint('bbb','offset_step')
         self.__subap_size = self.config.getint('bbb', 'subap')
         self.__refresh_step = self.config.getint('bbb','refresh_step')
+
+        GObject.timeout_add_seconds(self.__refresh_step, self._cb_counter)
+
         if self.window:
             self.window.connect("destroy", Gtk.main_quit)
 
@@ -583,6 +585,9 @@ class Calibra(GObject.GObject):
         if widget.get_active() is True:
             if data == "0":
                 self.label_camera.set_text("cam0")
+                self.label_offset_x.set_text("(%d "% self.cent_cam0[0])
+                self.label_offset_y.set_text("%d)"% self.cent_cam0[1])
+
 #                self.togglebutton_cam0.set_active(False)
                 self.togglebutton_cam1.set_active(False)
                 self.togglebutton_cam2.set_active(False)
@@ -590,6 +595,9 @@ class Calibra(GObject.GObject):
 
             if data == "1":
                 self.label_camera.set_text("cam1")
+                self.label_offset_x.set_text("(%d "% self.cent_cam1[0])
+                self.label_offset_y.set_text("%d)"% self.cent_cam1[1])
+
                 self.togglebutton_cam0.set_active(False)
 #                self.togglebutton_cam1.set_active(False)
                 self.togglebutton_cam2.set_active(False)
@@ -597,6 +605,9 @@ class Calibra(GObject.GObject):
 
             if data == "2":
                 self.label_camera.set_text("cam2")
+                self.label_offset_x.set_text("(%d "% self.cent_cam2[0])
+                self.label_offset_y.set_text("%d)"% self.cent_cam2[1])
+
                 self.togglebutton_cam0.set_active(False)
                 self.togglebutton_cam1.set_active(False)
 #                self.togglebutton_cam2.set_active(False)
@@ -604,6 +615,9 @@ class Calibra(GObject.GObject):
 
             if data == "3":
                 self.label_camera.set_text("cam3")
+                self.label_offset_x.set_text("(%d "% self.cent_cam3[0])
+                self.label_offset_y.set_text("%d)"% self.cent_cam3[1])
+
                 self.togglebutton_cam0.set_active(False)
                 self.togglebutton_cam1.set_active(False)
                 self.togglebutton_cam2.set_active(False)
