@@ -73,7 +73,7 @@ class Calibra(GObject.GObject):
     def __init__(self):
         GObject.GObject.__init__(self)
         self.counter = 0
-        GObject.timeout_add_seconds(20, self._cb_counter)
+        GObject.timeout_add_seconds(15, self._cb_counter)
         path, fil = os.path.split(os.path.abspath(os.path.realpath(__file__)))
         self.builder = Gtk.Builder()
         self.builder.add_from_file(path+"/glade/calibra.glade")
@@ -169,7 +169,8 @@ class Calibra(GObject.GObject):
         }
         
         self.builder.connect_signals( dic )
-
+        
+        self.autocenter = True
         self.cent_cam0 = (0,0)
         self.cent_cam1 = (0,0)
         self.cent_cam2 = (0,0)
@@ -273,10 +274,11 @@ class Calibra(GObject.GObject):
         #get mask
         mask = get_mask_spot(radio,kernel)
 
-        cy, cx = get_centroid(cam0, mask)
-
-        self.cent_cam0 = (cx, cy) 
-
+        if self.autocenter is True:
+            cy, cx = get_centroid(cam0, mask)
+            self.cent_cam0 = (cx, cy) 
+        else:
+            cy, cx = self.cent_cam0
         plt.figure(1, frameon=False)
         patch = get_square(cx,cy,subap)
         plt.gca().add_patch(patch)
@@ -288,8 +290,11 @@ class Calibra(GObject.GObject):
         plt.close()
 
         plt.figure(2, frameon=False)
-        cy, cx = get_centroid(cam1, mask)
-        self.cent_cam1 = (cx, cy) 
+        if self.autocenter is True:
+            cy, cx = get_centroid(cam1, mask)
+            self.cent_cam1 = (cx, cy) 
+        else:
+            cy, cx = self.cent_cam1
         patch = get_square(cx,cy,subap)
         plt.gca().add_patch(patch)
         plt.Axes(plt.figure(2), [0., 0., 1., 1.])
@@ -300,8 +305,11 @@ class Calibra(GObject.GObject):
         plt.close()
 
         plt.figure(3, frameon=False)
-        cy, cx = get_centroid(cam2, mask)
-        self.cent_cam2 = (cx, cy) 
+        if self.autocenter is True:
+            cy, cx = get_centroid(cam2, mask)
+            self.cent_cam2 = (cx, cy) 
+        else:
+            cy, cx = self.cent_cam2
         patch = get_square(cx,cy,subap)
         plt.gca().add_patch(patch)
         plt.Axes(plt.figure(3), [0., 0., 1., 1.])
@@ -312,8 +320,11 @@ class Calibra(GObject.GObject):
         plt.close()
 
         plt.figure(4, frameon=False)
-        cy, cx = get_centroid(cam3, mask)
-        self.cent_cam3 = (cx, cy) 
+        if self.autocenter is True:
+            cy, cx = get_centroid(cam3, mask)
+            self.cent_cam3 = (cx, cy) 
+        else:
+            cy, cx = self.cent_cam3
         patch = get_square(cx,cy,subap)
         plt.gca().add_patch(patch)
         plt.Axes(plt.figure(4), [0., 0., 1., 1.])
@@ -476,6 +487,8 @@ class Calibra(GObject.GObject):
         print self.cent_cam1
         print self.cent_cam2
         print self.cent_cam3
+        if self.counter == 1:
+            self.autocenter = False
         return True
 
     def _cb_subap_size(self, widget, data=None):
@@ -530,15 +543,15 @@ class Calibra(GObject.GObject):
         x = 0
         y = 0
         if data == 'up':
-            y = self.__step
+            x = -self.__step
         if data == 'do':
-            y = - self.__step
+            x = self.__step
 
 
         if data == 'le':
-            x = - self.__step
+            y = - self.__step
         if data == 'ri':
-            x = self.__step
+            y = self.__step
 
         if camera.__contains__('cam0'):
             self.cent_cam0 = (self.cent_cam0[0] + x, self.cent_cam0[1] + y)
