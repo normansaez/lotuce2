@@ -11,6 +11,9 @@ from gi.repository import GObject
 
 from darcaravis import DarcAravis
 
+GREEN    = '\033[32m'
+NO_COLOR = '\033[0m'
+
 class Go(GObject.GObject):
     def __init__(self):
         GObject.GObject.__init__(self)
@@ -68,9 +71,9 @@ class Go(GObject.GObject):
             time.sleep(20)
 
     def _darc_stop(self):
-        cmd = "ps aux|grep Acquisition.py|awk '{print $2}'|xargs kill -9"
+        cmd = "ps aux|grep %s |awk '{print $2}'|xargs kill -9" % (self.config.get('bbb','calGUI'))
         self._cmd(cmd, wait=True)
-        cmd = "ps aux|grep Calibra.py|awk '{print $2}'|xargs kill -9"
+        cmd = "ps aux|grep %s |awk '{print $2}'|xargs kill -9" % (self.config.get('bbb','acqGUI'))
         self._cmd(cmd, wait=True)
         cmd = 'darcmagic stop -c  --prefix=all'
         self._cmd(cmd, wait=True)
@@ -80,10 +83,11 @@ class Go(GObject.GObject):
         self._cmd(cmd, wait=True)
 
     def _darc_cal(self):
-        print "Calibrating ..."
-        cmd = "python %s" % (self.config.get('bbb','calGUI'))
+        print GREEN+"Calibrating ..."
+        freq = self.config.get('bbb', 'frequency')
+        cmd = '/bin/set_frecuency %s' % freq
         self._cmd(cmd)
-        print "Seeting up ..."
+        print "Setup ..."
         if self.DarcAravis is None:
             self.DarcAravis = DarcAravis()
         for i in range(0,4):
@@ -99,14 +103,17 @@ class Go(GObject.GObject):
             else:
                 value = 'Freerun'
             print value
-            self.DarcAravis.set(i, 'TriggerSource', value) 
+#            self.DarcAravis.set(i, 'TriggerSource', value) 
 #            exptime = self.config.get(camera, 'exptime')
 #            self.DarcAravis.set(i, 'ExposureTimeAbs', exptime)
         for i in range(0,4):
             camera = 'cam%d' % i
             exptime = self.config.get(camera, 'exptime')
-            print "\n\n\n %s => exptime : %s" % (camera, exptime)
+            print "%s => exptime : %s" % (camera, exptime)
 #            self.DarcAravis.set(i, 'ExposureTimeAbs', exptime)
+        print "end" + NO_COLOR
+        cmd = "python %s" % (self.config.get('bbb','calGUI'))
+        self._cmd(cmd)
 
     def _darc_acq(self):
         print "Acquiring ..."
