@@ -235,7 +235,11 @@ class Calibra(GObject.GObject):
         cam1 = data[xi_cam1:xf_cam1,yi_cam1:yf_cam1]
         cam2 = data[xi_cam2:xf_cam2,yi_cam2:yf_cam2]
         cam3 = data[xi_cam3:xf_cam3,yi_cam3:yf_cam3]
-
+        
+        print cam0.shape
+        print cam1.shape
+        print cam2.shape
+        print cam3.shape
         #get mask
         mask = get_mask_spot(radio,kernel)
 
