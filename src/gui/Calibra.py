@@ -64,7 +64,6 @@ class Calibra(GObject.GObject):
     def __init__(self):
         GObject.GObject.__init__(self)
         self.counter = 0
-        GObject.timeout_add_seconds(30, self._cb_counter)
         path, fil = os.path.split(os.path.abspath(os.path.realpath(__file__)))
         self.builder = Gtk.Builder()
         self.builder.add_from_file(path+"/glade/calibra.glade")
@@ -78,9 +77,12 @@ class Calibra(GObject.GObject):
         self.config = ConfigParser.ConfigParser()
         self.config.read(self.configfile)
         
-        self.__step = "--"
-        self.__subap_size = "--"
-        self.__refresh_step = "--"
+        self.__step = self.config.getint('bbb','offset_step')
+        self.__subap_size = self.config.getint('bbb', 'subap')
+        self.__refresh_step = self.config.getint('bbb','refresh_step')
+
+        GObject.timeout_add_seconds(self.__refresh_step, self._cb_counter)
+
         if self.window:
             self.window.connect("destroy", Gtk.main_quit)
 
@@ -160,7 +162,18 @@ class Calibra(GObject.GObject):
         }
         
         self.builder.connect_signals( dic )
-#        self.data_builder()
+        
+        self.autocenter = True
+        self.cent_cam0 = (0,0)
+        self.cent_cam1 = (0,0)
+        self.cent_cam2 = (0,0)
+        self.cent_cam3 = (0,0)
+
+        self.label_subap.set_text(str(self.__subap_size))
+        self.label_refresh.set_text(str(self.__refresh_step))
+        self.label_offset.set_text(str(self.__step))
+        self.data_builder()
+        
 
     def data_builder(self):
         '''
@@ -170,7 +183,15 @@ class Calibra(GObject.GObject):
         # Reading data from file
         #
         height = self.config.getint('bbb', 'height')
-        subap =  self.config.getint('bbb', 'subap')
+        if type(self.__subap_size) is str:
+            subap =  self.config.getint('bbb', 'subap')
+            self.__subap_size = int(subap)
+            print "from file self.__subap_size %d" % self.__subap_size
+            self.label_subap.set_text("%s" % str(subap))
+            self.entry_subap.set_text("")
+        else:
+            subap =  self.__subap_size
+            print "from GUI"
         radio =  self.config.getint('bbb', 'radio')
         kernel = self.config.getint('bbb', 'kernel')
         inchs =  self.config.getint('bbb', 'inchs')
@@ -218,54 +239,65 @@ class Calibra(GObject.GObject):
         #get mask
         mask = get_mask_spot(radio,kernel)
 
-        cy, cx = get_centroid(cam0, mask)
-        
+        if self.autocenter is True:
+            cy, cx = get_centroid(cam0, mask)
+            self.cent_cam0 = (cx, cy) 
+        else:
+            cy, cx = self.cent_cam0
         plt.figure(1, frameon=False)
         patch = get_square(cx,cy,subap)
-        plt.gca().add_patch(patch)
-        patch = get_square(cx,cy,height,color='green')
         plt.gca().add_patch(patch)
         plt.gcf().set_size_inches(inchs,inchs)
         plt.Axes(plt.figure(1), [0., 0., 1., 1.])
         plt.gca().set_axis_off()
-        imshow(cam0, aspect='normal', cmap = cm.Greys_r)
+        imshow(cam0, aspect='auto', cmap = cm.Greys_r)
         plt.savefig("cam0.png")
+        plt.close()
 
         plt.figure(2, frameon=False)
-        cy, cx = get_centroid(cam1, mask)
+        if self.autocenter is True:
+            cy, cx = get_centroid(cam1, mask)
+            self.cent_cam1 = (cx, cy) 
+        else:
+            cy, cx = self.cent_cam1
         patch = get_square(cx,cy,subap)
-        plt.gca().add_patch(patch)
-        patch = get_square(cx,cy,height,color='green')
         plt.gca().add_patch(patch)
         plt.Axes(plt.figure(2), [0., 0., 1., 1.])
         plt.gcf().set_size_inches(inchs,inchs)
         plt.gca().set_axis_off()
-        imshow(cam1, aspect='normal', cmap = cm.Greys_r)
+        imshow(cam1, aspect='auto', cmap = cm.Greys_r)
         plt.savefig("cam1.png")
+        plt.close()
 
         plt.figure(3, frameon=False)
-        cy, cx = get_centroid(cam2, mask)
+        if self.autocenter is True:
+            cy, cx = get_centroid(cam2, mask)
+            self.cent_cam2 = (cx, cy) 
+        else:
+            cy, cx = self.cent_cam2
         patch = get_square(cx,cy,subap)
-        plt.gca().add_patch(patch)
-        patch = get_square(cx,cy,height,color='green')
         plt.gca().add_patch(patch)
         plt.Axes(plt.figure(3), [0., 0., 1., 1.])
         plt.gcf().set_size_inches(inchs,inchs)
         plt.gca().set_axis_off()
-        imshow(cam2, aspect='normal', cmap = cm.Greys_r)
+        imshow(cam2, aspect='auto', cmap = cm.Greys_r)
         plt.savefig("cam2.png")
+        plt.close()
 
         plt.figure(4, frameon=False)
-        cy, cx = get_centroid(cam3, mask)
+        if self.autocenter is True:
+            cy, cx = get_centroid(cam3, mask)
+            self.cent_cam3 = (cx, cy) 
+        else:
+            cy, cx = self.cent_cam3
         patch = get_square(cx,cy,subap)
-        plt.gca().add_patch(patch)
-        patch = get_square(cx,cy,height,color='green')
         plt.gca().add_patch(patch)
         plt.Axes(plt.figure(4), [0., 0., 1., 1.])
         plt.gcf().set_size_inches(inchs,inchs)
         plt.gca().set_axis_off()
-        imshow(cam3, aspect='normal', cmap = cm.Greys_r)
+        imshow(cam3, aspect='auto', cmap = cm.Greys_r)
         plt.savefig("cam3.png")
+        plt.close()
         
         self.img_cam0.set_from_file("cam0.png")
         self.img_cam1.set_from_file("cam1.png")
@@ -415,6 +447,13 @@ class Calibra(GObject.GObject):
         self.counter += 1
         self.data_builder()
         print self.counter
+        print "cents"
+        print self.cent_cam0
+        print self.cent_cam1
+        print self.cent_cam2
+        print self.cent_cam3
+        if self.counter == 1:
+            self.autocenter = False
         return True
 
     def _cb_subap_size(self, widget, data=None):
@@ -464,30 +503,41 @@ class Calibra(GObject.GObject):
         #XXX Get offset from someplace
         camera = self.label_camera.get_text()
         print "using %s" % camera
-        offset_x = 0
-        offset_y = 0
         if type(self.__step) is str:
             print "I'm string, but not anymore"
             self.__step = int(10)
+        x = 0
+        y = 0
         if data == 'up':
-            val = offset_y + self.__step
-            print "to be applied: %d" % val
+            x = -self.__step
         if data == 'do':
-            val = offset_y - self.__step
-            print "to be applied: %d" % val
-        if data == 'le':
-            val = offset_x - self.__step
-            print "to be applied: %d" % val
-        if data == 'ri':
-            val = offset_x + self.__step
-            print "to be applied: %d" % val
+            x = self.__step
 
-        if data =='up' or data =='do':
-            self.label_offset_y.set_text("%d)"% int(val))
-        if data =='le' or data =='ri':
-            self.label_offset_x.set_text("(%d "% int(val))
-#        print "after apply: offset(%d,%d)" % (offset_x, offset_y)
-        
+
+        if data == 'le':
+            y = - self.__step
+        if data == 'ri':
+            y = self.__step
+
+        if camera.__contains__('cam0'):
+            self.cent_cam0 = (self.cent_cam0[0] + x, self.cent_cam0[1] + y)
+            self.label_offset_x.set_text("(%d "% self.cent_cam0[0])
+            self.label_offset_y.set_text("%d)"% self.cent_cam0[1])
+
+        if camera.__contains__('cam1'):
+            self.cent_cam1 = (self.cent_cam1[0] + x, self.cent_cam1[1] + y)
+            self.label_offset_x.set_text("(%d "% self.cent_cam1[0])
+            self.label_offset_y.set_text("%d)"% self.cent_cam1[1])
+
+        if camera.__contains__('cam2'):
+            self.cent_cam2 = (self.cent_cam2[0] + x, self.cent_cam2[1] + y)
+            self.label_offset_x.set_text("(%d "% self.cent_cam2[0])
+            self.label_offset_y.set_text("%d)"% self.cent_cam2[1])
+
+        if camera.__contains__('cam3'):
+            self.cent_cam3 = (self.cent_cam3[0] + x, self.cent_cam3[1] + y)
+            self.label_offset_x.set_text("(%d "% self.cent_cam3[0])
+            self.label_offset_y.set_text("%d)"% self.cent_cam3[1])
 
 
     def _cb_camera_choosen(self, widget, data=None):
@@ -499,6 +549,9 @@ class Calibra(GObject.GObject):
         if widget.get_active() is True:
             if data == "0":
                 self.label_camera.set_text("cam0")
+                self.label_offset_x.set_text("(%d "% self.cent_cam0[0])
+                self.label_offset_y.set_text("%d)"% self.cent_cam0[1])
+
 #                self.togglebutton_cam0.set_active(False)
                 self.togglebutton_cam1.set_active(False)
                 self.togglebutton_cam2.set_active(False)
@@ -506,6 +559,9 @@ class Calibra(GObject.GObject):
 
             if data == "1":
                 self.label_camera.set_text("cam1")
+                self.label_offset_x.set_text("(%d "% self.cent_cam1[0])
+                self.label_offset_y.set_text("%d)"% self.cent_cam1[1])
+
                 self.togglebutton_cam0.set_active(False)
 #                self.togglebutton_cam1.set_active(False)
                 self.togglebutton_cam2.set_active(False)
@@ -513,6 +569,9 @@ class Calibra(GObject.GObject):
 
             if data == "2":
                 self.label_camera.set_text("cam2")
+                self.label_offset_x.set_text("(%d "% self.cent_cam2[0])
+                self.label_offset_y.set_text("%d)"% self.cent_cam2[1])
+
                 self.togglebutton_cam0.set_active(False)
                 self.togglebutton_cam1.set_active(False)
 #                self.togglebutton_cam2.set_active(False)
@@ -520,6 +579,9 @@ class Calibra(GObject.GObject):
 
             if data == "3":
                 self.label_camera.set_text("cam3")
+                self.label_offset_x.set_text("(%d "% self.cent_cam3[0])
+                self.label_offset_y.set_text("%d)"% self.cent_cam3[1])
+
                 self.togglebutton_cam0.set_active(False)
                 self.togglebutton_cam1.set_active(False)
                 self.togglebutton_cam2.set_active(False)
