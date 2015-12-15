@@ -24,13 +24,13 @@ import string
 #from skimage.measure import regionprops
 #from skimage.measure import label
 from math import floor
-import profilesaver
+#import profilesaver
 #import pyaio
 
 #import pickle
 import cPickle as pickle
-from pymongo import MongoClient
-from bson.binary import Binary
+#from pymongo import MongoClient
+#from bson.binary import Binary
 
 def bit_check(x, y, img, threshold, width):
     intensity = img[y-width:y+width,x-width:x+width].mean()
@@ -61,8 +61,8 @@ class Saver:
         self.y1 = numpy.array([])
         self.y2 = numpy.array([])
         self.y3 = numpy.array([])
-        client = MongoClient('localhost:27017')
-        self.db = client.lotuce2
+#        client = MongoClient('localhost:27017')
+#        self.db = client.lotuce2
 
     def write(self,data,ftime,fno):
 #        def aio_callback(rt, errno):
@@ -169,6 +169,7 @@ class Saver:
         mydata = None
         try:
             mydata = data.reshape((4*pxly,pxlx))
+            print mydata.shape
         except:
             if self.cent_counter == 0:
 #                self.fitsname = self.name.split('.fits')[0]+'_cent_'+str(fno)+'.txt'
@@ -330,7 +331,7 @@ class Saver:
         #pyaio.aio_write(fd1, b'%s'%str(myprofile), len(myprofile), aio_callback)
         #FITS.Write(myprofile, fitsname, writeMode='w')
 #        profilesaver.saver(myprofile, fitsname)
-        self.db.profiles.insert({"timestamp":ftime,"fno":int(fno),"profile":Binary(pickle.dumps(myprofile, protocol=2))})
+#        self.db.profiles.insert({"timestamp":ftime,"fno":int(fno),"profile":Binary(pickle.dumps(myprofile, protocol=2))})
         #XXX
         # Centroids: Calculating before store them
         # Classic way to calculate.
