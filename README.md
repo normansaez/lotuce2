@@ -23,7 +23,18 @@ BBB-eMMC-flasher-ubuntu-13.04-2013-10-08.img
    3. Hold down the BOOT button (S2) the on the BBB (This is not power button, neither reset button. S2 boot button is close to SD card).
    4. Power the board up while still holding down the BOOT button.
    5. You can release the button when all 4 LEDs are lit.
-   6. Go away and have a coffee. The process is finished when all 4 LEDs are solidly lit.
+   6. Go away and have a coffee. The process is finished when all 4 LEDs are solidly lit (about an hour).
    7. Power down the BBB and remove the microSD card. Next time it is
    8. powered up it will boot into Ubuntu.
 
+
+*Patching dbt*
+   1. sudo apt-get install build-essential bison flex
+   2. git clone https://github.com/normansaez/dtc.git
+   3. cd dtc
+   4. git reset --hard f8cb5dd94903a5cfa1609695328b8f1d5557367f
+   5. wget https://patchwork.kernel.org/patch/1934471/raw/ -O dynamic-symbols.patch
+   6. git apply dynamic-symbols.patch
+   7. make
+   8. sudo cp dtc /usr/local/bin
+   9. dtc -O dtb -o <overlay filename> -b 0 -@ <source filename>
