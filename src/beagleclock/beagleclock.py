@@ -13,6 +13,7 @@ if __name__ == '__main__':
     hertz = options.hertz
     max_hertz = 200e6 #PRU clock max frequency
     filename = 'clock.p'
+    path, fil = os.path.split(os.path.abspath(os.path.realpath(__file__)))
     constant = int(ceil((max_hertz - hertz*5)/(hertz*4.)))
     print "Constant to reach %d hertz: %d" % (hertz, constant)
 
@@ -54,5 +55,6 @@ START:
         fp = file(filename, 'w')
         fp.write(generate_code)
         fp.close()
-
-    os.system('make -C . clean all run')
+    cmd = "make -C %s clean all run" % path
+    print cmd
+    os.system(cmd)
