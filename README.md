@@ -27,7 +27,15 @@ BBB-eMMC-flasher-ubuntu-13.04-2013-10-08.img
    6. Go away and have a coffee. The process is finished when all 4 LEDs are solidly lit (about an hour).
    7. Power down the BBB and remove the microSD card. Next time it is
    8. powered up it will boot into Ubuntu.
+*ssh_id.pub*
+   1. scp .ssh/id_rsa.pub ubuntu@192.168.7.2:/home/ubuntu/ #This should be run in shuttle
+   2. cat ~/id_rsa.pub >> authorized_keys  # This should be run at beagleboneblack
+   3. cat ~/id_rsa.pub >> authorized_keys2 # This should be run at beagleboneblack
 
+*Installing utils env*
+   1. git clone https://github.com/normansaez/lotuce2.git
+   2. cd /home/ubuntu/lotuce2/src/env
+   3. sudo make install
 
 *Patching dbt*
    1. sudo apt-get install build-essential bison flex
@@ -39,3 +47,12 @@ BBB-eMMC-flasher-ubuntu-13.04-2013-10-08.img
    7. make
    8. sudo cp dtc /usr/local/bin
    9. dtc -O dtb -o <overlay filename> -b 0 -@ <source filename>
+
+*Installing pasm*
+   1. git clone https://github.com/beagleboard/am335x_pru_package.git
+   2. cd am335x_pru_package/ 
+   3. sudo make install
+   4. cd /usr/include/
+   5. sudo mkdir pruss/
+   6. cd pruss/
+   7. sudo cp ~/am335x_pru_package/pru_sw/app_loader/include/pruss* .
