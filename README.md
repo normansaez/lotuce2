@@ -8,7 +8,7 @@ Ubuntu version:
 BBB-eMMC-flasher-ubuntu-13.04-2013-10-08.img
 
 * wget https://rcn-ee.net/deb/flasher/raring/BBB-eMMC-flasher-ubuntu-13.04-2013-10-08.img.xz
-* unzx BBB-eMMC-flasher-ubuntu-13.04-2013-10-08.img
+* unxz BBB-eMMC-flasher-ubuntu-13.04-2013-10-08.img
 * sudo dd if=BBB-eMMC-flasher-ubuntu-13.04-2013-10-08.img of=/dev/sdX bs=1M
 * default username:password is [ubuntu:temppwd]
 
@@ -27,6 +27,7 @@ BBB-eMMC-flasher-ubuntu-13.04-2013-10-08.img
    6. Go away and have a coffee. The process is finished when all 4 LEDs are solidly lit (about an hour).
    7. Power down the BBB and remove the microSD card. Next time it is
    8. powered up it will boot into Ubuntu.
+
 *ssh_id.pub*
    1. scp .ssh/id_rsa.pub ubuntu@192.168.7.2:/home/ubuntu/ #This should be run in shuttle
    2. cat ~/id_rsa.pub >> authorized_keys  # This should be run at beagleboneblack
