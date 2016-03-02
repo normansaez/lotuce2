@@ -10,6 +10,7 @@ BBB-eMMC-flasher-ubuntu-13.04-2013-10-08.img
 * wget https://rcn-ee.net/deb/flasher/raring/BBB-eMMC-flasher-ubuntu-13.04-2013-10-08.img.xz
 * unzx BBB-eMMC-flasher-ubuntu-13.04-2013-10-08.img
 * sudo dd if=BBB-eMMC-flasher-ubuntu-13.04-2013-10-08.img of=/dev/sdX bs=1M
+* default username:password is [ubuntu:temppwd]
 
 *Expanding File System Partition On A microSD*
    1. use fdisk to delete /dev/mmcblk0p2 partition
