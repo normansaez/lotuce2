@@ -48,14 +48,14 @@ The PRU needs to things to make it available: put enable and open when you will 
 * make enable
 
 
-`root@beaglebone:~# cat $SLOTS
- 0: 54:PF---
- 1: 55:PF---
- 2: 56:PF---
- 3: 57:PF---
- 4: ff:P-O-L Bone-LT-eMMC-2G,00A0,Texas Instrument,BB-BONE-EMMC-2G
- 5: ff:P-O-L Bone-Black-HDMI,00A0,Texas Instrument,BB-BONELT-HDMI
- 9: ff:P-O-L Override Board Name,00A0,Override Manuf,PRU-CLOCK`
+`root@beaglebone:~# cat $SLOTS`
+` 0: 54:PF---`
+` 1: 55:PF---`
+` 2: 56:PF---`
+` 3: 57:PF---`
+` 4: ff:P-O-L Bone-LT-eMMC-2G,00A0,Texas Instrument,BB-BONE-EMMC-2G`
+` 5: ff:P-O-L Bone-Black-HDMI,00A0,Texas Instrument,BB-BONELT-HDMI`
+` 9: ff:P-O-L Override Board Name,00A0,Override Manuf,PRU-CLOCK`
 
 *Open PRU using pypruss*
 * git clone https://intelligentagent@bitbucket.org/intelligentagent/pypruss.git
