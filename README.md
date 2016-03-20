@@ -8,10 +8,9 @@ Debian version:
 ---------------
 * BBB-eMMC-flasher-debian-7.5-2014-05-14-2gb.img.xz
 * kernel: Linux beaglebone 3.8.13-bone50 #1 SMP Tue May 13 13:24:52 UTC 2014 armv7l GNU/Linux
-
 * In any pc insert the SD card and get the image:
-* wget http://debian.beagleboard.org/images/BBB-eMMC-flasher-debian-7.5-2014-05-14-2gb.img.xz
-* xzcat BBB-eMMC-flasher-debian-7.5-2014-05-14-2gb.img.xz | dd of=/dev/disk1 bs=4M
+   1. wget http://debian.beagleboard.org/images/BBB-eMMC-flasher-debian-7.5-2014-05-14-2gb.img.xz
+   2. xzcat BBB-eMMC-flasher-debian-7.5-2014-05-14-2gb.img.xz | dd of=/dev/disk1 bs=4M
 * default username:password is [root:]
 
 *Loading the image to eMMc*
