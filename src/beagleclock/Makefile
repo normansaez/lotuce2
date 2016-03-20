@@ -11,7 +11,3 @@ clean:
 $(TARGET).bin: $(TARGET).p
 	pasm -b $^
 
-$(TARGET): $(TARGET).o
-
-run:
-	./$(TARGET)
