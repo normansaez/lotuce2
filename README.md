@@ -6,8 +6,8 @@ Lotuce2 Darc configs
 
 Debian version:
 ---------------
-BBB-eMMC-flasher-debian-7.5-2014-05-14-2gb.img.xz
-kernel: Linux beaglebone 3.8.13-bone50 #1 SMP Tue May 13 13:24:52 UTC 2014 armv7l GNU/Linux
+* BBB-eMMC-flasher-debian-7.5-2014-05-14-2gb.img.xz
+* kernel: Linux beaglebone 3.8.13-bone50 #1 SMP Tue May 13 13:24:52 UTC 2014 armv7l GNU/Linux
 
 * In any pc insert the SD card and get the image:
 * wget http://debian.beagleboard.org/images/BBB-eMMC-flasher-debian-7.5-2014-05-14-2gb.img.xz
@@ -29,20 +29,20 @@ kernel: Linux beaglebone 3.8.13-bone50 #1 SMP Tue May 13 13:24:52 UTC 2014 armv7
    2. cat ~/id_rsa.pub >> authorized_keys  # This should be run at BBB
    3. cat ~/id_rsa.pub >> authorized_keys2 # This should be run at BBB
 
-*Installing utils env*
+*Installing utils env (Run this into BBB)*
    1. git clone https://github.com/normansaez/lotuce2.git
    2. cd /root/lotuce2/src/env
    3. sudo make install
 
-*dbt is already installed*
+*dbt is already installed into BBB*
    1. nothing to do
 
-*pasm is already installed*
+*pasm is already installed into BBB*
    1. nothing to do
 
-Make available PRU though python
---------------------------------
-The PRU needs to things to make it available: put enable and open when you will use it.
+*Make available PRU though python*
+
+* The PRU needs to things to make it available: put enable and open when you will use it.
 *Put enable PRU*
 * cd /root/lotuce2/src/beagleclock/device-tree 
 * make enable
