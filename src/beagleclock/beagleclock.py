@@ -52,10 +52,9 @@ START:
 
     if os.path.exists(filename):
         os.remove(filename)
-    else:
-        fp = file(filename, 'w')
-        fp.write(generate_code)
-        fp.close()
+    fp = file(filename, 'w')
+    fp.write(generate_code)
+    fp.close()
     cmd = "make -C %s clean all" % path
     print cmd
     os.system(cmd)
@@ -69,4 +68,5 @@ START:
 #    pypruss.clear_event(0)                              # Clear the event
 #    pypruss.pru_disable(0)                              # Disable PRU 0, this is already done by the firmware
 #    pypruss.exit()                                      # Exit, don't know what this does.
+    print "Constant to reach %d hertz: %d" % (hertz, constant)
 
