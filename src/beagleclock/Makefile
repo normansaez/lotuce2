@@ -3,7 +3,7 @@ LDLIBS+= -lpthread -lprussdrv
 TARGET=clock
 
 
-all: $(TARGET).bin $(TARGET) 
+all: $(TARGET).bin 
 
 clean:
 	rm -f $(TARGET) *.o *.bin
