@@ -65,8 +65,8 @@ START:
     pypruss.open(0)                                     # Open PRU event 0 which is PRU0_ARM_INTERRUPT
     pypruss.pruintc_init()                              # Init the interrupt controller
     pypruss.exec_program(0, "./clock.bin")              # Load firmware "clock.bin" on PRU 0
-    pypruss.wait_for_event(0)                           # Wait for event 0 which is connected to PRU0_ARM_INTERRUPT
-    pypruss.clear_event(0)                              # Clear the event
-    pypruss.pru_disable(0)                              # Disable PRU 0, this is already done by the firmware
-    pypruss.exit()                                      # Exit, don't know what this does.
+#    pypruss.wait_for_event(0)                           # Wait for event 0 which is connected to PRU0_ARM_INTERRUPT
+#    pypruss.clear_event(0)                              # Clear the event
+#    pypruss.pru_disable(0)                              # Disable PRU 0, this is already done by the firmware
+#    pypruss.exit()                                      # Exit, don't know what this does.
 
