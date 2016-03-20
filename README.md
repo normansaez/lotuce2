@@ -23,7 +23,7 @@ Debian version:
    7. Power down the BBB and remove the microSD card.
    8. powered up it will boot into Debian.
 
-*ssh_id.pub*
+*ssh_id.pub: Run this into shuttle computer*
    1. scp .ssh/id_rsa.pub ubuntu@192.168.7.2:/root/ #This should be run in shuttle
    2. cat ~/id_rsa.pub >> authorized_keys  # This should be run at BBB
    3. cat ~/id_rsa.pub >> authorized_keys2 # This should be run at BBB
@@ -40,9 +40,8 @@ Debian version:
    1. nothing to do
 
 *Make available PRU though python*
-
 * The PRU needs to things to make it available: put enable and open when you will use it.
-*Put enable PRU*
+* Put enable PRU*
 * cd /root/lotuce2/src/beagleclock/device-tree 
 * make enable
 
