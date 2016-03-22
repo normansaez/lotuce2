@@ -1,0 +1,28 @@
+#! /bin/sh
+# /etc/init.d/pruenable
+#
+
+# Some things that run always
+touch /var/lock/pruenable
+
+# Carry out specific functions when asked to by the system
+case "$1" in
+  start)
+    echo "Starting script pruenable "
+    echo "Loading cape"
+    make -C /root/lotuce2/src/beagleclock/device-tree/ enable
+    cat /sys/devices/bone_capemgr.9/slots
+    ;;
+  stop)
+    echo "Stopping script pruenable"
+    echo "Unload cape"
+    sh /root/lotuce2/src/beagleclock/device-tree/unload.sh
+    cat /sys/devices/bone_capemgr.9/slots
+    ;;
+  *)
+    echo "Usage: /etc/init.d/pruenable {start|stop}"
+    exit 1
+    ;;
+esac
+
+exit 0
